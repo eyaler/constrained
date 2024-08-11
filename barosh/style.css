@@ -1,0 +1,64 @@
+@media (hover: hover) {
+    @keyframes pasuk {
+        10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% { margin-inline: -.15em }
+        5%, 15% { margin-inline: -.1em }
+        25%, 35% { margin-inline: -.09em }
+        45%, 55% { margin-inline: -.07em }
+        65%, 75% { margin-inline: -.04em }
+        85%, 95% { margin-inline: 0 }
+    }
+
+    .pasuk > button:not([disabled]):is(:not(.wait_for_mouse) :hover, :focus-visible) {
+        animation: 6s pasuk;
+    }
+
+    .pasuk > .before {
+        --dir: -1;
+    }
+
+    .pasuk > :is(button:not([disabled]):is(:not(.wait_for_mouse) :hover, :focus-visible) + span, .before) {
+        background-clip: text;
+        -webkit-background-clip: text;
+        background-image: linear-gradient(calc(var(--dir) * -90deg), var(--fg_highlight), var(--fg) 70%);
+        color: transparent;
+        text-shadow: calc(var(--dir) * .25em) 0 .5em var(--fg_highlight);
+        transition: color .5s, text-shadow .5s;
+    }
+}
+
+.pasuk {
+    cursor: text;
+    --dir: 1;
+    margin-block: 4rem;
+    margin-inline: var(--anti_margin);
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.pasuk > button {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-sizing: content-box;
+    cursor: text;
+    font-size: inherit;
+    margin-inline: -.15em;
+    padding-block: .44em;
+    padding-inline: .15em;
+    translate: 0 -.22em;
+    width: 0;
+    transition: width 3s;
+}
+
+.pasuk > button:disabled {
+    pointer-events: none;  /* Disable context menu for Firefox */
+}
+
+.pasuk > button.space {
+    width: .5em;
+}
+
+.pasuk > span {
+    transition: text-shadow .5s;
+}

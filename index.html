@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="pages.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        @media (hover: hover) {
+            @keyframes stroke {
+                50% { -webkit-text-stroke-color: var(--fg_dim) }
+            }
+
+            #dot:is(:hover, :focus-visible) {
+                animation: var(--icon_dur) infinite stroke;
+                -webkit-text-stroke-width: 1px;
+            }
+        }
+
+        #dot {
+            display: inline-block;
+            line-height: .3;
+            margin-inline: -.25em -.1em;
+            padding-bottom: .1em;
+            padding-inline-start: .3em;
+            position: relative;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <noscript dir="ltr"><p>Please enable JavaScript to view contents.</p></noscript>
+    <script>
+        make_header()
+        const p = document.createElement('p')
+        p.textContent = 'מרחב של שיח תואם ובו מ־אות חישל שבח רם:'
+        p.className = 'preface_he'
+        const author = document.querySelector('.author')
+        author.before(p)
+        author.firstChild.innerHTML = author.firstChild.innerHTML.replace(/([א-ת]+)(\u05bc)([א-ת]*)/, `<span class="nowrap">$1<a id="dot" href="${page2url('me/')}">$2</a>$3</span>`)
+        make_contents()
+        make_footer()
+    </script>
+</body>
+</html>

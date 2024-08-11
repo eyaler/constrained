@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <blockquote>
+        "עוד יש בידינו קבלה של אמת, כי כל התורה כולה שמותיו של הקב"ה, שהתיבות מתחלקות לשמות בענין אחד. כאילו תחשוב על דרך משל, כי פסוק בראשית יתחלק לתיבות אחרות, כגון: 'בראש יתברא אלהים', וכל התורה כן, מלבד צירופיהן וגימטריאותיהם של שמות. [...] ונראה שהתורה הכתובה באש שחורה על גבי אש לבנה, בענין הזה שהזכרנו היה, שהיתה הכתיבה רצופה בלי הפסק תיבות, והיה אפשר בקריאתה שתקרא על דרך השמות, ותקרא על דרך קריאתנו בענין התורה והמצוה, ונתנה למשה רבינו על דרך קריאת המצות, ונמסר לו על פה קריאתה בשמות. וכן יכתבו השם הגדול שהזכרתי כולו רצוף, ויתחלק לתיבות של שלוש שלוש אותיות לחלוקים אחרים רבים, כפי השימוש לבעלי הקבלה."
+        &ensp;[<a href="https://www.sefaria.org.il/Ramban_on_Genesis%2C_Foreword.14-15">רמב"ן על בראשית, פתיחה לפירוש התורה יד-טו</a> (1250 לערך)]
+    </blockquote>
+    <blockquote>
+        "ואמנם הדרך השביעית היא הנקראת קדש קדשים, והיא לפני לפנים ונחלקת לחלקים רבים ואלה הם. יהוה איש מלחמה יהוה שמו - כולו תיבה אחת. <span class="harden">י־ה־ו־ה</span> <span class="harden">א־י־ש</span> <span class="harden">מ־ל־ח־מ־ה</span> <span class="harden">י־ה־ו־ה</span> <span class="harden">ש־מ־ו</span>. כל אות ואות ממנו לבדו עומד בנפרד. יהוה א יש מל ח מהיה וה שמו. וכפי הדרכים האלו והדומים להם בלתי חִלוף תבין כל התורה כולה שהיא שמותיו של הקב"ה. וכאילו אתה בורא התיבות ומסכימם."
+        &ensp;[אברהם אבולעפיה, <a href="https://hebrewbooks.org/pdfpager.aspx?req=49643&pgnum=373">אוצר עדן גנוז</a>, עמ' 382 (1286)]
+    </blockquote>
+    <p>
+        את שהציע הרמב"ן על דרך המשל, אפשר לממש בימינו באופן ממצה - מילה במילה. את שהציע אבולעפיה ב"כאילו", מובא כאן לפניך שלא ב"כאילו" -  <b>אתה בורא התיבות ומסכימם.</b>
+    </p>
+    <h2 id="barosh">בראשית א א</h2>
+    <div></div>
+    <p dir="ltr">(<a href="#psuko/#genesis_1:1" onclick="open_internal_link(this)">Genesis 1:1</a>)</p>
+    <h2 id="abulafia">שמות טו ג</h2>
+    <div></div>
+    <p dir="ltr">(<a href="#psuko/#exodus_15:3" onclick="open_internal_link(this)">Exodus 15:3</a>)</p>
+    <h2 id="nili">שמואל א טו כט</h2>
+    <div></div>
+    <p dir="ltr">(<a href="#psuko/#i_samuel_15:29" onclick="open_internal_link(this)">I Samuel 15:29</a>)</p>
+    <h2 id="pri">מתוך הושע יד ג</h2>
+    <div></div>
+    <p dir="ltr">(from <a href="#psuko/#hosea_14:3" onclick="open_internal_link(this)">Hosea 14:3</a>)</p>
+    <h2 id="yated">מתוך תהילים קלז ה-ו</h2>
+    <div></div>
+    <p dir="ltr">(from <a href="#psuko/#psalms_137:5" onclick="open_internal_link(this)">Psalms 137:5</a>-<a href="#psuko/#psalms_137:6" onclick="open_internal_link(this)">6</a>)</p>
+    <br>
+    <ul data-title="האלגוריתם:">
+        <li>בהינתן פסוק ו<a href="https://github.com/eyaler/hebrew_wordlists">אוצר מילים</a>, אפשר למצוא את כל החלוקות מחדש האפשריות של הפסוק לרצף מילים.</li>
+        <li>נגדיר את פעולת ה<b>קריעה</b> (או ה<b>קריאה</b>) כהכנסת רווח חדש אחד בין שתי אותיות צמודות, כאשר קיימת חלוקה אחרת בה נמצא רווח בין שתי אותיות אלו.</li>
+        <li>חלוקה מאופיינת לפי מיקומי הרווחים בה.</li>
+        <li>נגדיר את המרחק בין שתי חלוקות כגודל ההפרש הסימטרי בין קבוצות מיקומי הרווחים.</li>
+        <li>נגדיר חלוקות שכנות לחלוקה מסוימת תחת קריעה מסוימת, כחלוקות המקיימות הקריעה, שלהן המרחק המינימלי מהחלוקה המקורית, משמע השינוי המינימלי האפשרי במיקומי הרווחים.</li>
+        <li>במקרה שקיימת יותר מחלוקה שכנה אחת, נבחר את החלוקה החדשה באקראי מתוך החלוקות השכנות.</li>
+        <li>מתכון זה משרה גרף מכוון בין החלוקות, ואנו מתעניינים במקרים בהם הגרף קשיר היטב, משמע שניתן להגיע לכל חלוקה מכל חלוקה אחרת.</li>
+    </ul>
+    <p>
+       במסגרת פיתוח היצירה חושבו <a href="#psuko/" onclick="open_internal_link(this)">הפסוקים הפופלריים בתנ"ך</a>.
+    </p>
+    <blockquote dir="ltr">
+        "We have yet another mystic tradition that the whole Torah is comprised of names of the Holy One, Blessed be He, and that the letters of the words separate themselves into divine names when divided in a different manner, as you may imagine by way of example that the verse of Bereshit divides itself into these other words: 'barosh yitbare elohim'. This principle applies likewise to the entire Torah, aside from the combinations and the numerical equivalents of the holy names. [...] It would appear that the Torah written with letters of black fire upon a background of white fire was in this form we have mentioned, namely, that the writing was contiguous, without break of words, which made it possible for it to be read by way of divine names and also by way of our normal reading which makes explicit the Torah and the commandment. It was given to Moses our teacher using the division of words which expresses the commandment, and orally it was transmitted to him in the rendition which consists of the divine names. Thus masters of the kabbalah write the letters of the great name I have mentioned all close to each other, and then these are divided into words consisting of three letters and many other divisions, as is the practice among the masters of the Kabbalah."
+        &ensp;[Nachmanides, <a href="https://www.sefaria.org.il/Ramban_on_Genesis%2C_Foreword.14-15?lang=en">Ramban on Genesis, Foreword 14-15</a> (around 1250)]
+    </blockquote>
+    <blockquote dir="ltr">
+        "Indeed the seventh method is called 'the holy of holies' and is the innermost sanctum and is divided into many parts as follows. YHWH&ensp;ʔYŠ&ensp;MLḤMH&ensp;YHWH&ensp;ŠMW - is all one word. <span class="harden">Y-H-W-H</span>&ensp;<span class="harden">ʔ-Y-Š</span>&ensp;<span class="harden">M-L-Ḥ-M-H</span>&ensp;<span class="harden">Y-H-W-H</span>&ensp;<span class="harden">Š-M-W</span>. Each and every letter as it stands by itself. YHWH&ensp;ʔ&ensp;YŠ&ensp;ML&ensp;Ḥ&ensp;MHYH&ensp;WH&ensp;ŠMW. In accordance with these and similar methods, which do not involve the transposition of letters, you may regard the entire Torah as names of the Holy One, Blessed be He. It is as if you are the creator of words, and you concur their meaning."
+        &ensp;[Abraham Abulafia, Otzar Eden Ganuz (1286). Translation based on Moshe Idel, <a href="https://archive.org/download/MosheIdel/Idel-Language-Torah-and-Hermeneutics-in-Abraham-Abulafia.pdf">Language Torah and Hermeneutics in Abraham Abulafia</a>, p. 102]
+    </blockquote>
+    <p dir="ltr">
+        That which Nachmanides proposed proverbially, can be realized today exhaustively - word by word. That which Abulafia proposed "as if", is presented here before you, not just "as if" - <b>You are the creator of words, and you concur their meaning.</b>
+    </p>
+    <ul dir="ltr" data-title="The algorithm:">
+        <li>Given a verse and a <a href="https://github.com/eyaler/hebrew_wordlists">vocabulary</a>, one can find all possible repartitions of the verse into a sequence of words.</li>
+        <li>We define the operation of <b>parting</b> (in Hebrew: <b>kri'a</b>, which is also a homophone of <b>reading</b>) as the insertion of one new space between two adjacent letters, when there exists another partition in which there is a space between these two letters.
+        <li>A partition is characterized by the positions of spaces in it.</li>
+        <li>We define the distance between two partitions as the size of the symmetric difference between the sets of positions of spaces.</li>
+        <li>We define partitions that are neighbors to a certain partition under a certain parting, as partitions that maintain the parting, having the minimal distance from the original partition, i.e. the minimal change possible in the positions of spaces.</li>
+        <li>When there is more than one neighboring partition, we choose the new partition randomly from the neighboring partitions.</li>
+        <li>This recipe induces a directed graph over the partitions, and we are interested in cases where the graph is strongly connected, i.e. any partition is reachable from any other partition.</li>
+    </ul>
+    <p dir="ltr">
+       As part of the development of this work, the <a href="#psuko/?en" onclick="open_internal_link(this)">most popular Bible verses</a> were calculated.
+    </p>
+    <script>make_footer()</script>
+    <script src="script.js"></script>
+</body>
+</html>

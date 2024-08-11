@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta name="robots" content="noindex">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <meta http-equiv="refresh" content="600">
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+
+    @keyframes hor {
+        100% { rotate: y .5turn }
+    }
+
+    .hor {
+        animation: 10s forwards hor;
+    }
+
+    @keyframes ver1 {
+        100% { rotate: x .5turn }
+    }
+
+    .ver1 {
+        animation: 10s forwards ver1;
+    }
+
+    @keyframes ver2 {
+        0% { rotate: y .5turn }
+        100% { transform: rotateY(.5turn) rotateX(.5turn) }
+    }
+
+    .ver2 {
+        animation: 10s forwards ver2;
+    }
+
+    video {
+        cursor: none;
+        height: 33%;
+        left: 50%;
+        object-position: 0 100%;
+        position: absolute;
+        top: 50%;
+        transform-origin: 0 100%;
+        translate: 0 -100%;
+        width: 33%;
+    }
+
+    #d {
+        cursor: pointer;
+    }
+</style>
+<body>
+    <script>let i = 0</script>
+    <video id="a" src="media/mitplandremet.mp4" disablePictureInPicture muted playsinline preload></video>
+    <video id="b" src="media/mitplandremet.mp4" disablePictureInPicture muted playsinline preload></video>
+    <video id="c" src="media/mitplandremet.mp4" disablePictureInPicture muted playsinline preload></video>
+    <video id="d" src="media/mitplandremet.mp4" disablePictureInPicture playsinline preload onclick="[a, b, c, d].forEach(e => e.play()); style.cursor = 'none'" onended="if (!i) {[a, b, c].forEach(e => {e.pause(); e.currentTime = 0; e.loop = true; e.muted = false})} play(); if (!i) {[a, b, c].forEach(e => e.play())} else if (i > 1) [a, b, c, d].forEach(e => e.playbackRate *= .7); i++" ontimeupdate="if (currentTime >= duration / 2) if (!i) {d.classList.add('hor'); c.classList.add('hor')} else if (i == 1) {b.classList.add('ver1'); d.classList.add('ver2')}"></video>
+</body>
+</html>

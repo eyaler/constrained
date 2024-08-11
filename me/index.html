@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta name="robots" content="noindex">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="if (!document.referrer.split('/').slice(0, -1).join('/').endsWith('eyalgruss.com/constrained')) document.write('404 Not Found. Nothing to see here.'); document.body.style.visibility = 'visible'">
+    <script>
+        make_header()
+        let allow_audio
+    </script>
+    <audio id="audio" src="media/basade.mp3" onended="allow_audio = false"></audio>
+    <div>
+    <svg id="svg" viewBox="-350 -350 700 700" onpointerdown="classList.add('active')" onpointerleave="classList.remove('active')" onpointerup="classList.remove('active')" ontouchend="if (allow_audio) audio.play()" ontransitionend="allow_audio = true; classList.add('omni_is_green'); audio.play()" oncontextmenu="event.preventDefault()">
+    <!-- Using a centered view box because transform-origin breaks on Safari zooming. See: https://stackoverflow.com/questions/43642391/safari-svg-transform-origin-zoom-animation -->
+        <filter id="rotate_red">
+            <feColorMatrix type="hueRotate" values="-120" />
+        </filter>
+        <filter id="rotate_green">
+            <feColorMatrix type="hueRotate" values="0" />
+        </filter>
+        <image href="media/greenme.webp" x="-25%" y="-25%" width="350" height="350" />  <!-- Safari requires x, y, width, height to be defined as HTML attributes and not via CSS, and width and height are required to not break Safari zoom -->
+
+        <defs>
+            <path id="circ0" d="m 0, -310 a 310,310 0 0,1 0,620 a 310,310 0 0,1 0,-620" />
+            <path id="circ1" d="m 0, -295 a 295,295 0 0,1 0,590 a 295,295 0 0,1 0,-590" />
+            <path id="circ2" d="m 0, -275 a 275,275 0 0,1 0,550 a 275,275 0 0,1 0,-550" />
+            <path id="circ3" d="m 0, -245 a 245,245 0 0,1 0,490 a 245,245 0 0,1 0,-490" />
+            <path id="circ4" d="m 0, -220 a 220,220 0 0,1 0,440 a 220,220 0 0,1 0,-440" />
+            <path id="circ5" d="m 0, -195 a 195,195 0 0,1 0,390 a 195,195 0 0,1 0,-390" />
+            <path id="circ6" d="m 0, -180 a 180,180 0 0,1 0,360 a 180,180 0 0,1 0,-360" />
+            <path id="circ7" d="m 0, -170 a 170,170 0 0,1 0,340 a 170,170 0 0,1 0,-340" />
+        </defs>
+        <g id="text0"><text><textPath href="#circ0">~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•~·~•</textPath></text></g>
+        <g id="text1"><text><textPath href="#circ1">עדוי רכוז יתרכז יתודליב ידועמ ותעשב ונמזב רבעב דימתמו םלועמו םלועמ םלועמש אלש אלו ןכלו לבא ילוא ילואש הארנכש לככש יפכש יפכו הממ ולאמ ולאל ולאלו ימלו ימו ימ</textPath></text></g>
+        <g id="text2"><text><textPath href="#circ2">ילוא ילואו וליפא וליפאו םגו לבא םנמוא םנמא ןיידע ןיידעש אלש אלו ןכלו םושמו םושמ ןויכ ןויכש רבוסש םירבוסש םירבוסה םירובסה םינעוטה תנעוטה תנעוט הרובס רובס בשוח תבשוח תעדוי עדוי</textPath></text></g>
+        <g id="text3"><text><textPath href="#circ3">דוע דועל הברהל רתויל רתויו רתוי רחואמ ךכ־רחא ןכמ ףוסבלו זאו רשאכו רשאכש םאש םגש ילואש ילוא</textPath></text></g>
+        <g id="text4"><text><textPath href="#circ4">שגפינ בשנ בשא האראו בושא ףכית דיימו דימו זאו רשאכו רשאכש םאש םגש םנמאש םנמא ןיידע רבכ דוע</textPath></text></g>
+        <g id="text5"><text><textPath href="#circ5">הדשב ־הדש תחנמב תחנמ תחנמו החנמו החנמכ שיגמכ שיגמ שיגהו ושיגהו וניכהו וניכה וניכת ןיכנ רוצינו דובענ שגפינ</textPath></text></g>
+        <g id="text6"><text><textPath href="#circ6">יתונמאה יתוזחה יתוזח ילאוזיו יביטקארטניא םייביטקארטניא םיילאוטריו םיילטיגיד םיינורטקלא םיילמשח םיילמשחה םייטנגמה יטנגמה יטנגמורטקלאה הדשהש הדשה הדש הדשב</textPath></text></g>
+        <g id="text7"><text><textPath href="#circ7">&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—&emsp;—</textPath></text></g>
+    </svg>
+    <p>
+        היי וזה!
+        אני איל ואני אומן ומקודד ומשורר ואלגוריתמאי וחוקר למידת מכונה ומורה.
+        אני תלפיון וגם דוקטור לפיזיקה.
+        בשנים האחרונות העברתי המון הרצאות וסדנאות על הציר שבין שירה לטכנולוגיה,
+        והרבה על בינה מלאכותית ולמידת מכונה, ובפרט אומנות גנרטיבית.
+        ערכתי עלון קולות קוראים לאומני מדיה חדשה ישראלים, ובמסגרתו גם אירחתי בביתי שלוש שהויות אומן.
+        אני מלמד יצירתיות חישובית לסטודנטים לעיצוב במכון הטכנולוגי חולון ולימדתי גם בויצו חיפה.
+        אני עוזר לסטארטאפים לפתור בעיות אלגוריתמיות מעניינות כמנטור בגוגל סטארטאפס וכיועץ עצמאי.
+        אני יוצר ממשקי רשת בקוד פתוח לשם הנגשת טכנולוגיות חדישות לציבור רחב יותר.
+        ואני עושה גם: שירה אלגוריתמית, מיצבים אינטראקטיביים, אומנות (ושירה) ממוחשבת, מיצגים אודיו־ויזואליים, אומנות בינה מלאכותית, שירה מחוללת מחשב, התערבויות מקוונות, שירה אילוצית, שירה מוצפנת, שירה על הבלוקציין, ואף שירה רגילה, אולם רובם ככולם של הדברים עוסקים באהבה אבודה.
+        הצגתי בכל מיני כנסים ופסטיבלים ותערוכות ומוזיאונים בארץ ובעולם, ואולי מתישהו אוסיף כאן רשימה אם כי לא בטוח שצריך.
+        אני משתדל לחלק את זמני בין תל־אביב, לשאר הכדור בו אני מתרגל נוודות דיגיטלית (ומפנה חניות).
+        אה, ואני עובד על ספר השירה הראשון שלי שנקרא א_.
+        אבל תכלס בזמן האחרון אני עובד בעיקר על האתר והאסופה שכאן - הפלטפורמה והיצירות.
+        אגב, חיות הטוטם שלי הן אייל וצב מים. עוד חיות שברמת האידאה יש להן משמעות מיוחדת עבורי אבל בקטע חיובי הן: סוס, סוסדג, חד־קרן קשתי, טווס, גחלילית, ולאחרונה גם הזמיר.
+        בכל אופן, אני לא חושב שהרבה אנשים ימצאו את דרכם לכאן,
+        ולמעשה, נכון להיום ה־<span id="date"></span>, את הראשונה שירדת במורד מחילת השורוק - מברוק!
+        עכשיו, בטח גם את שמת לב שיש משהו קצת מוזר בעולם שלנו, שדברים הם לא בדיוק כפי שהם אמורים להיות...
+        משהו השתבש שם איפשהו לאורך הדרך לפני כמה שנים כזה, וזה אומר שאנחנו בעצם נמצאים בענף שבור של רצף הזמן־מרחב.
+        אך אל דאגה - זה כבר כמה שנים שאני עובד על תיקון, ואני סבור שבקרוב מאוד ההיסטוריה תוכל לשוב למסלולה. כל עוד ה<b>אוֹמְני</b> מראה אדום זה אומר שההווה עדיין שגוי.
+        אבל אם את כבר כאן עכשיו אז אולי... האומנם?
+    </p>
+    </div>
+    <script>
+        svg.oncontextmenu = e => e.preventDefault()  // Firefox (<112) needed this via JS instead of inline. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1819533
+        date.innerHTML = new Date().toISOString().slice(0, 10)
+        make_footer()
+    </script>
+</body>
+</html>

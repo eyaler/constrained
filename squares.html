@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <p>
+        ענייננו כאן הוא ריבועי מילים, במובן של ריבוע אותיות בו כל שורה וכל עמודה היא מילה יחידה. אפשר לחלקם לארבעה סוגים:
+    </p>
+    <ol>
+    <li>
+        ריבוע מילים (פשוט):
+    <pre class="square3">
+עשר
+שזז
+רזה
+</pre>
+    </li>
+    <li>
+        ריבוע מילים כפול (ובהכללה, מלבן מילים):
+    <pre class="square3">
+עשר
+בזז
+דעה
+</pre>
+    </li>
+    <li>
+        ריבוע מילים פלינדרומי (פשוט):
+    <pre class="square3">
+עשר
+שבש
+רשע
+</pre>
+    </li>
+    <li>
+        ריבוע מילים פלינדרומי כפול (ובהכללה, מלבן פלינדרומי):
+    <pre class="square3">
+עשר
+ובו
+רשע
+</pre>
+    </li>
+    </ol>
+    <p>
+        בריבועים הפשוטים הקריאה בשורות ובעמודות היא זהה, ואילו בכפולים הקריאות שונות.
+        הריבועים הכפולים הם מקרה פשוט של מלבנים, שיכולים לבוא עם צלעות באורכים שונים.
+        מכאן ואילך נתמקד בסוג השלישי, הוא ריבוע המילים הפלינדרומי הפשוט, אותו נכנה בקיצור <b>ריבוע קסם</b>.
+        כמו כן דיוננו יתמקד בריבועים של מילים עבריות הכתובים בדקדוק עברי תקין.
+         בפרט, לא נערבב כתיב חסר ו<a href="https://hebrew-academy.org.il/topic/hahlatot/missingvocalizationspelling">כתיב מלא</a> (ולמעשה כל הריבועים כאן הם בכתיב מלא);
+        <a href="https://web.archive.org/web/20050305222507/http://cs.haifa.ac.il/~shlomo/hebrew/prefixal_particles.html">תחיליות השימוש</a> בכל"ם יבואו לפני פועל רק בצורת בינוני, שם הפועל או מקור;
+        <a href="https://hebrew-academy.org.il/topic/hahlatot/grammardecisions/netiyyat-hapoal/3-10-%D7%9B%D7%99%D7%A0%D7%95%D7%99%D7%99-%D7%94%D7%9E%D7%95%D7%A9%D7%90">כינויי המושא</a> חוברים רק לבניינים הפעילים.
+        בנוסף לא נעשה שימוש בשמות זרים של אנשים או מקומות.
+    </p>
+    <p>
+        "<b>השערת אי־הקיום של דובב</b>" היא כינוי שנתתי לטענה ששמעתי במרץ 2018 מנעם דובב, מחבר ריבוע הקסם הגדול ביותר בעברית דאז
+        <a href="https://palindromist.art/the-largest-palindromic-magic-square-in-hebrew/">בגודל 6x6</a>,
+        כי לא קיימים בעברית ריבועי קסם בגודל 7x7 או יותר.
+        ביולי 2020, בעזרת תוכנה שכתבתי ו<a href="https://github.com/eyaler/hebrew_wordlists/tree/main/palindromes_anadromes">אוצרות מילים פלינדרומיות ואנדרומיות</a> שחצבתי,
+        מצאתי את ריבועי הקסם הראשונים בעברית בגודל 7x7, אולם רובם ככולם לא היו מוצלחים בעיניי. מאז מצאתי כמה מאות ריבועים בגודל זה. הינה כמה מן המוצלחים יותר:
+    </p>
+    <pre class="square">
+שמשוממה
+משאנכשם
+שאיילכם
+וניפינו
+מכלייאש
+משכנאשם
+הממושמש
+</pre>
+    <p>(במחווה למחבר שמשממה ניכש וניפה ולא התייאש!)</p>
+    <pre class="square">
+מכוונכם
+כשישיבך
+ויתדיין
+ושדשדשו
+ניידתיו
+כבישׁישׁך
+מכנווכם
+</pre>
+    <pre class="square">
+מכתומכך
+כמושיבך
+תוקירים
+ושישׂישׂו
+מיריקות
+כבִישומך
+ככמוּתכם
+</pre>
+    <pre class="square">
+כשמינהו
+שבכנשמה
+מכפשפשן
+ינשנשני
+נשפשפכם
+המשנכבש
+והנימָשֵך
+</pre>
+    <pre class="square">
+ונשכוהו
+נכתימנה
+שתונשמו
+כינוניךָ
+ומשנותש
+הנמיתכן
+והוכשנו
+</pre>
+    <pre class="square">
+ומלכותו
+מככלכלת
+לכשמשכו
+כלמחמלך
+וכשמשכל
+תלכלככם
+ותוכלמו
+</pre>
+    <pre class="square">
+והולכתו
+הנשאבות
+ושייבבך
+לאידיאל
+כבביישו
+תובאשנה
+ותכלוהו
+</pre>
+    <p>(לחלופין אפשר גם עם "לאיתיאֵל", אחת משתי המילים הפלינדרומיות הארוכות בתנ"ך)</p>
+    <pre class="square">
+ומהמְהַיֶה
+מכליבוי
+הלבלובה
+מילולים
+הבולבלה
+יובילכם
+היהמהמו
+</pre>
+    <pre class="square">
+הנממנהו
+נלכלכנה
+מכלכלכן
+מלכלכלם
+נכלכלכם
+הנכלכלן
+והנממנה
+</pre>
+    <pre class="square">
+וכשמהמה
+כשמשמשם
+שמשאשמה
+משאואשם
+המשאשמש
+משמשמשך
+המהמשכו
+</pre>
+    <pre class="square">
+מכתנומת
+כשמיהבם
+תמרחוהו
+ניחוחין
+והוחרמת
+מבהימשך
+תמונתכם
+</pre>
+<p>(ניחוחין היא אחת משתי המילים הפלינדרומיות הארוכות בתנ"ך)</p>
+    <pre class="square">
+והכנשמה
+התשימכם
+כשמתממש
+ניתצתין
+שממתמשך
+מכמישתה
+המשנכהו
+</pre>
+    <pre class="square">
+תכמנוהו
+ככלכלתה
+מלטלטלו
+נכלילכן
+ולטלטלם
+הֲתלכלכך
+והונמכת
+</pre>
+    <pre class="square">
+מכתנומת
+כנותנכם
+תוזמרנו
+נתמקמתן
+ונרמזות
+מכנתונך
+תמונתכם
+</pre>
+    <pre class="square">
+והמהמתי
+הנשפכות
+משלותכם
+הִפּוּכוֹפֹּה
+מכתולשם
+תוכפשנה
+יתמהמהו
+</pre>
+    <p>
+        (במחווה לתחדיש של נעם דובב למילה פלינדרום -
+        <a href="https://palindromist.art/hipuchopo/">הִפּוּכוֹפֹּה</a>)
+    </p>
+    <br>
+    <p>
+    כל הריבועים לעיל הם <b>בלתי־מנוונים</b> במובן שאף מילה אינה מופיעה יותר מפעם אחת. הינה כמה ריבועים <b>מנוונים</b>:
+    </p>
+    <pre class="square">
+הכלהלָכה
+כבכוכבך
+לכשתשכל
+הותרתוה
+לכשתשכל
+כבכוכבך
+הכלהלָכה
+</pre>
+    <pre class="square">
+מהמהמהם
+הנובילה
+מומינים
+הביְשיבה
+מינימום
+הליבונה
+מהמהמהם
+</pre>
+    <pre class="square">
+ובכוכבך
+בכשישכב
+כשבדבשך
+וידידיו
+כשבדבשך
+בכשישכב
+כבכוכבו
+</pre>
+    <p>
+        (במחווה לריבוע הקסם <a href="https://judaism.stackexchange.com/questions/88203/finding-a-source-for-a-palindrome-attributed-to-ibn-ezra">המיוחס</a> לאברהם אִבּן עזרא,
+        "<a href="https://palindromist.art/the-golden-age-of-palindromes/">פרשנו רעבתן שבדבש נתבער ונשרף</a>",
+        <br>ולשירו <a href="https://benyehuda.org/read/3337">אשכּים לבית השר</a>: "...אֹמרים כבר שכב! ...או יעלה משכב ...נולד בלי כוכב!",
+        <br>אם כי ספק אם "בכש" היא תחילית תקינה)
+    </p>
+    <pre class="square">
+המהמהמה
+מהמהמהם
+המהמהמה
+מהמהמהם
+המהמהמה
+מהמהמהם
+המהמהמה
+</pre>
+    <p>(המנוון שבריבועי הקסם בגודל 7x7, והוא בן שתי אותיות בלבד.
+       <br>כפי שהעיר שי גבעון - ניתן להרחבה טריוויאלית לקובייה, ואף לגודל 8x8)
+    </p>
+    <br>
+    <p>
+        <b>השערה:</b> לא קיימים בעברית ריבועי קסם בגודל 8x8 או יותר
+        (בהתייחס לריבועים בלתי־מנוונים בכתיב מלא).
+    </p>
+    <p dir="ltr">
+        The first palindromic word squares in Hebrew of size 7x7. All words are in ktiv-male - long-form spelling, and no foreign person or place names were used. No larger squares are known, and are conjectured not to exist (addressing non-degenerate squares in ktiv-male - long-form spelling).
+    </p>
+    <div class="refs">
+        <blockquote>Dmitri A. Borgmann, Language on Vacation, Chapter 7 - Geometric Forms.</blockquote>
+        <blockquote>J. A. Lindon, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=1450&context=wordways">Playing About with Word Squares</a>, Word Ways.</blockquote>
+        <blockquote>M. D. McIlroy, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=1876&context=wordways">5-by-5 Palindromic Word Squares</a>, Word Ways.</blockquote>
+        <blockquote>Maxey Brooke, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=2003&context=wordways">A Survey of Small Squares</a>, Word Ways.</blockquote>
+        <blockquote>A. Ross Eckler, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=2619&context=wordways">Reversible Word Squares</a>, Word Ways.</blockquote>
+        <blockquote>Maxey Brooke, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=2844&context=wordways">A Word Square Update</a>, Word Ways.</blockquote>
+        <blockquote>Jim Puder, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=4839&context=wordways">Some Sentential Palindromic Five-Squares</a>, Word Ways.</blockquote>
+        <blockquote>Rex Gooch, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=5022&context=wordways">Palindromic Word Squares</a>, Word Ways.</blockquote>
+        <blockquote>Rex Gooch, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=5098&context=wordways">Reversible 7-Squares</a>, Word Ways.</blockquote>
+        <blockquote>Rex Gooch, <a href="https://digitalcommons.butler.edu/cgi/viewcontent.cgi?article=5138&context=wordways">Reversible 6-Squares</a>, Word Ways.</blockquote>
+        <blockquote>Noam Dovev, <a href="https://palindromist.art/the-largest-palindromic-magic-square-in-hebrew/">ריבוע הקסם הפלינדרומי הגדול ביותר בעברית</a> (2011).</blockquote>
+        <blockquote>Shay Givon, <a href="https://www.facebook.com/groups/1435021850049747/permalink/2814513978767187">תשעה פלינדרומי-קסם על האלוהים בגודל 7X7 (שיא חדש בעברית)</a> (and comments therein, 2021).</blockquote>
+        <blockquote>Shay Givon, <a href="https://www.facebook.com/groups/1435021850049747/permalink/3482040055347906">פלינדרומים דו-מימדיים בוואריציות שונות מעבר לריבוע עם קריאה 4 כיוונית זהה</a>.</blockquote>
+        <blockquote>Shay Givon, <a href="https://www.facebook.com/shay.givon/posts/pfbid0rWyqGzK6uFMnuCEzZsh6JmLnoU1AfzwjgJcdnaZoH5fALwL5iWx9pHcDBajSiUngl">הצלחתי לכתוב ריבוע קסום פלינדרומי בגודל 8 על 8</a>.</blockquote>
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

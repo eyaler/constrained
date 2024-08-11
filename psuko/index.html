@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../pages.js"></script>
+    <link rel="stylesheet" href="../tables/tables.css">
+    <script src="../tables/tables.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <p>
+        לפי ניתוח קישורים ב<a href="https://dumps.wikimedia.org/hewikisource/latest/">ויקיטקסט</a>
+        וב<a href="https://storage.googleapis.com/sefaria-mongo-backup/dump_small.tar.gz">ספריא</a>.
+    </p>
+    <p>
+        מובא הנוסח לפי כתב יד לנינגרד ב<a href="https://www.tanach.us/Tanach.xml">הקלדת וסטמינסטר</a>,
+        כפי שהוא מעודכן במהדורת תנ"ך עם ניקוד בספריא, אבל לפי חלוקת הפסוקים בויקיטקסט (ותואם למהדורת הניקוד בויקיטקסט עד כדי עריכות המשתמשים).
+    </p>
+    <ul data-title="מתודולוגיה:">
+        <li>מספור הפסוקים מתחשב בהבדלים ב<a href="https://he.wikisource.org/wiki/%D7%9E%D7%A9%D7%AA%D7%9E%D7%A9:Dovi/%D7%9E%D7%A7%D7%A8%D7%90_%D7%A2%D7%9C_%D7%A4%D7%99_%D7%94%D7%9E%D7%A1%D7%95%D7%A8%D7%94/%D7%9E%D7%99%D7%93%D7%A2_%D7%A2%D7%9C_%D7%9E%D7%94%D7%93%D7%95%D7%A8%D7%94_%D7%96%D7%95/%D7%A4%D7%A8%D7%A7_%D7%91#%D7%94%D7%91%D7%93%D7%9C%D7%99%D7%9D_%D7%91%D7%99%D7%9F_%D7%94%D7%93%D7%A4%D7%95%D7%A1%D7%99%D7%9D_%D7%91%D7%97%D7%9C%D7%95%D7%A7%D7%AA_%D7%94%D7%A4%D7%A8%D7%A7%D7%99%D7%9D_%D7%95%D7%9E%D7%A1%D7%A4%D7%A8%D7%99_%D7%94%D7%A4%D7%A1%D7%95%D7%A7%D7%99%D7%9D">חלוקת הפסוקים</a> בין ויקיטקסט לספריא.</li>
+        <li>ויקיטקסט - נלקחו רק קישורים מהמרחב הראשי, הוא מרחב הערכים, שאינם הפניות (redirects). הגרף מכוון.</li>
+        <li>ספריא - נלקחו הקישורים הפנימיים (מקורות לעיון) שאינם תרגום ואינם קישורים מהתנ"ך לעצמו. התייחסויות לטווחים של עד שלושה פסוקים בתוך אותו פרק פורקו לפסוקים בודדים. הגרף אינו מכוון (בשביל לקבל גרף מכוון אפשר היה למיין את קודקודים של כל אחת מהקשתות לפי תיארוכם).</li>
+        <li>PageRank - חושבו לאחר הסינונים לעיל, בגרף שכולל גם את הקשתות שאינן מקשרות לפסוקי התנ"ך. מובא <a href="https://www.researchgate.net/profile/Michalis-Vazirgiannis/publication/47861885_Comparing_Apples_and_Oranges_Normalized_PageRank_for_Evolving_Graphs/links/56b89ce908ae5ad3605f443e/Comparing-Apples-and-Oranges-Normalized-PageRank-for-Evolving-Graphs.pdf">הציון המנורמל</a> לאחר חלוקה בציון הקטן ביותר של כל הקודקודים בגרף.</li>
+        <li>PageSheetRank - כפי ש<a href="https://github.com/Sefaria/Sefaria-Project/blob/master/sefaria/pagesheetrank.py">חושב על ידי ספריא</a>.</li>
+        <li>מוצגים רק פסוקים שהיו בין ה־600 הפופולריים ביותר באיזה מן המדדים לעיל, בחישוב נפרד לתורה ולנביאים-כתובים (כ־12% מכלל הפסוקים בתנ"ך; מצורף גם קובץ של כל הפסוקים).</li>
+        <li>בספריא הסתכלתי גם על הקישורים מדפי אינטרנט, אולם נדמה שהם לא מדד פופולריות מוצלח.</li>
+        <li>בעיניי מספר הקישורים מערכים בויקיטקסט נותן את סידור הפופולריות הרלוונטי ביותר לציבור חילוני. ראו <a href="#chart">השוואה של דירוג פסוקים מפורסמים</a>.</li>
+    </ul>
+    <p>
+        מעודכן ל־2023-11-01.
+        קובצי JSON להורדה:
+        <a id="data" href>הטבלה</a>,
+        <a id="data_all" href="data/psuko_all.json">כל הפסוקים</a>.
+    </p>
+    <p>
+        המחקר בוצע לטובת היצירה <a href="#barosh/" onclick="open_internal_link(this)">בראש יתברא / יתד בקלשוני</a>.
+    </p>
+    <p dir="ltr">
+        The most popular Bible verses based on link analysis in <a href="https://dumps.wikimedia.org/hewikisource/latest/">Hebrew Wikisource</a> and in <a href="https://storage.googleapis.com/sefaria-mongo-backup/dump_small.tar.gz">Sefaria</a>.
+    </p>
+    <p dir="ltr">
+        The text is presented according to the <a href="https://www.tanach.us/Tanach.xml">Westminster Leningrad Codex</a>, as updated in the Tanach with Nikkud version in Sefaria,
+        but according to the division of verses in the Hebrew Wikisource (and corresponds to the edition with diacritical marks in Wikisource up to user edits).
+    </p>
+    <ul dir="ltr" data-title="Methodology:">
+        <li>The enumeration of verses takes into account the differences in the division of verses between Wikisource and Sefaria.</li>
+        <li>Wikisource - we only took links from the main (article) namespace that are not redirects. The graph is directed.</li>
+        <li>Sefaria - we took the internal links (related texts) that are not translations and are not links from the Bible itself. References to ranges of up to three verses within the same chapter were broken down into individual verses. The graph is undirected (to get a directed graph, the nodes of each of the edges could have been sorted by their dating).</li>
+        <li>PageRank - calculated after the above filterings, over a graph that also includes the edges not linking to Bible verses. We present the normalized score after dividing by the smallest score of all the nodes in the graph.</li>
+        <li>PageSheetRank - as calculated by Sefaria.</li>
+        <li>We only show verses that were among the 600 most popular in any of the above indicators, doing a separate calculation for the Torah and for Nevi'im-Ketuvim (about 12% of all verses in the Bible; a file of all verses is also available).</li>
+        <li>For Sefaria, we also considered the links from web pages, but they do not seem to be a good indicator of popularity.</li>
+        <li>In my opinion, the number of links from articles in Wikisource gives the most relevant popularity ordering for the secular public in Israel. See <a href="#chart">comparison of famous verses ranks</a>.</li>
+    </ul>
+    <p dir="ltr">
+        Updated to 2023-11-01.
+        JSON files for download:
+        <a id="data_trans" href>the table</a>,
+        <a id="data_all_trans" href>all verses</a>.
+    </p>
+    <p dir="ltr">
+        The research was conducted for the work <a href="#barosh/?en" onclick="open_internal_link(this)">BaRosh Yitbare / Yated BeKilshoni</a>.
+    </p>
+    <div class="refs">
+        <blockquote>Liz Shayne, <a href="https://ludicanalytics.wordpress.com/2014/06/17/sefaria_in_gephi/">Sefaria in Gephi: Seeing Links in Jewish Literature</a>, Ludic Analytics.</blockquote>
+    </div>
+    <br>
+    <label title="Diacritical marks">
+        <input id="nikud" type="checkbox" onchange="update_nikud()" autocomplete="off">
+        <span>ניקוד</span>
+    </label>
+    <div class="table">
+    <table class="row_highlight rank" data-config="data/psuko_config.json" data-url="data/psuko_top.json" aria-labelledby="h1">
+        <thead>
+            <tr>
+                <td rowspan="2"></td>
+                <th colspan="5" scope="colgroup" title="Wikisource">ויקיטקסט</th>
+                <th colspan="4" scope="colgroup" title="Sefaria">ספריא</th>
+            </tr>
+            <tr class="sort">
+            </tr>
+        </thead>
+    </table>
+    </div>
+    <button class="big" title="גלול לראש הטבלה" onclick="nikud.scrollIntoView()"><span style="mix-blend-mode: overlay">&#x1f51d;&#xfe0e;</span></button>
+    <br>
+    <figure id="chart">
+        <figcaption>השוואה של דירוג פסוקים מפורסמים:</figcaption>
+        <img width="100%" src="chart.svg">
+    </figure>
+    <script>
+        make_footer()
+
+        function update_nikud() {
+            document.querySelectorAll('.nikud').forEach(e => {
+                text = e.dataset.sort
+                if (!nikud.checked)
+                    text = text.replace(/[\u05be]/g, ' ').replace(/[\u0591-\u05c7\u034f\u200c\u200d]/g, '')
+                e.innerHTML = text
+            })
+        }
+
+        Table().then(update_nikud)
+        data.href = data_trans.href = document.querySelector('table').dataset.url
+        data_all_trans.href = data_all.href
+    </script>
+</body>
+</html>

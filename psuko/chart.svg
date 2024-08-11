@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1838 1037">
+    <desc>השוואה של דירוג פסוקים מפורסמים</desc>
+    <style>
+        svg {
+            --fg: #64ff64;
+            background-color: black;
+        }
+
+        .fat {
+            stroke-width: 6;
+        }
+
+        .fg {
+            stroke: var(--fg);
+            stroke-width: 1.5;
+        }
+
+        path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 3;
+        }
+
+        text {
+            fill: var(--fg);
+            font-family: Alef, Arial, sans-serif;
+            font-size: 18px;
+        }
+    </style>
+    <g transform="translate(-3595 -343)">
+        <rect class="fg" x="3701" y="366" width="1643" height="767" fill="none" />
+        <path class="fg" d="M3701 1057 5344 1057M3701 980 5344 980M3701 903 5344 903M3701 827 5344 827M3701 750 5344 750M3701 673 5344 673M3701 597 5344 597M3701 520 5344 520M3701 443 5344 443M3701 366 5344 366" />
+        <path class="fg" d="M3701 1133 3701 1140M3850 1133 3850 1140M4000 1133 4000 1140M4149 1133 4149 1140M4298 1133 4298 1140M4448 1133 4448 1140M4597 1133 4597 1140M4746 1133 4746 1140M4896 1133 4896 1140M5045 1133 5045 1140M5194 1133 5194 1140M5344 1133 5344 1140" />
+
+        <path class="fat" d="M3850 1110 4000 1126 4149 1095 4298 1118 4448 980 4597 1087 4746 1018 4896 919 5045 1041 5194 1072" stroke="#64FFFF" />
+        <path d="M3850.5 1102.5 3999.5 1118.5 4148.5 1072.5 4298.5 1095.5 4447.5 941.5 4596.5 957.5 4746.5 1064.5 4895.5 742.5 5044.5 1056.5 5194.5 888.5" stroke="#FF6464" />
+        <path d="M3850.5 1125.5 3999.5 1102.5 4148.5 1095.5 4298.5 1118.5 4447.5 1049.5 4596.5 1033.5 4746.5 1018.5 4895.5 995.5 5044.5 864.5 5194.5 880.5" stroke="#6464FF" />
+        <path d="M3850.5 1125.5 3999.5 1087.5 4148.5 1095.5 4298.5 1102.5 4447.5 1041.5 4596.5 980.5 4746.5 1010.5 4895.5 972.5 5044.5 703.5 5194.5 665.5" stroke="#FF64FF" />
+        <path d="M3850.5 1125.5 3999.5 1095.5 4148.5 1056.5 4298.5 711.5 4447.5 1087.5 4596.5 964.5 4746.5 650.5 4895.5 1110.5 5044.5 619.5 5194.5 435.5" stroke="#FFFF64" />
+
+        <text transform="matrix(6.12323e-17 -1 1 6.12323e-17 3640.83 772)">Rank</text>
+        <text transform="translate(3671.7 1138)">0</text>
+        <text transform="translate(3665.03 1061)">10</text>
+        <text transform="translate(3663.32 984)">20</text>
+        <text transform="translate(3663.11 907)">30</text>
+        <text transform="translate(3661.78 831)">40</text>
+        <text transform="translate(3663.11 754)">50</text>
+        <text transform="translate(3662.34 677)">60</text>
+        <text transform="translate(3662.98 601)">70</text>
+        <text transform="translate(3662.35 524)">80</text>
+        <text transform="translate(3662.34 447)">90</text>
+        <text transform="translate(3654.07 371)">100</text>
+
+        <text transform="translate(3806.49 1164)">Genesis</text>
+        <text transform="translate(3874.9 1164)">1:1</text>
+        <text direction="rtl" transform="translate(3774.55 1213)" x="146.39">בראשית ברא אלהים</text>
+        <text direction="rtl" transform="translate(3792.31 1238)" x="110.88">את השמים ואת</text>
+        <text direction="rtl" transform="translate(3831.05 1262)" x="38.5">הארץ</text>
+
+        <text transform="translate(3928.56 1164)">Deuteronomy</text>
+        <text transform="translate(4045.56 1164)">6:4</text>
+        <text direction="rtl" transform="translate(3934.19 1213)" x="125.79">שמע ישראל יהוה</text>
+        <text direction="rtl" transform="translate(3940.27 1238)" x="118.73">אלהינו יהוה אחד</text>
+
+        <text transform="translate(4103.29 1164)">Genesis</text>
+        <text transform="translate(4171.7 1164)">2:7</text>
+        <text direction="rtl" transform="translate(4082.76 1213)" x="127.33">וייצר יהוה אלהים</text>
+        <text direction="rtl" transform="translate(4084.09 1238)" x="124.67">את האדם עפר מן</text>
+        <text direction="rtl" transform="translate(4077.72 1262)" x="137.41">האדמה ויפח באפיו</text>
+        <text direction="rtl" transform="translate(4089.06 1287)" x="114.73">נשמת חיים ויהי</text>
+        <text direction="rtl" transform="translate(4092.23 1311)" x="113.49">האדם לנפש חיה</text>
+
+        <text transform="translate(4240.52 1164)">Exodus</text>
+        <text transform="translate(4303.69 1164)">20:2</text>
+        <text transform="translate(4337.3 1164)">-</text>
+        <text transform="translate(4347.53 1164)">3</text>
+        <text direction="rtl" transform="translate(4234.79 1213)" x="121.93">אנכי יהוה אלהיך</text>
+        <text direction="rtl" transform="translate(4222.58 1238)" x="146.35">אשר הוצאתיך מארץ</text>
+        <text direction="rtl" transform="translate(4224.82 1262)" x="141.88">מצרים מבית עבדים</text>
+        <text direction="rtl" transform="translate(4229.28 1287)" x="132.95">לא יהיה לך אלהים</text>
+        <text direction="rtl" transform="translate(4250.3 1311)" x="96.02">אחרים על פני</text>
+
+        <text transform="translate(4390.1 1164)">Leviticus</text>
+        <text transform="translate(4467.26 1164)">19:18</text>
+        <text direction="rtl" transform="translate(4382.68 1213)" x="124.81">לא תקם ולא תטר</text>
+        <text direction="rtl" transform="translate(4375.8 1238)" x="138.58">את בני עמך ואהבת</text>
+        <text direction="rtl" transform="translate(4377.76 1262)" x="139.76">לרעך כמוך אני יהוה</text>
+
+        <text transform="translate(4552.31 1164)">Genesis</text>
+        <text transform="translate(4620.72 1164)">1:2</text>
+        <text direction="rtl" transform="translate(4533.63 1213)" x="121.59">והארץ היתה תהו</text>
+        <text direction="rtl" transform="translate(4529.56 1238)" x="129.73">ובהו וחשך על פני</text>
+        <text direction="rtl" transform="translate(4531.16 1262)" x="126.53">תהום ורוח אלהים</text>
+        <text direction="rtl" transform="translate(4526.11 1287)" x="141.73">מרחפת על פני המים</text>
+
+        <text transform="translate(4675.9 1164)">Deuteronomy</text>
+        <text transform="translate(4792.9 1164)">6:5</text>
+        <text direction="rtl" transform="translate(4687.17 1213)" x="113.18">ואהבת את יהוה</text>
+        <text direction="rtl" transform="translate(4682 1238)" x="123.52">אלהיך בכל לבבך</text>
+        <text direction="rtl" transform="translate(4683.81 1262)" x="119.9">ובכל נפשך ובכל</text>
+        <text direction="rtl" transform="translate(4726.87 1287)" x="38.88">מאדך</text>
+
+        <text transform="translate(4846.3 1164)">Genesis</text>
+        <text transform="translate(4914.71 1164)">1:26</text>
+        <text direction="rtl" transform="translate(4822.92 1213)" x="140.35">ויאמר אלהים נעשה</text>
+        <text direction="rtl" transform="translate(4847.31 1238)" x="91.58">אדם בצלמנו</text>
+        <text direction="rtl" transform="translate(4820.05 1262)" x="146.09">כדמותנו וירדו בדגת</text>
+        <text direction="rtl" transform="translate(4827.76 1287)" x="130.67">הים ובעוף השמים</text>
+        <text direction="rtl" transform="translate(4821.6 1311)" x="143">ובבהמה ובכל הארץ</text>
+        <text direction="rtl" transform="translate(4826.89 1336)" x="132.41">ובכל הרמש הרמש</text>
+        <text direction="rtl" transform="translate(4864.51 1360)" x="62.27">על הארץ</text>
+
+        <text transform="translate(4987.15 1164)">Leviticus</text>
+        <text transform="translate(5064.31 1164)">19:14</text>
+        <text direction="rtl" transform="translate(4969.52 1213)" x="145.82">לא תקלל חרש ולפני</text>
+        <text direction="rtl" transform="translate(4976.98 1238)" x="130.9">עור לא תתן מכשל</text>
+        <text direction="rtl" transform="translate(4975.96 1262)" x="132.93">ויראת מאלהיך אני</text>
+        <text direction="rtl" transform="translate(5029.29 1287)" x="31.38">יהוה</text>
+
+        <text transform="translate(5149.55 1164)">Genesis</text>
+        <text transform="translate(5217.96 1164)">1:5</text>
+        <text direction="rtl" transform="translate(5124.66 1213)" x="134.22">ויקרא אלהים לאור</text>
+        <text direction="rtl" transform="translate(5135.78 1238)" x="111.98">יום ולחשך קרא</text>
+        <text direction="rtl" transform="translate(5123.35 1262)" x="136.83">לילה ויהי ערב ויהי</text>
+        <text direction="rtl" transform="translate(5149.1 1287)" x="90.44">בקר יום אחד</text>
+
+        <path class="fat" d="M3747 407 3785 407" stroke="#64FFFF" />
+        <text transform="translate(3800 411)">Wikisource links from articles</text>
+        <path d="M3746.5 486.5 3785.5 486.5" stroke="#FF6464" />
+        <text transform="translate(3800 491)">Wikisource PageRank</text>
+        <path d="M3746.5 567.5 3785.5 567.5" stroke="#6464FF" />
+        <text transform="translate(3800 571)">Sefria related texts</text>
+        <path d="M3746.5 647.5 3785.5 647.5" stroke="#FF64FF" />
+        <text transform="translate(3800 651)">Sefaria PageRank</text>
+        <path d="M3746.5 727.5 3785.5 727.5" stroke="#FFFF64" />
+        <text transform="translate(3800 731)">Sefaria PageSheetRank</text>
+    </g>
+</svg>

@@ -1,0 +1,164 @@
+.table {
+    --tables_hor_scrollbar_offset: var(--hor_scrollbar_offset, 16px);
+
+    margin-block: 2rem 2.5rem;
+    overflow-x: auto;
+    padding-bottom: var(--tables_hor_scrollbar_offset);
+    padding-inline-end: 1px;  /* Show missing border in Chrome when overflowing */
+}
+
+table {
+    --tables_bg: var(--bg, Canvas);
+    --tables_fg: var(--fg, CanvasText);
+    --tables_on: var(--on, var(--tables_fg));
+    --tables_fg_dim: var(--fg_dim, GrayText);
+    --tables_fg_verydim: var(--fg_verydim, Highlight);
+    --tables_inverse_fg: var(--inverse_fg, var(--tables_fg_verydim));
+    --tables_icon_dur: var(--icon_dur, .3s);
+
+    border-collapse: collapse;
+    font-size: initial;
+    font-variant-numeric: lining-nums tabular-nums;
+    height: fit-content;
+    letter-spacing: initial;
+    margin-inline: auto;
+}
+
+@media (hover: hover) {
+    :where(.table, table *):focus-visible {
+        outline-color: var(--tables_on);
+        outline-offset: 8px;
+        outline-style: solid;
+    }
+
+    :is(.highlight, .row_highlight) tr:not(.skip_highlight, .skip_highlight *):hover {
+        background: var(--tables_fg_verydim);
+    }
+
+    table:is(.highlight, .col_highlight):hover {
+        box-shadow: 0 var(--tables_hor_scrollbar_offset) var(--tables_bg);
+        overflow-y: clip;
+    }
+
+    :is(.highlight, .col_highlight):hover [colspan]:not([colspan='1']), :is(.highlight, .row_highlight):hover :is(.merge_first_col > tbody td:first-child, [rowspan]:not([rowspan='1'])) {
+        background-color: var(--tables_bg);
+        background-clip: padding-box;
+    }
+
+    /* Note: skipping first columns highlight may be broken due to rowspan > 1 cells in first columns */
+    :is(.highlight, .col_highlight) :is(td, th):is(:not([colspan]), [colspan='1']):not(:is(.merge_first_col, .rank) :first-child, [data-first-col-highlight='1'] :first-child, [data-first-col-highlight='2'] :nth-child(-n+2)):hover::after {
+        background: var(--tables_fg_verydim);
+        content: '';
+        height: 1000vh;
+        inset-inline: 0;
+        position: absolute;
+        top: -500vh;
+        z-index: -1;
+    }
+
+    .rank tbody {
+        counter-reset: row_number;
+    }
+
+    .rank tbody td:first-child::before {
+        content: counter(row_number);
+        counter-increment: row_number;
+    }
+
+    @keyframes sort {
+        100% { rotate: x 65deg }
+    }
+
+    .sort button:not(.copy *):is(:hover, :focus-visible)::after {
+        animation: var(--tables_icon_dur) infinite alternate sort;
+        transform-origin: 0 57%;
+    }
+
+    thead button:is(:hover, :focus-visible) {
+        background: var(--tables_fg_verydim);
+    }
+
+    table :where(a, a *, button, button *):focus-visible {
+        outline-style: none;
+    }
+}
+
+.harden {
+    display: inline-block;
+    text-decoration: inherit;
+}
+
+.merge_first_col > tbody td:first-child {
+    border-top: none;
+}
+
+.merge_first_col > tbody td:first-child:not(tr:last-child *) {
+    border-bottom: none;
+}
+
+.sort button:not(.copy *)::after {
+    content: '\2195';
+    display: inline-block;
+}
+
+.sort button[value='1']::after {
+    content: '\2191';
+}
+
+.sort button[value='-1']::after {
+    content: '\2193';
+}
+
+td.copy, .sort th {
+    padding: 0;
+}
+
+td, th {
+    border-color: var(--tables_fg_dim);
+    border-style: solid;
+    border-width: 1px;
+    padding-block: .3em;
+    padding-inline: .5em;
+    position: relative;
+}
+
+thead button {
+    align-items: center;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    font-family: inherit;
+    font-size: initial;
+    font-weight: inherit;
+    gap: .5em;
+    height: 100%;
+    justify-content: center;
+    padding-block: .3em;
+    padding-inline: .5em;
+    width: 100%;
+}
+
+thead button:active {
+    background: var(--tables_on);
+    color: var(--tables_inverse_fg);
+}
+
+thead.data_header {
+    border-bottom-style: double;
+    border-color: currentColor;
+}
+
+tr {
+    height: 100%;  /* Needed in Firefox for buttons in table cells */
+}
+
+@media (forced-colors: active) {
+    thead button:active {
+        outline-offset: -5px;
+        outline-style: solid;
+        outline-width: 5px;
+    }
+}

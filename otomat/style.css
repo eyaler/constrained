@@ -1,0 +1,30 @@
+#grid {
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: inherit;
+    font-family: var(--mono_font, 'Courier New', monospace);
+    font-variant-ligatures: none;
+    font-size: calc(max(12px, var(--base_vw_font_size, 0vw)) / var(--factor));
+    line-height: .6667;
+    padding: 0;
+}
+
+.fullscreen #grid {
+    --base_vw_font_size: .937vw;  /* Hand-tuned to minimize uneven gaps between lines at 1920x1080 due to fractional line-height. See e.g.: https://bugzilla.mozilla.org/show_bug.cgi?id=442139 */
+}
+
+#grid:active {
+    background: var(--on);
+    color: var(--inverse_fg);
+}
+
+#otomat > .overflow {
+    font-size: 0;  /* Otherwise Chrome sets inline-block and we get a gap above */
+    height: 100%;  /* prevent vertical scrollbar in fullscreen */
+    margin-bottom: 3rem;
+}
+
+#size_slider {
+    width: 4.5em;
+}

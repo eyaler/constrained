@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        .magicspell {
+            background: black;
+            color: white;
+            font-size: 2rem;
+            margin-inline: auto;
+            margin-block: 5ex;
+            outline-color: black;
+            outline-style: solid;
+            outline-width: .5em;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <p>
+        פרקטיקה פרפורמטיבית־טיפולית
+        בה אני יוצר לחש־קסם מותאם אישית עבור מבקש הלחש.
+        לאחר ריאיון קצר אני מחבר את הלחש, מקלידו במכונת כתיבה
+        ומטביעו בסיכת כפתור. הלחש מורכב ממספר מילים המודפסות
+        זו תחת זו. המילים מוזחות במטרה ליצור רצף אנכי המרכיב מילה נוספת,
+        בטכניקה הידועה כ־<a href="https://en.wikipedia.org/wiki/Mesostic">mesostic</a> (הכללה של אקרוסטיכון).
+        המילה האנכית מודפסת בדיו אדום ומהווה את "<b>מילת ההפעלה</b>"
+        של הלחש. על בעל הלחש לקרוא אותה בהדגשה ובהתכוונות
+        לאחר המילים האחרות. רוב הלחשים מכילים רק מילת הפעלה אחת
+        ואלו מכונים לחשים מ<b>דרגה 1</b>.
+        ללחשים כללים דקדוקיים ותחביריים שונים, אולם האילוץ החשוב ביותר הוא
+        ה<b>קונטקסטואלי</b> - מדובר בלחש אישי המתייחס לדברי המבקש
+        ונכתב בזמן אמת. זכיתי להכין כמאה לחשי קסם, וזכיתי גם
+        לפגוש אנשים שנשאו אותם עימם גם שנים אחרי. את שני הלחשים האלו חיברתי עבור עצמי:
+    </p>
+    <div oncontextmenu="toggle_fullscreen(event)">
+    <pre class="magicspell spaced_mono">
+  <span style="color: red">ב</span>י
+שי<span style="color: red">ר</span>
+ ה<span style="color: red">ק</span>סם
+ כ<span style="color: red">ת</span>וב
+</pre>
+    </div>
+    <div oncontextmenu="toggle_fullscreen(event)">
+    <pre class="magicspell spaced_mono" id="magicspell2">
+ א<span style="color: red">ז</span>מן
+  <span style="color: red">י</span>דע
+  <span style="color: red">ק</span>סום
+אל<span style="color: red">י</span>
+  <span style="color: red">ת</span>בואי
+</pre>
+    </div>
+
+    <p>
+        פורסם ב־<a href="https://www.poetryplace.org/nanopoetica/%d7%92%d7%99%d7%9c%d7%99%d7%95%d7%9f-%d7%9e%d7%a1-27/">ננופואטיקה 27</a>.
+    </p>
+    <br>
+    <div class="images" dir="ltr">
+        <img src="media/magicspell1.jpg" alt="לחשקסם" aria-describedby="magicspell2">
+        <img src="media/magicspell2.jpg" alt="עמדת חישול לחשקסם במידברן 2014">
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

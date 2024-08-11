@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'; iframe.src = 'https://player.vimeo.com/video/469788336?byline=0&dnt=1&loop=1&portrait=0&quality=1080p&title=0'">
+    <script>make_header()</script>
+    <p>
+        <a href="https://en.wikipedia.org/wiki/Cyclic_cellular_automaton">אוטומט תאי ציקלי</a> מבוסס אותיות.
+        אות בסריג תתקדם לאות הבאה באלף־בית, אם לפחות אחד משמונת שכניה הסובבים זהה לאותה האות הבאה (ואחרי ת' תבוא א').
+        האותיות הן המצבים של האוטומט הציקלי, שבדרך כלל מיוצגים על ידי צבעים או ספרות.
+        בנוסף, מנגנון ייחודי מאפשר למילים נבחרות, כשאלו מתהוות באופן ספונטני בכיוון אופקי או אנכי, לקפוא ולא להשתנות במשך מספר מחזורים כתלות ב"טמפרטורה".
+    </p>
+    <p>
+        זהו מעין קלינמן, פגם או שיבוש מכוון בכללי המערכת, שנועד להשיב למילה את תפקידה שאבד תחת החוקיות ה<a href="https://he.wikipedia.org/wiki/%D7%9C%D7%98%D7%A8%D7%99%D7%96%D7%9D">לטריסטית</a>.
+        מילה מיוחדת היא "הוזח" (מלשון הזחה - אינדנטציה) - בהיותה רצף אלף־ביתי, המילה משרה בסביבתה תבניות גאומטריות ודינמיקה של הזחה, ובכך מממשת את את משמעותה באופן אוטולוגי.
+        בעוד שאוטומטים ציקליים ככלל אינם מאפשרים תבניות מסוג "<a href="https://conwaylife.com/wiki/Spaceship">חלליות</a>", מנגנון הטמפרטורה מאפשר פסידו־חלליות המוזחות על גבי אדוות ה"שעונים" הספירליות.
+    </p>
+    <p>
+        הקליקי על הסריג בשביל לאתחל, או הקליקימנית למסך מלא.
+    </p>
+    <div id="otomat" onclick="hard_prev_time = prev_time = performance.now()" oncontextmenu="if (!hard_restart_secs || !classList.contains('fullscreen')) toggle_fullscreen(event); else event.preventDefault(); prev_time = performance.now()">
+        <div class="sliders">
+            <label>
+                <span onclick="lang_slider.value = 0; reset = true">English</span>
+                <input type="range" id="lang_slider" max="1" value="1" autocomplete="off" oninput="hard_prev_time = performance.now()">
+                <span onclick="lang_slider.value = lang_slider.max || 100; reset = true">Hebrew</span>
+            </label>
+            <label for="size_slider">
+                <button onclick="size_slider.value = 0;">160&times;80</button>
+                <input type="range" id="size_slider" max="10" value="0" autocomplete="off" oninput="hard_prev_time = performance.now()">
+                <button onclick="size_slider.value = size_slider.max || 100;">320&times;160</button>
+            </label>
+            <div>
+                <div>
+                    <label for="rate_slider">
+                        <button onclick="rate_slider.value = 0">Slow</button>
+                        <input type="range" id="rate_slider" value="50" autocomplete="off" oninput="hard_prev_time = prev_time = performance.now()">
+                        <button onclick="rate_slider.value = rate_slider.max || 100">Fast</button>
+                    </label>
+                    <label for="temp_slider">
+                        <button onclick="temp_slider.value = 0">Hot</button>
+                        <input type="range" id="temp_slider" max="64" value="48" autocomplete="off" oninput="hard_prev_time = performance.now()">
+                        <button onclick="temp_slider.value = temp_slider.max || 100">Cold</button>
+                    </label>
+                </div>
+                <span class="checkboxes">
+                    <label>
+                        <input id="glitch_checkbox" type="checkbox" autocomplete="off">
+                        <span>Glitch</span>
+                    </label>
+                    <label>
+                        <input id="restarts_checkbox" type="checkbox" autocomplete="off">
+                        <span>Restarts</span>
+                    </label>
+                </span>
+            </div>
+        </div>
+        <div class="overflow">
+            <button id="grid" onclick="reset = true" onmousemove="show_cursor(this)" aria-label="אתחל" aria-labelledby="h1"></button>
+        </div>
+    </div>
+    <p dir="ltr">
+        Letter-based <a href="https://en.wikipedia.org/wiki/Cyclic_cellular_automaton">cyclic cellular automata</a>, or "<span class="harden">OT-o-mata</span>" as OT means letter in Hebrew.
+        A letter in the grid will advance to the next letter in the alphabet (and after z comes a), if at least one of its eight surrounding neighbors is that next letter.
+        The letters are the states of the cyclic automata, usually represented by colors or digits.
+        In addition, a novel mechanism allows selected words, when they are formed spontaneously in a horizontal or vertical direction, to freeze and not change for some cycles depending on the "temperature".
+    </p>
+    <p dir="ltr">
+        This is a form of clinamen, a deliberate defect or disruption in the system rules, designed to restore the word to its function lost under the <a href="https://en.wikipedia.org/wiki/Lettrism">Lettristic</a> regularity.
+        In Hebrew, one special word is הוזח ("huz[a]ḥ", indented) - being a continuous sequence in the Hebrew alphabet, it induces in its neighborhood geometrical patterns and dynamics of indentation, thereby realizing its meaning in an autological fashion.
+        While cyclic automata usually do not support "<a href="https://conwaylife.com/wiki/Spaceship">spaceship</a>" patterns, the temperature mechanism allows for pseudo-spaceships that are indented on the spiral "clock" ripples.
+    </p>
+    <p dir="ltr">
+        Click the grid to restart, or right-click for fullscreen.
+    </p>
+    <p>
+        הוצג בתערוכה בפסטיבל המדיה <a href="https://archiv.filmwinter.de/2024/en/exhibitions/expanded-media-exhibition">Stuttgarter Filmwinter</a> ה־37 ב־2024, בשטוטגרט, גרמניה.
+    </p>
+    <div class="images" dir="ltr">
+        <figure>
+            <img src="media/otomat_filmwinter.jpg" alt="אות־וֹמט תאי בתערוכה בפסטיבל המדיה 2024 Stuttgarter Filmwinter">
+            <figcaption dir="ltr">
+                Photograph by Daniela Wolf
+            </figcaption>
+        </figure>
+    </div>
+
+    <p dir="ltr">
+        Exhibited in the <a href="https://archiv.filmwinter.de/2024/en/exhibitions/expanded-media-exhibition">37th Stuttgarter Filmwinter Expanded Media Exhibition</a>, in 2024 in Stuttgart, Germany.
+    </p>
+    <p>
+        הוצג בגרסת ארדואינו, בתערוכה <a href="https://eloconference2023exhibitions.wordpress.com/">Arborescent || Resistance</a> בכנס לספרות אלקטרונית ELO ב־2023, בקוימברה, פורטוגל.
+    </p>
+    <div class="images" dir="ltr">
+        <img src="media/otomat_coimbra1.jpg" alt="אות־וֹמט תאי בגרסת ארדואינו בכנס לספרות אלקטרונית 2023 ELO">
+        <img src="media/otomat_coimbra2.jpg" alt="אות־וֹמט תאי בגרסת ארדואינו בכנס לספרות אלקטרונית 2023 ELO">
+    </div>
+    <p dir="ltr">
+        Exhibited in Arduino version, in the exhibition <a href="https://eloconference2023exhibitions.wordpress.com/">Arborescent || Resistance</a> at ELO Conference 2023: Overcoming Divides: Electronic Literature and Social Change, Coimbra, Portugal.
+    </p>
+    <p>
+        הוצג בגרסת ארדואינו עם מדחום, בתערוכה <a href="https://www.binyamin-gallery.com/settings">מאפייני מערכת / SETTINGS</a> באוצרות אלעד ירון, בגלריה בנימין ב־2023.
+        הצגת העבודה נתמכה במענק בסך 5,000 ש"ח מטעם "בא בזמן - מענק לאמנים עצמאיים" של המחלקה לאומנויות בעיריית תל־אביב-יפו ו<a href="https://www.rabinovichfoundation.org.il/">קרן יהושע רבינוביץ לאומנויות תל־אביב</a>.
+    </p>
+    <div class="images" dir="ltr">
+        <img src="media/otomat_binyamin1.jpg" alt="אות־וֹמט תאי בגרסת ארדואינו עם מדחום בתערוכה בגלריה בנימין">
+        <img src="media/otomat_binyamin2.jpg" alt="אות־וֹמט תאי בגרסת ארדואינו עם מדחום בתערוכה בגלריה בנימין">
+    </div>
+    <p dir="ltr">
+        Exhibited in Arduino version with a thermometer, in the exhibition <a href="https://www.binyamin-gallery.com/settings">SETTINGS</a> curated by Elad Yaron, at Binyamin Gallery in 2023.
+        The presentation of the work was supported by a grant of 5,000 ILS from "Ba BaZman - a grant for independent artists" of the Department of Arts in the Tel Aviv-Yafo Municipality and the <a href="https://www.rabinovichfoundation.org.il/index.php/english">Yehoshua Rabinovich Tel Aviv foundation for the arts</a>.
+    </p>
+    <p>
+        גרסה מוקדמת בשם "להט החרב המתהפכת" מ־2018, הוצגה בתערוכה <a href="https://web.archive.org/web/20210621101633/https://generator-israel.online/index.php/exhibition/">Emergent Behaviour | התנהגות פורצת</a> באוצרות דפנה פלק ב־2020.
+        שם ניסיתי להשתמש במנגנון בשביל לחולל <a href="#magicspell" onclick="open_internal_link(this)">לחשקסם</a>.
+    </p>
+    <iframe id="iframe" allow="fullscreen; web-share" allowfullscreen class="video" aria-label="וידאו של להט החרב המתהפכת"></iframe>
+    <p dir="ltr">
+        An early version named "Lahat Haḥerev Hammit’happeḵet" from 2018, was exhibited in the exhibition <a href="https://web.archive.org/web/20210621101633/https://generator-israel.online/index.php/exhibition/">Emergent Behaviour</a> curated by Dafna Falk in 2020.
+        There I tried to use the mechanism to generate <a href="#magicspell?en" onclick="open_internal_link(this)">Magicspells</a>.
+    </p>
+    <p><b>תודות:</b> ערן גבע, יעל צברי, נמרוד קרת, אלעד ירון, יניב חג'בי, וליאת סגל.</p>
+    <div class="refs">
+        <blockquote>Robert Fisch, Janko Gravner and David Griffeath, <a href="https://math.ucdavis.edu/~gravner/papers/cca.pdf">Cyclic Cellular Automata in Two Dimensions</a>, Spatial Stochastic Processes (1991).</blockquote>
+        <blockquote>Jörg Piringer, <a href="https://joerg.piringer.net/infinitytexts/cellular">infinity texts - cellular automaton</a>, originally in <a href="https://joerg.piringer.net/namshub/namshub.pdf">Nam Shub - A Text Creation and Performance Environment</a> (2007).</blockquote>
+        <blockquote>Saskia Hiltemann, <a href="https://theses.liacs.nl/pdf/16-SaskiaHiltemann.pdf">Multi-coloured Cellular Automata</a> (2008).</blockquote>
+        <blockquote>Laurel O'Brien, <a href="https://github.com/laurelobrien/typo-automata">typo-automata</a> (2015).</blockquote>
+        <blockquote>Milton Läufer, <a href="https://www.miltonlaufer.com.ar/conwaysgame/">Word Is A Virus</a> (2018).</blockquote>
+    </div>
+    <script>make_footer()</script>
+    <script src="script.js"></script>
+</body>
+</html>

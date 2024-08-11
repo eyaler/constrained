@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        #screenshot {
+            border-style: solid;
+            border-width: 2px;
+            font-size: .75em;
+            margin-bottom: 5ex;
+            margin-inline: auto;
+            width: 80%;
+        }
+
+        #screenshot .undercover {
+            border-radius: 1em;
+            outline-color: var(--fg_highlight);
+            outline-offset: .5em;
+            outline-style: solid;
+            outline-width: 2px;
+        }
+    </style>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <h2>#שיח_פנגרמטי</h2>
+    <div class="dialog" style="--data_name1: 'איל'; --data_name2: 'סמי'">
+        <div id="dialog">
+            <blockquote>תגיד, אפשר לשאול אותך שתי שאלות ושתנסה להתייחס בכנות מלאה ובלי ציניות?</blockquote>
+            <blockquote dir="ltr"><bdi>כן, ברור.</bdi></blockquote>
+            <blockquote><span class="undercover">דעתך שצה"ל - גסטאפו רק בזמן חי?</span></blockquote>
+            <blockquote dir="ltr"><bdi>לא, חיילי צה"ל בשטחים הכבושים הם אמנם קלגסים בעיניי, אך מעשי הזוועה [...]</bdi></blockquote>
+            <blockquote>הבנתי תודה. שאלה שנייה: האם לדעתך ניתן לחבר פנגרמות מושלמות כה טובות עד שיעברו כמשפטים אמיתיים?</blockquote>
+            <blockquote>ברמה שאפילו אדם שעוסק בהן לא יבחין במבט ראשון או שני?</blockquote>
+            <blockquote>אני שואל על דוגמאות מהשטח, כאלו שנבדקו בתנאי אמת ושיש הוכחות שהם השתלבו באופן חלק בזרימה הטבעית של השיחה בעיניו של אחד הצדדים.</blockquote>
+            <blockquote dir="ltr"><bdi>לא ידוע לי על ניסוי מבוקר שכזה, ומאמין שלא היה.</bdi></blockquote>
+            <blockquote>האמת היא שחיפשתי כל היום דוגמה כזו או משהו שיכול לעמוד במבחן כזה. ובינתיים מצאתי רק אחת...</blockquote>
+            <blockquote dir="ltr"><bdi>אוקיי. אז איזה דוגמה מצאת?</bdi></blockquote>
+            <blockquote>שנייה אחפש לך.</blockquote>
+        </div>
+        <blockquote></blockquote>
+        <div id="screenshot"></div>
+    </div>
+    <script>
+        screenshot.appendChild(dialog.cloneNode(true))
+        make_footer()
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "פסוק": {
+    "cls": "nowrap",
+    "href": "https://he.wikisource.org/wiki/",
+    "href_sub": {
+      " ": "_"
+    },
+    "index": 1,
+    "title": "Verse"
+  },
+  "טקסט": {
+    "cls": "nikud",
+    "min": "35ch",
+    "title": "Text",
+    "type": "justify"
+  },
+  "תורה": {
+    "implied": -1,
+    "title": "Torah",
+    "type": "checkmark"
+  },
+  "קישורים מערכים": {
+    "default": true,
+    "title": "Links from articles"
+  },
+  "מקורות לעיון": {
+    "title": "Related texts"
+  },
+  "PageRank_wiki": {
+    "decimal": 4
+  },
+  "PageRank_sefaria": {
+    "decimal": 2
+  },
+  "Verse": {
+    "cls": "nowrap",
+    "dir": "ltr",
+    "href": "https://www.sefaria.org.il/",
+    "href_sub": {
+      " (?=\\d)": ".",
+      " ": "_"
+    },
+    "href_suffix": "?with=all",
+    "id": true,
+    "index": 1
+  }
+}

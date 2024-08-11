@@ -1,0 +1,27 @@
+article {
+    overflow-y: hidden;  /* Prevent scrollbar for keyboard zoom-in in Chrome */
+}
+
+article > section {
+    background-repeat: space;
+    background-size: auto 5px;
+    height: 16666665px;
+}
+
+main {
+    margin-inline: var(--anti_margin);
+    padding-inline: .5rem;
+}
+
+main > section {
+    background-position-y: 90%;
+    background-repeat: no-repeat;
+    padding-bottom: .95%;  /* See: https://css-tricks.com/scale-svg/#aa-option-2-use-css-background-images-and-the-padding-bottom-hack */
+    max-width: 100%;
+}
+
+section {
+    background-image: url('1e7.svg');
+    margin-inline: auto;
+    width: 1666px;
+}

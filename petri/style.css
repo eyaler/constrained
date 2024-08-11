@@ -1,0 +1,115 @@
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-display: block;
+    src: url('fonts/IBMPlexMono-Regular.woff2');
+}
+
+.petri, textarea {
+    --fg: var(--whitish);
+    font-family: 'IBM Plex Mono', 'Courier New', var(--mono_font);
+    font-size: initial;
+    outline-style: none !important;
+}
+
+.petri {
+    --enabled: #ffff64;
+    --firing: #64ff64;
+    color: var(--fg);
+    display: grid;
+    overflow-x: auto;
+    padding-block: 1em 3em;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.petri > div {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 25ch);
+    justify-self: stretch;
+    letter-spacing: initial;
+    line-height: 1.5;
+    margin-inline: auto;
+    text-align: center;
+    --hor_offset: -2ch;
+    --ver_offset: -.75em;
+}
+
+.petri pre {
+    align-items: center;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    margin-block: auto;
+    position: relative;
+}
+
+.petri pre.place span {
+    align-items: center;
+    display: flex;
+}
+
+.petri pre:not(.place) span[data-before]::before {
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+}
+
+.petri pre::before, .petri pre::after {
+   color: var(--fg);
+}
+
+.petri [data-before]::before {
+    content: attr(data-before);
+    position: absolute;
+}
+
+.petri pre[data-before].vertical::before {
+    inset-inline-start: 0;
+}
+
+.petri pre.place span[data-before]::before {
+    inset-inline-start: var(--hor_offset);
+}
+
+.petri pre[data-before]:not(.vertical)::before {
+    top: 0;
+}
+
+.petri pre[data-before].place::before {
+    top: var(--ver_offset);
+}
+
+.petri [data-after]::after {
+    content: attr(data-after);
+    position: absolute;
+}
+
+.petri pre[data-after].vertical::after {
+    inset-inline-end: 0;
+}
+
+.petri pre.place span[data-after]::after {
+    inset-inline-end: var(--hor_offset);
+}
+
+.petri pre[data-after]:not(.vertical)::after {
+    bottom: 0;
+}
+
+.petri pre[data-after].place::after {
+    bottom: var(--ver_offset);
+}
+
+textarea {
+    background-color: var(--fg);
+    line-height: 2.5 !important;
+    padding-inline: 3em;
+}
+
+textarea#title {
+    margin-block: 5em 4em;
+}
+
+textarea#title + #poem {
+    margin-block: 4em;
+}

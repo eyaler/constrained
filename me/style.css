@@ -1,0 +1,161 @@
+body > div {
+    display: flow-root;
+    margin-inline: auto;
+}
+
+svg {
+    cursor: pointer;
+    --factor: 1;
+    fill: #ff6464;
+    float: left;
+    shape-outside: circle();
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: geometricPrecision;  /* Needed to not break Safari zoom */
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    width: min(700px, 85vmin);
+}
+
+@media (max-width: 480px) {
+    svg {
+        display: block;
+        float: none;
+        margin-bottom: 2rem;
+        margin-inline: auto;
+    }
+}
+
+svg [href] {
+    pointer-events: none;  /* Prevent context menu for Firefox mobile (<116). See: https://bugzilla.mozilla.org/show_bug.cgi?id=1736391 */
+}
+
+filter {
+    color-interpolation-filters: sRGB;
+}
+
+.omni_is_green {
+    fill: #64ff64;
+}
+
+.omni_is_green > g {
+    animation: none !important;
+}
+
+svg:not(.omni_is_green).active {
+    translate: 0;  /* Dummy for timer */
+    transition: translate 6s;
+}
+
+@keyframes blink {
+    8.33%  { opacity: .4 }  /* Filter could be more performant, but Safari cannot use filter shorthand on SVG elements  */
+    16.66% { opacity: 1 }
+    25%    { opacity: .4 }
+    33.33% { opacity: 1 }
+    41.66% { opacity: .4 }
+    50%    { opacity: 1 }
+    58.33% { opacity: .4 }
+    66.66% { opacity: 1 }
+    75%    { opacity: .4 }
+    83.33% { opacity: 1 }
+    91.66% { filter: url(#rotate_red); opacity: 0 }  /* Safari cannot use hue-rotate shorthand on SVG elements */
+    91.67%, 100% { filter: url(#rotate_green) }
+}
+
+svg.active > g {  /* Safari (<16.4) could only rotate SVG groups not text */
+    animation-name: rotate_restart_count !important;  /* See https://css-tricks.com/restart-css-animation/ */
+    animation-iteration-count: 3 !important;
+    --factor: .13;
+}
+
+@keyframes stutter {
+    20% { opacity: .9 }  /* Filter could be more performant, but Safari cannot use filter shorthand on SVG elements  */
+    30% { opacity: .8 }
+    40% { opacity: .9 }
+    50% { opacity: .7 }
+    60% { opacity: 1 }
+    80% { opacity: .9 }
+}
+
+svg:not(.omni_is_green) > image {
+    animation: 2s linear infinite stutter;
+    filter: url(#rotate_red);  /* Safari cannot use hue-rotate shorthand on SVG elements */
+}
+
+svg:not(.omni_is_green).active > image {
+    animation: 6s linear blink;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0) }  /* Safari cannot use rotate shorthand on SVG elements, and requires 0% */
+    100% { transform: rotate(1turn) }
+}
+
+@keyframes rotate_restart_count {
+    0% { transform: rotate(0) }
+    100% { transform: rotate(1turn) }
+}
+
+/* Use integer font-size as Safari will wrongfully round to nearest 1px. See: https://bugs.webkit.org/show_bug.cgi?id=46987 */
+/* Use px units for letter-spacing (together with text-rendering=geometricPrecision) to not break Safari zoom */
+
+g {
+    animation: calc(var(--duration) * var(--factor)) linear infinite rotate;
+}
+
+#text0 {
+    --duration: 8s;
+    font-size: 20px;
+    letter-spacing: .59px;
+}
+
+#text1 {
+    animation-direction: reverse;
+    --duration: 5.5s;
+    font-size: 26px;
+    letter-spacing: .37px;
+}
+
+#text2 {
+    --duration: 12.5s;
+    font-size: 21px;
+    letter-spacing: .62px;
+}
+
+#text3 {
+    animation-direction: reverse;
+    --duration: 8.5s;
+    font-size: 37px;
+    letter-spacing: .38px;
+}
+
+#text4 {
+    --duration: 15s;
+    font-size: 32px;
+    letter-spacing: .63px;
+}
+
+#text5 {
+    animation-direction: reverse;
+    --duration: 10s;
+    font-size: 25px;
+    letter-spacing: .6px;
+}
+
+#text6 {
+    animation-direction: reverse;
+    --duration: 7s;
+    font-size: 15px;
+    letter-spacing: .5px;
+}
+
+#text7 {
+    --duration: 10s;
+    font-size: 15px;
+    letter-spacing: .62px;
+}
+
+textPath {
+    direction: ltr;
+    unicode-bidi: bidi-override;  /* Fix RTL text direction for Safari (with hard-coded reversed text). See: https://stackoverflow.com/questions/75410667/hebrew-text-on-svg-textpath-reversed-only-in-safari/75411819 */
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <p>
+        <a href="https://he.wikipedia.org/wiki/%D7%9B%D7%9C%D7%99%D7%9C_%D7%A1%D7%95%D7%A0%D7%98%D7%95%D7%AA">כליל סונטות</a> הוא מחזור של 15 <a href="https://he.wikipedia.org/wiki/%D7%A1%D7%95%D7%A0%D7%98%D7%94">סונטות</a>, בו כל סונטה נפתחת בשורה הסוגרת את קודמתה (והראשונה פותחת במשפט הסוגר את האחרונה).
+        בכליל <b>הקומבינטורי</b> לכל סונטה יש מבנה חריזה ייחודי כפי שיופרט להלן.
+        כמו בסגנון פטררקה, כל סונטה בנויה מזוג מרובעים בני 4 שורות כל אחד, ואחריהם זוג משולשים בני 3 שורות כל אחד.
+    </p>
+    <p>במרובע הראשון יש שני חרוזים שונים, והחריזה במרובע השני היא זהה. מתאפשרים מבני החריזה הבאים:</p>
+    <ul dir="ltr" class="mono">
+    <li>AABB AABB</li>
+    <li>ABAB ABAB</li>
+    <li>ABBA ABBA</li>
+    </ul>
+    <p>במשולשים יש סך הכל שני חרוזים, והחריזה במשולש השני היא או זהה לראשון או היפוך סדר של הראשון מהסוף להתחלה או כמו הראשון אבל בהיפוך תפקידים בין החרוזים, זאת כל עוד אין חרוז שחוזר שלוש שורות ברצף. מתאפשרים מבני החריזה הבאים:</p>
+    <ul dir="ltr" class="mono">
+        <li>CCD CCD</li>
+        <li>CCD DCC</li>
+        <li>CDC CDC</li>
+        <li>CDC DCD</li>
+        <li>CDD CDD</li>
+    </ul>
+    <p><b>כליל הסונטות הקומבינטורי</b> מכיל את כל השילובים האפשריים של מבני החריזה של המרובעים והמשולשים לעיל, במבנה הבא:</p>
+    <ol dir="ltr" class="mono">
+        <li><span>AABB AABB <span>CCD CCD</span></span></li>
+        <li><span>DDEE DDEE <span>FFG GFF</span></span></li>
+        <li><span>FFHH FFHH <span>IJI IJI</span></span></li>
+        <li><span>IIKK IIKK <span>LML MLM</span></span></li>
+        <li><span>MMNN MMNN <span>OPP OPP</span></span></li>
+        <li><span>PQPQ PQPQ <span>RRS RRS</span></span></li>
+        <li><span>STST STST <span>UUV VUU</span></span></li>
+        <li><span>UWUW UWUW <span>XYX XYX</span></span></li>
+        <li><span>XZXZ XZXZ <span>aba bab</span></span></li>
+        <li><span>bcbc bcbc <span>dee dee</span></span></li>
+        <li><span>effe effe <span>ggh ggh</span></span></li>
+        <li><span>hiih hiih <span>jjk kjj</span></span></li>
+        <li><span>jllj jllj <span>mnm mnm</span></span></li>
+        <li><span>moom moom <span>pqp qpq</span></span></li>
+        <li><span>qrrq qrrq <span>sAA sAA</span></span></li>
+    </ol>
+    <p dir="ltr">
+        <b>Combinatorial crown of sonnets</b> - a <a href="https://en.wikipedia.org/wiki/Crown_of_sonnets">crown of sonnets</a>, which is a sequence of 15 <a href="https://en.wikipedia.org/wiki/Petrarchan_sonnet">Petrarchan sonnets</a> in which each sonnet opens with the line closing the previous one (and the first one opens with the line closing the last one), where additionally each sonnet has a unique rhyme scheme as detailed above.
+    </p>
+    <div class="refs">
+        <blockquote>Terry S. Griggs, <a href="https://scholarship.claremont.edu/cgi/viewcontent.cgi?article=1248&context=jhm">Combinatorics of the Sonnet</a>, Journal of Humanistic Mathematics.</blockquote>
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'; iframe.src = 'https://player.vimeo.com/video/579177081?byline=0&dnt=1&loop=1&portrait=0&quality=1080p&title=0'">
+    <script>make_header()</script>
+    <p>
+        משבש שירה הומומורפי על בסיס מודל השפה הממוסך <a href="https://en.wikipedia.org/wiki/BERT_(language_model)">BERT</a>, שפיתחתי ב־2020.
+        בכל שורה, המודל מנסה לשנות את רוב המילים למילים שנראות לו סבירות יותר. שחקי ב־
+        <a href="https://colab.research.google.com/github/eyaler/workshop/blob/master/bert.ipynb">Google Colab</a>.
+    </p>
+    <div class="sidebyside">
+        <pre>
+<b>עין טובה ליונה וולך</b>
+
+איל על צוק עומד
+ובין שני קרני שנהביו
+כוכב זהב נוצץ
+גופו צמרי וחום
+וחזו לבן
+ועין רעה
+מצד שמאל תבוא לפתע
+מזנקת מתוך התהו
+והשחור כפסת שמים
+כמו יד
+אין כאן שום יפי
+רק פחד רב
+</pre>
+        <pre>
+<b>גרסת השירבֵּרט</b>
+
+נמצאת על הר גבוה
+במקום אין קרני שמש
+כוכב לכת נוסף
+צבעו ירוק וחום
+כחול של
+כרם כרם
+מצד אחד יש גאולה
+הליכה מתוך עץ
+או כפסת נייר
+מלאכת יד
+אין שם זה דבר
+אך בקושי רב
+</pre>
+    </div>
+    <p dir="ltr">
+        A homomorphic poetry glitcher based on the <a href="https://en.wikipedia.org/wiki/BERT_(language_model)">BERT</a> masked language model, which I developed in 2020. In each line, the model tries to change most of the words to words that it deems more probable. Play in <a href="https://colab.research.google.com/github/eyaler/workshop/blob/master/bert.ipynb">Google Colab</a>.
+    </p>
+    <p>באמצעות גרסה מתקדמת יותר שלא שוחררה, שמנסה לייצר רצף תמטי בין השורות החדשות, יצרתי מחווה לשירו של גבריאל בֶלְחַסֶן <a href="https://www.youtube.com/watch?v=1sqXFzOng0k">כדורי הרגעה בדבש</a> מהאלבום עתיד.</p>
+    <iframe id="iframe" allow="fullscreen; web-share" allowfullscreen class="video" aria-label="וידאו של עבר"></iframe>
+    <p dir="ltr">
+        Using a more advanced unreleased version, that tries to create thematic continuity between the new lines, I created a tribute to Gabriel Belhassen's song <a href="https://www.youtube.com/watch?v=1sqXFzOng0k">Honey Flavored Downers</a> from the album Atid (future).
+    </p>
+    <div class="refs">
+        <blockquote>Hugo Gonçalo Oliveira, <a href="https://computationalcreativity.net/iccc21/wp-content/uploads/2021/09/ICCC_2021_paper_39.pdf">Exploring a Masked Language Model for Creative Text Transformation</a>, 12th International Conference on Computational Creativity (ICCC 2021).</blockquote>
+        <blockquote>Thomas Winters and Pieter Delobelle, <a href="https://computationalcreativity.net/iccc21/wp-content/uploads/2021/09/ICCC_2021_paper_72.pdf">Survival of the Wittiest: Evolving Satire with Language Models</a> (<a href="https://github.com/twinters/galmet">code</a>), 12th International Conference on Computational Creativity (ICCC 2021).</blockquote>
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

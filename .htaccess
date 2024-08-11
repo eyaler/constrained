@@ -1,0 +1,28 @@
+# Allow embedding in other sites
+Header always unset X-Frame-Options
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteOptions Inherit
+
+    # Add ".html" where missing (https://serverfault.com/a/989351)
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+    RewriteRule !\.\w{2,4}$ %{REQUEST_URI}.html [L]
+</IfModule>
+
+# Disable caching
+<FilesMatch "\.(css|html|js)$">
+    <IfModule mod_expires.c>
+        ExpiresActive Off
+    </IfModule>
+    <IfModule mod_headers.c>
+        FileETag None
+        Header unset ETag
+        Header unset Pragma
+        Header unset Cache-Control
+        Header unset Last-Modified
+        Header set Pragma "no-cache"
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Expires "Thu, 1 Jan 1970 00:00:00 GMT"
+    </IfModule>
+</FilesMatch>

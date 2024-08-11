@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        #nekuda {
+            aspect-ratio: 1654 / 700;
+            background: white;
+            margin-inline: auto;
+            min-height: 90px;
+            min-width: 90px;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            width: var(--media_width);
+            z-index: 100;
+        }
+
+        #nekuda img {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            translate: -25% -25%;
+        }
+    </style>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <p dir="ltr">
+        A <a href="https://forcedcollaboration.org/Valeria-Medici-and-Eyal-Gruss">Forced Collaboration</a> with <a href="https://www.valeriamedici.com/">Valeria Medici</a>, curated by <a href="http://georgiagendall.co.uk/">Georgia Gendall</a>.
+    </p>
+    <div class="images">
+        <figure>
+            <figcaption dir="ltr">
+                Instructions from Valeria:
+            </figcaption>
+            <img src="media/forced_collaboration.jpg" alt="Forced Collaboration. Instruction from an artist. 10-4-2020. Record your daily movements electronically with a GPS tracking system to record your self-isolation marking pattern (such as with Fitbit app, Apple Watch or other). Extrapolate the line-based-image generated from the app. Write down the time of the clock you have purposefully looked at to know the time.">
+        </figure>
+    </div>
+    <figure>
+        <figcaption dir="ltr">
+            My response:
+        </figcaption>
+        <div id="nekuda">
+            <img src="media/nekuda.svg">
+        </div>
+    </figure>
+    <script>make_footer()</script>
+</body>
+</html>

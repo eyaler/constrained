@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        .kaholavan {
+            --bg: white;
+        }
+
+        .kaholavan > iframe {
+            clip-path: inset(1px);
+        }
+
+        .kaholavan > :not(iframe) {
+            filter: hue-rotate(122deg);
+        }
+    </style>
+</head>
+<body class="kaholavan" onload="document.body.style.visibility = 'visible'; iframe1.src = 'https://www.youtube-nocookie.com/embed/?autoplay=1&loop=1&listType=playlist&list=PLZV8sKAO3Lzah06gBa5ji17yR5F3Vam-s&playsinline=1&rel=0&mute=1'; iframe2.src = 'https://www.youtube-nocookie.com/embed/?loop=1&listType=playlist&list=PLZV8sKAO3LzZLKSECytwRl774YoLi8yKD&playsinline=1&rel=0'">
+<!-- // Use list to circumvent "This video is unavailable" error on first load of video with playlist parameter. See: https://issuetracker.google.com/issues/249707272 -->
+    <script>make_header()</script>
+    <p dir="ltr">#October7</p>
+    <h2 id="anagram">שבוי – יָשוב</h2>
+    <iframe id="iframe1" allow="autoplay; fullscreen; web-share" allowfullscreen class="video" aria-label="וידאו של שבוי – יָשוב"></iframe>
+
+    <h2 id="tsp">בעיית החטוף הנוסע</h2>
+    <p>
+        שמות <a href="https://he.wikipedia.org/wiki/%D7%94%D7%97%D7%98%D7%99%D7%A4%D7%94_%D7%9C%D7%A2%D7%96%D7%94_(%D7%9E%D7%9C%D7%97%D7%9E%D7%AA_%D7%97%D7%A8%D7%91%D7%95%D7%AA_%D7%91%D7%A8%D7%96%D7%9C)">החטופים במתקפת ה־7 באוקטובר</a>,
+        כפי שהיו ידועים לאחר חודש בשבי,
+        מסודרים לפי פתרון <a href="https://he.wikipedia.org/wiki/%D7%91%D7%A2%D7%99%D7%99%D7%AA_%D7%94%D7%A1%D7%95%D7%9B%D7%9F_%D7%94%D7%A0%D7%95%D7%A1%D7%A2">בעיית הסוכן הנוסע</a>,
+        כך שמתקבל המסלול הקצר ביותר שמבקר בכל שם בדיוק פעם אחת.
+        המרחק בין שמות הוא
+        <a href="https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance">מרחק דמראו-לווינשטיין</a> -
+        המספר המינימלי של פעולות עריכה (הוספה, מחיקה או שינוי של אות אחת, או שחלוף של שתי אותיות צמודות) שיש לבצע על שם אחד כדי לקבל את השם הבא.
+    </p>
+    <p>
+        הושלם והוצג בכיכר החטופים בתל־אביב ביום ה־30.
+    </p>
+    <p>
+        הוצג בתערוכה "ופשוטים הדברים וחיים" בגלריה ויטרינה במכון הטכנולוגי חולון ב־2024.
+    </p>
+    <iframe id="iframe2" allow="fullscreen; web-share" allowfullscreen class="video" aria-label="וידאו של בעיית החטוף הנוסע"></iframe>
+    <p dir="ltr">
+        <b>The traveling hostage problem</b> - The names of the <a href="https://en.wikipedia.org/wiki/2023_Israel%E2%80%93Hamas_war_hostage_crisis">hostages in the October 7 attack</a>,
+        as were known after one month in captivity,
+        arranged by solving the <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">traveling salesman problem</a>, to obtain the shortest route that visits each name exactly once.
+        The distance between names is the <a href="https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance">Damerau Levenshtein distance</a> -
+        The minimal number of edit operations (insertions, deletions or substitutions of a single character, or transposition of two adjacent characters), required to change one name into the next.
+    </p>
+    <p dir="ltr">
+        Completed and exhibited at the Hostage Square in Tel Aviv on day 30.
+    </p>
+    <p dir="ltr">
+         Exhibited in the exhibition "And simple are the things and alive" at the Vitrina Gallery in the Holon Institute of Technology in 2024.
+    </p>
+    <div class="refs">
+        <blockquote>Alexander Mordvintsev, <a href="https://colab.research.google.com/github/znah/notebooks/blob/master/mini_sinkhorn.ipynb">Sinkhorn iteration for optimal transport with Tensorflow</a>.</blockquote>
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

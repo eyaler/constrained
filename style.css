@@ -1,0 +1,1102 @@
+@font-face {
+    font-family: Alef;
+    font-display: block;
+    src: url('fonts/Alef-Regular.woff2');
+}
+
+@font-face {
+    font-family: Alef;
+    font-weight: bold;
+    font-display: block;
+    src: url('fonts/Alef-Bold.woff2');
+}
+
+@font-face {
+    font-family: 'Alef Mono';
+    font-display: block;
+    src: url('fonts/Alef-Monospace.woff2');
+}
+
+@font-face {
+    font-family: Arial;  /* MacOS, iOS */
+    size-adjust: 160%;
+    src: local(Arial);
+    unicode-range: U+2709;
+}
+
+@font-face {
+    font-family: 'Noto Sans Symbols';  /* Android */
+    size-adjust: 160%;
+    src: local('NotoSansSymbols-Regular-Subsetted'),  /* Chrome requires filename */
+         local('Noto Sans Symbols');
+    unicode-range: U+2709;
+}
+
+:root, ::backdrop {  /* In Chrome (<122) and Firefox (<120) ::backdrop did not inherit from :root. See: https://issues.chromium.org/issues/40569411, https://bugzilla.mozilla.org/show_bug.cgi?id=1855668 */
+    --bg: black;
+    --fg_rgb: 100 255 100;
+    --on: rgb(var(--fg_rgb));
+    --fg_dim: green;
+    --fg_verydim: #004000;
+    --fg_filter: sepia() saturate(3.5) hue-rotate(59deg);
+    --fg_highlight: white;
+    --glow: var(--fg_verydim);
+    --inverse_bg: rgb(255 100 255);
+    --inverse_fg: var(--fg_verydim);
+    --invert: 0;
+    --whitish_rgb: 224 224 224;
+    --whitish: rgb(var(--whitish_rgb));
+
+    --column_gap: 1.5em;
+    --columns: 4;
+    --h12_letter_spacing: .05em;
+    --letter_spacing: .03em;
+    --line_height: normal;
+    --row_gap: 1em;
+    
+    --font: Alef, Arial, sans-serif;
+    --heading_font: var(--font);
+    --mono_font: 'Alef Mono', 'Courier New', monospace;
+
+    --font_size: 1.3rem;
+    --h1_size: clamp(1.5em, 5rem, 10vw);
+    --hor_scrollbar_offset: 16px;
+    --larger_font: clamp(1.3em, 2rem, 2vw);
+    --media_width: 85%;
+
+    /* Following variables must use units that are not relative to elements (i.e. avoid %, em, ex) */
+    --main_margin: max(2rem, 5vw);
+    --anti_margin: calc(-1 * var(--main_margin));
+    --nav_lh: 2rem;
+    --nav_pad_top: 4px;
+    --nav_pad_bottom: 16px;
+}
+
+::selection {
+    color: var(--inverse_fg);
+    background-color: var(--inverse_bg);
+}
+
+html {
+    scroll-padding-block: 5rem 3rem;
+}
+
+body {
+    background-color: var(--bg);
+    box-sizing: border-box;
+    --fg: rgb(var(--fg_rgb));
+    color: var(--fg);
+    display: table;
+    font-family: var(--font);
+    font-size: var(--font_size);
+    height: 100vh;
+    height: 100dvh;
+    letter-spacing: var(--letter_spacing);
+    margin: 0;
+    padding-inline: var(--main_margin);
+    padding-bottom: 8px;
+    table-layout: fixed;
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    visibility: hidden;
+    width: 100%;
+}
+
+body.todark, .todark ::backdrop {
+    --bg: black;
+    --fg_rgb: var(--whitish_rgb);
+    --invert: 0;
+}
+
+.banner {
+    display: flex;
+    gap: 1em;
+    justify-content: space-around;
+    overflow-x: clip;
+}
+
+.banner > * {
+    flex-shrink: 0;
+}
+
+button, .dim_ref, footer, nav, .preface_he, .sliders {
+    font-size: initial;
+}
+
+button, pre {
+    font-family: inherit;
+}
+
+@media (hover: hover) {
+    :root {
+        --back: 1;
+        --icon_dur: .3s;
+    }
+
+    :where(:not(input[type=checkbox])):focus-visible {
+        outline-color: var(--on);
+        outline-offset: 8px;
+        outline-style: solid;
+    }
+
+    [dir=ltr] {
+        --back: -1;
+    }
+
+    @keyframes sideways {
+        100% { translate: calc(var(--back) * .12rem) }
+    }
+
+    @keyframes up {
+        100% { translate: 0 -.12rem }
+    }
+
+    @keyframes down {
+        100% { translate: 0 .12rem }
+    }
+
+    @keyframes globe {
+        100% { rotate: y 1turn }
+    }
+
+    @keyframes deco {
+        33% { text-decoration-style: dashed }
+        66% { text-decoration-style: dotted }
+    }
+
+    a:not(.social *):is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite deco;
+    }
+
+    .contents a:is(:hover, :focus-visible) > img {
+        box-shadow: 0 0 .8rem .4rem var(--glow);
+    }
+
+    @keyframes border {
+        33% { border-style: dashed }
+        66% { border-style: dotted }
+    }
+
+    :is([id^=kw_], button.big):is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite border;
+        border-color: initial;
+    }
+
+    @keyframes github {
+        100% { filter: invert(calc(1 - var(--invert))) }
+    }
+
+    .github:is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite alternate github;
+    }
+
+    label > input[type=checkbox]:is(:hover, :focus-visible) + span, :is(label > span, .sliders button):is(:hover, :focus-visible) {
+        color: var(--fg_highlight);
+    }
+
+    nav .back[href]:is(:hover, :focus-visible)::before, .mail:is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite alternate sideways;
+    }
+
+    nav .prev[href]:is(:hover, :focus-visible)::before {
+        animation: var(--icon_dur) infinite alternate up;
+    }
+
+    nav .next[href]:is(:hover, :focus-visible)::before {
+        animation: var(--icon_dur) infinite alternate down;
+    }
+
+    nav .trans:is(:hover, :focus-visible)::before {
+        animation: 1.2s linear infinite globe;
+    }
+
+    @keyframes paypal {
+        100% { transform: rotate3d(-1, 1, 0, 45deg) }
+    }
+
+    .paypal:is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite alternate paypal;
+    }
+
+    @keyframes sponsors {
+        100% { scale: 1.15 }
+    }
+
+    .sponsors:is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite alternate sponsors;
+    }
+
+    .subscribe:is(:hover, :focus-visible) {
+        animation-duration: .7s;
+    }
+
+    @keyframes twitter {
+        100% { content: attr(data-label)'\fe0e' }
+    }
+
+    .twitter:is(:hover, :focus-visible)::after {
+        animation: var(--icon_dur) linear infinite alternate twitter;
+    }
+
+    .web:is(:hover, :focus-visible) {
+        animation: var(--icon_dur) infinite alternate up;
+    }
+
+    :where(a, a *, button, button *):focus-visible {
+        outline-style: none;
+    }
+}
+
+a {
+    color: inherit;
+    text-decoration-color: var(--fg_dim);
+    text-underline-position: under;
+}
+
+nav * {
+    display: inline-block;
+}
+
+nav a:not([href]) {
+    color: var(--fg_verydim);
+}
+
+nav[dir=ltr] ~ .author {
+    direction: ltr;
+}
+
+nav[dir=rtl] ~ .author {
+    direction: rtl;
+}
+
+.author > :first-child {
+    margin-inline-end: 1em;
+}
+
+blockquote {
+    margin-block: 3ex;
+}
+
+blockquote, li:not(.mono *), p {
+    text-align: justify;
+    text-wrap: pretty;
+}
+
+button, [id^=kw_] {
+    background: var(--fg_dim);
+    border-color: var(--fg_dim);
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 2px;
+    color: inherit;
+    cursor: pointer;
+    margin: 0;
+    padding-block: .1em;
+    padding-inline: .5em;
+}
+
+[id^=kw_] {
+    font-size: inherit;
+    letter-spacing: initial;
+    text-decoration: none;
+}
+
+.persistent {
+    font-size: 1.5em;
+    margin-inline-end: .45em;
+}
+
+.always_on, button.on {
+    border-color: var(--on);
+}
+
+button:not(.on, .no_active, .no_active *, .sliders *):active, .always_on, button.on:not(:active) {
+    background: var(--on);
+    color: var(--inverse_fg);
+}
+
+button.big {
+    display: block;
+    font-size: 1.3em;
+    margin-block: 1.5em;
+    margin-inline: auto;
+    padding-inline: 1em;
+}
+
+.cogram {
+    font-size: var(--larger_font);
+    line-height: 1.8;
+    margin-block: 3ex;
+    text-align: center;
+}
+
+.contents {
+    column-count: var(--columns);
+    column-gap: var(--column_gap);
+    font-family: var(--heading_font);
+    margin-top: var(--row_gap);
+}
+
+.rows_first {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp((100% - (var(--columns) - 1)*var(--column_gap)) / var(--columns), 250px, 100%), 1fr));
+    row-gap: var(--row_gap);
+}
+
+.contents > p {
+    break-inside: avoid;
+    line-height: 1.5;
+    margin-top: 0;
+    overflow-wrap: break-word;
+    text-align: start;
+}
+
+.contents > p > a img {
+    aspect-ratio: 16 / 9;
+    border-color: var(--fg);
+    border-width: 1px;
+    display: block;
+    margin-bottom: 1rem;
+    object-fit: cover;
+    object-position: top;
+    width: 100%;
+}
+
+.contents > p > a[aria-disabled=true] img {
+    opacity: .3;
+}
+
+.contents > p a[href][aria-disabled=true] {
+    text-decoration-color: initial;
+}
+
+.contents > p > a:not(:last-child) {
+    margin-inline-end: 1em;
+}
+
+.contents > p > a ~ span {
+    display: inline-block;
+}
+
+.contents > p > a ~ span > span {
+    display: inline-block;
+    font-size: initial;
+    unicode-bidi: isolate;
+}
+
+.contents > p > a ~ span > span:not(:last-of-type):after {
+    content: ',';
+}
+
+.contents > p > a ~ span > span:not(:last-of-type) {
+    margin-inline-end: .5em;
+}
+
+nav[dir=ltr] ~ .contents {
+    direction: ltr;
+}
+
+nav[dir=rtl] ~ .contents {
+    direction: rtl;
+}
+
+.dialog blockquote {
+    display: flex;
+    gap: 1em;
+    margin-block: 3.6ex;
+}
+
+.dialog blockquote::after {
+    visibility: hidden;
+}
+
+.dialog blockquote::before, .dialog blockquote::after {
+    font-weight: bold;
+}
+
+.dialog blockquote:not([dir=ltr])::before, .dialog blockquote[dir=ltr]::after {
+    content: var(--data_name1)':';
+}
+
+.dialog blockquote[dir=ltr]::before, .dialog blockquote:not([dir=ltr])::after {
+    content: var(--data_name2)':';
+}
+
+.dim_ref {
+    color: var(--fg_dim);
+    display: inline-block;
+}
+
+.dim_ref::before, .dim_ref::after {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.dim_ref::before {
+    content: '[';
+}
+
+.dim_ref::after {
+    content: ']';
+}
+
+.export {
+    border-block-width: 1px;
+    border-inline: none;
+    margin: 0;
+    max-height: 10800px;
+    min-height: 1080px;
+    width: 100%;
+}
+
+.fg_filter, input:is([type=range], [type=checkbox]), .social, nav .trans::before {
+    filter: var(--fg_filter);
+}
+
+figure {
+    margin-inline: 0;
+    width: 100%;
+}
+
+figcaption:not(.images > figure > *) {
+    margin-inline-start: calc((100% - var(--media_width)) / 2);
+}
+
+.images > figure > img + figcaption {
+    font-size: .7em;
+    text-align: center;
+}
+
+footer {
+    display: table-row;
+    height: 1px;  /* This is needed when page height is smaller than viewport. Firefox will not work with 0 */
+}
+
+footer > div {
+    align-items: end;
+    color: var(--fg_dim);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5em 3em;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+nav[dir=ltr] ~ footer > div {
+    direction: ltr;
+}
+
+nav[dir=rtl] ~ footer > div {
+    direction: rtl;
+}
+
+.formula {
+    text-align: start;
+}
+
+.formula :is(bdi, span) {
+    display: inline-block;
+    font-variant-numeric: slashed-zero;
+}
+
+.fullscreen {
+    display: grid !important;
+    grid-template-columns: 100% !important;
+    justify-content: center !important;
+    justify-items: center;
+}
+
+.fullscreen::backdrop {
+    background-color: var(--bg);
+}
+
+.fullscreen > :first-child {
+    margin-top: auto !important;
+    padding-top: 0 !important;
+}
+
+.fullscreen > :last-child {
+    margin-bottom: auto !important;
+    padding-bottom: 0 !important;
+}
+
+.github, .paypal {
+    filter: invert(var(--invert));
+}
+
+h1 {
+    margin-block: max(.67em, 2.5 * var(--font_size));
+}
+
+h1 img {
+    display: block;
+    margin-inline: auto;
+    max-height: 7rem;
+}
+
+h1, h2 {
+    font-family: var(--heading_font);
+    font-weight: normal;
+    letter-spacing: var(--h12_letter_spacing);
+}
+
+h1, .subhuge {
+    font-size: var(--h1_size);
+}
+
+h2:not(header *) {
+    margin-block: 6ex 4ex;
+}
+
+h3 {
+    font-size: inherit;
+}
+
+h4 {
+    font-size: initial;
+    margin-bottom: 2em;
+}
+
+.harden {
+    display: inline-block;
+    text-decoration: inherit;
+}
+
+header {
+    margin-block: calc(var(--nav_pad_top) + var(--nav_pad_bottom) + 2*var(--nav_lh)) calc(var(--h1_size) * .8);
+}
+
+nav[dir=ltr] ~ header {
+    direction: ltr;
+}
+
+nav[dir=rtl] ~ header {
+    direction: rtl;
+}
+
+header ~ :not(h2, footer) {
+    line-height: var(--line_height);
+}
+
+.huge, .subhuge {
+    letter-spacing: .1em;
+    text-align: center;
+    margin-block: .2ex 1ex;
+}
+
+.huge {
+    font-size: clamp(var(--h1_size), 10rem, 12vw);
+}
+
+iframe {
+    background-origin: border-box;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-color: var(--on);
+    border-style: solid;
+    margin-top: 2rem;
+}
+
+iframe, object {
+    display: block;
+    margin-inline: auto;
+    width: var(--media_width);
+}
+
+.images {  /* Note you should order images vertically and use dir to control the horizontal order */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--min_width, 300px), 100%), 1fr));
+    margin-inline: auto;
+    place-items: center;
+    width: var(--media_width);
+}
+
+.images img {
+    height: 90%;  /* Assumes difference between images aspect ratios is less than 10% */
+    max-height: var(--max_height);
+    object-fit: contain;
+    width: 100%;
+}
+
+img {
+    font-style: italic;
+    white-space: pre-line;
+}
+
+input[type=checkbox] {
+    margin-inline-end: .5em;
+    color-scheme: dark;
+}
+
+.kw {
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: .9rem;
+    gap: .8rem;
+}
+
+#kw_x {
+    visibility: hidden;
+}
+
+label, label > * {
+    cursor: pointer;
+}
+
+.large {
+    font-size: 1.725em;
+}
+
+li {
+    margin-block: 2ex;
+}
+
+li:not(.mono *) {
+    margin-inline-start: 40px;
+}
+
+.mail {
+    font-family: var(--font), 'Noto Sans Symbols';
+}
+
+.mono, .number {
+    font-family: var(--mono_font);
+}
+
+.mono > li {
+    letter-spacing: .5em;
+}
+
+.mono > li span {
+    display: inline-block;
+}
+
+@counter-style pad {
+    system: extends decimal;
+    pad: 2 '\00a0';
+    suffix: ': ';
+}
+
+ol.mono {
+    list-style-position: inside;
+    list-style-type: pad;
+    padding-inline: 0;
+    text-align: center;
+}
+
+ul.mono {
+    list-style: none;
+    padding-inline: 0;
+    text-align: center;
+}
+
+.narrow_poem {
+    margin-block: 8ex;
+    margin-inline: auto;
+    max-width: fit-content;
+}
+
+nav {
+    background-color: inherit;
+    inset-inline: 0;
+    line-height: var(--nav_lh);
+    padding-block: var(--nav_pad_top) var(--nav_pad_bottom);
+    padding-inline: inherit;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+}
+
+@media print {
+    nav {
+        position: static;
+    }
+}
+
+nav a::before {
+    display: inline-block;
+    line-height: 0;
+    margin-inline-end: .3rem;
+}
+
+nav a:not(.trans)::before {
+    text-align: end;
+    width: 1.1rem;
+}
+
+nav .back > span {
+    text-decoration: inherit;
+}
+
+nav .back::before {
+    content: '\2192';
+}
+
+nav[dir=ltr] .back::before {
+    content: '\2190';
+}
+
+nav .back:not([href])::before {
+    visibility: hidden;
+}
+
+nav .prev::before {
+    content: '\2191';
+}
+
+nav .next::before {
+    content: '\2193';
+}
+
+nav .trans::before {
+    content: '\1f310\fe0e';
+    font-size: .7em;
+}
+
+nav[dir=ltr] .trans {
+    direction: rtl;
+    float: right;
+}
+
+nav .trans {
+    direction: ltr;
+    float: left;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+[data-title]:is(ol, ul)::before {
+    content: attr(data-title);
+    font-weight: bold;
+    margin-inline-start: -40px;
+}
+
+ol, ul {
+    margin-block: 4ex 6ex;
+}
+
+:is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + :is(blockquote, h3, h4, p)[dir=ltr],
+:is(p[dir=ltr], p[dir=ltr] + br) + :is(blockquote, h3, h4, p):not([dir=ltr]) {
+    margin-top: max(6ex, 4.5rem);
+}
+
+button#play::before {
+    content: '\25b6';
+}
+
+button#play.on::before {
+    content: '\25fc';
+}
+
+nav[dir=ltr] ~ * .preface_he {
+    display: none;
+}
+
+.overflow, .cogram {
+    overflow-x: auto;
+    padding-bottom: var(--hor_scrollbar_offset);
+}
+
+.punct {
+    color: var(--fg_verydim);
+}
+
+.rafe, .taam {
+    position: relative;
+}
+
+.rafe::after, .taam::after {
+    font-size: .5em;
+    inset-inline: 0;
+    position: absolute;
+    text-align: center;
+    top: -.6em;
+}
+
+.rafe::after {
+    content: '_';
+}
+
+.taam::after {
+    content: '>';
+}
+
+.refs {
+    margin-top: 6ex;
+}
+
+.refs + p {
+    margin-top: 6ex;
+}
+
+.refs[data-title]::before {
+    content: attr(data-title);
+}
+
+nav ~ :nth-last-child(1 of .refs):not([data-title])::before {
+    content: 'See also:';
+    font-weight: bold;
+}
+
+html[lang=he] nav:not([dir=ltr]) ~ :nth-last-child(1 of .refs):not([data-title])::before {
+    content: 'ראו גם:';
+}
+
+nav[dir=ltr] ~ :nth-last-child(1 of .refs):not([data-title]) {
+    direction: ltr;
+}
+
+nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
+    direction: rtl;
+}
+
+.refs > blockquote {
+    direction: ltr;
+    font-size: initial;
+}
+
+.refs > blockquote a {
+    unicode-bidi: plaintext;
+}
+
+@keyframes show_cursor {
+    0%, 100% { cursor: var(--cursor) }
+}
+
+.show_cursor {
+    animation: 3s show_cursor;
+}
+
+button.show_cursor {
+    --cursor: pointer;
+}
+
+[onmousemove*=show_cursor] {  /* Note this will miss elements where the handler was added programmatically */
+    cursor: none;
+}
+
+.sidebyside {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em 2em;
+    justify-content: space-evenly;
+    margin-block: 4ex 5ex;
+}
+
+.sliders {
+    direction: ltr;
+    margin-block: 2ex 3ex;
+    padding-top: 3ex;
+}
+
+.sliders, .sliders div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em 4em;
+    justify-content: center;
+}
+
+.sliders button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.sliders input[type=range] {
+    margin-inline: -1px;
+    touch-action: none;
+    width: 2.5em;
+}
+
+.sliders button + input[type=range] {
+    width: 8em;
+}
+
+.sliders :is(label:not(.checkboxes > *), .checkboxes) {
+    align-items: center;
+    display: flex;
+    min-width: 12.5em;
+}
+
+.sliders :is(label:not(.checkboxes > *), .checkboxes) > :first-child {
+    text-align: start;
+}
+
+.sliders :is(label:not(.checkboxes > *), .checkboxes) > :last-child {
+    text-align: end;
+}
+
+.sliders :is(label:not(.checkboxes > *), .checkboxes) > :is(:first-child, :last-child) {
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.social {
+    display: inline-block;
+    font-family: var(--font);
+    word-spacing: .2em;
+}
+
+.social a {
+    display: inline-block;
+    font-size: .6em;
+    text-decoration: none;
+}
+
+.spaced_mono, .cogram {
+    font-family: var(--mono_font);
+    letter-spacing: .7em;
+}
+
+a.sponsors {
+    font-size: .8em;
+}
+
+.story + :is(h3, p) {
+    margin-top: 5ex;
+}
+
+@keyframes border_dance {
+    100% { background-position: 100% 0, 0 100%, 0 0, 100% 100% }
+}
+
+.subscribe {
+    animation: 50s linear infinite border_dance;
+    background-image: linear-gradient(90deg, currentColor 50%, transparent 50%), linear-gradient(90deg, currentColor 50%, transparent 50%), linear-gradient(0, currentColor 50%, transparent 50%), linear-gradient(0, currentColor 50%, transparent 50%);
+    background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: .5rem 2px, .5rem 2px, 2px .5rem, 2px .5rem;
+    padding-bottom: .1em;
+    padding-inline: .3em;
+}
+
+textarea {
+    border: none;
+    box-sizing: border-box;
+    display: block;
+    margin-block: 4em 6em;
+    margin-inline: auto;
+    padding-block: 0;
+    resize: none;
+    width: var(--media_width);
+}
+
+[oncontextmenu*=toggle_fullscreen] {  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.twitter {
+    color: transparent;
+    position: relative;
+}
+
+.twitter::after {
+    color: var(--fg);
+    content: attr(data-label);
+    inset-inline: 0;
+    position: absolute;
+    text-align: center;
+}
+
+.two_col {
+    column-count: 2;
+    column-gap: min(4em, 5vw);
+}
+
+.two_col > :first-child {
+    margin-top: 0;
+}
+
+.video {
+    aspect-ratio: 16 / 9;
+    border: none;
+    margin-block: 3rem;
+}
+
+@media (forced-colors: active) {
+    :root {
+        --fg_filter: saturate(0);
+    }
+
+    button:not(.on, .no_active, .no_active *):active, .always_on, .on:not(:active) {
+        outline-offset: 0;
+        outline-style: solid;
+        outline-width: 5px;
+    }
+
+    .contents a[href][aria-disabled=true] {
+        text-decoration: line-through;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --media_width: 100%;
+    }
+
+    blockquote, li:not(.mono *), p:not(div *, .story) {
+        text-align: start;
+    }
+
+    .contents:not(.rows_first) {
+        --columns: 1;
+    }
+
+    .dialog {
+        margin-block: 6ex;
+        margin-inline: 0;
+    }
+
+    .kw, nav {
+        margin-inline: calc(var(--anti_margin) + 8px);
+    }
+
+    li:not(.mono *) {
+        margin-inline-start: 0;
+    }
+
+    object {
+        margin-inline: var(--anti_margin);
+        --media_width: auto;
+    }
+
+    .refs > blockquote {
+        margin-inline: 0;
+    }
+
+    .two_col {
+        column-count: 1;
+    }
+}
+
+
+/* stuff for https://eyalgruss.com/constrained/ */
+
+
+.pangram {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.square, .square3 {
+    font-family: var(--mono_font);
+    font-size: 2rem;
+    letter-spacing: .7em;
+    text-align: center;
+}
+
+.square {
+    margin-top: 5ex;
+}
+
+.square + p {
+    text-align: end;
+}
+
+.square3 {
+    margin-bottom: 5ex;
+}

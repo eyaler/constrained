@@ -594,7 +594,7 @@ iframe {
     background-repeat: no-repeat;
     border-color: var(--on);
     border-style: solid;
-    margin-top: 2rem;
+    margin-top: 3rem;
 }
 
 iframe, object {

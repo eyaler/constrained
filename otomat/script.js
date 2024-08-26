@@ -7,7 +7,7 @@ const restart_secs = 120;
 const hash = location.hash.slice(1)
 const hard_restart_secs = 600 * (hash == 'filmwinter');
 
-if (hard_restart_secs || hash.startswith('full'))
+if (hard_restart_secs || hash.startsWith('full'))
     toggle_fullscreen(otomat);  // works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
 
 const max_size = +size_slider.max || 100;

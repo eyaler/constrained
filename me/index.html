@@ -11,7 +11,7 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="if (!document.referrer.split('/').slice(0, -1).join('/').endsWith('eyalgruss.com/constrained')) document.write('404 Not Found. Nothing to see here.'); document.body.style.visibility = 'visible'">
+<body onload="if (document.referrer != location.href.split('/').slice(0, -2).join('/') + '/') document.write('404 Not Found. Nothing to see here.'); document.body.style.visibility = 'visible'">
     <script>
         make_header()
         let allow_audio
@@ -22,9 +22,6 @@
     <!-- Using a centered view box because transform-origin breaks on Safari zooming. See: https://stackoverflow.com/questions/43642391/safari-svg-transform-origin-zoom-animation -->
         <filter id="rotate_red">
             <feColorMatrix type="hueRotate" values="-120" />
-        </filter>
-        <filter id="rotate_green">
-            <feColorMatrix type="hueRotate" values="0" />
         </filter>
         <image href="media/greenme.webp" x="-25%" y="-25%" width="350" height="350" />  <!-- Safari requires x, y, width, height to be defined as HTML attributes and not via CSS, and width and height are required to not break Safari zoom -->
 

@@ -59,7 +59,7 @@ svg:not(.omni_is_green).active {
     75%    { opacity: .4 }
     83.33% { opacity: 1 }
     91.66% { filter: url(#rotate_red); opacity: 0 }  /* Safari cannot use hue-rotate shorthand on SVG elements */
-    91.67%, 100% { filter: url(#rotate_green) }
+    91.67%, 100% { filter: none }
 }
 
 svg.active > g {  /* Safari (<16.4) could only rotate SVG groups not text */

@@ -27,10 +27,11 @@ const pages = {
     "pan2d": {title: "פנגרמה מושלמת דו־ממדית", alt: "2D perfect pangram", kw: ["2d 3d", "cipher", "combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "software"]},
     "pan3d/": {title: "פנגרמה מושלמת תלת־ממדית", alt: "3D perfect pangram", kw: ["2d 3d", "combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "self referral", "software", "visual"]},
     "snark/": {title: "כרחש אבמ\"ח וכרחש אדו\"ש", alt: "ABMḤ snark and ADWŠ", kw: ["2d 3d", "combinatorial", "interactive", "new constraint", "pangram", "software", "sound", "visual"]},
+    "wordle": {title: "תחפצו ניעקד אסכלה משרבט", alt: "Words for Wordle", kw: ["combinatorial", "software"]},
     "eyal": {title: "אֱיָליטרציה", alt: "Eyalliteration", kw: ["2d 3d", "combined forms", "discourse", "poem", "self referral", "visual"]},
+
     "toki": {title: "הייקו / toki musi aku", alt: "Haiku / toki musi aku", kw: ["combined forms", "poem", "translation"]},
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
-
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"]},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
@@ -40,8 +41,8 @@ const pages = {
     "taz": {title: "תחום אוטונומי זמני", alt: "Temporary Autonomous Zone", kw: ["cipher", "new constraint", "poem", "software", "sound"]},
     "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software"]},
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
-    "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self referral", "software", "visual"]},
 
+    "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self referral", "software", "visual"]},
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
     "otogram": {title: "אות־וֹגרמה", alt: "OT-o-gram: letter-letter autogram", kw: ["combined forms", "pangram", "record", "self referral", "software"]},
@@ -50,6 +51,7 @@ const pages = {
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
+    "hok": {title: "שערי חוק", alt: "Shaare Hok", skip: true},
     "a_": {title: "א_", alt: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]}
 }
 

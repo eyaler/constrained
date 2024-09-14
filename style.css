@@ -462,6 +462,10 @@ figcaption:not(.images > figure > *) {
     margin-inline-start: calc((100% - var(--media_width)) / 2);
 }
 
+figure > figcaption + * {
+    margin-top: .5rem;
+}
+
 .images > figure > img + figcaption {
     font-size: .7em;
     text-align: center;
@@ -612,10 +616,13 @@ iframe, object {
 }
 
 .images img {
-    height: 90%;  /* Assumes difference between images aspect ratios is less than 10% */
     max-height: var(--max_height);
     object-fit: contain;
     width: 100%;
+}
+
+.images > img:not(:first-child:last-child) {
+    height: 90%;  /* Assumes difference between images aspect ratios is less than 10% */
 }
 
 img {

@@ -881,7 +881,8 @@ button.show_cursor {
     --cursor: pointer;
 }
 
-[onmousemove*=show_cursor] {  /* Note this will miss elements where the handler was added programmatically */
+[onmousemove*=show_hide_cursor],  /* Note this will miss elements where the handler was added programmatically */
+.hide_cursor {
     cursor: none;
 }
 

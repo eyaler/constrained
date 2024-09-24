@@ -51,8 +51,8 @@ const pages = {
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
-    "hok": {title: "שערי חוק", alt: "Shaare Hok", skip: true},
-    "a_": {title: "א_", alt: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]}
+    "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
+    "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]}
 }
 
 const authors = {
@@ -216,15 +216,19 @@ function get_set_titles(page, lang, elem) {
     page ??= get_page()
     lang ??= get_lang()
     const titles = {label: pages[page]?.title ?? page.split('/')[0], alt: ''}
+    if (titles.label.match(/\p{P}$/u))
+        titles.label = '⁨' + titles.label
     if (pages[page]?.alt) {
         titles.alt = pages[page].alt
+        if (titles.alt.match(/\p{P}$/u))
+            titles.alt = '⁨' + titles.alt
         if (lang)
             [titles.label, titles.alt] = [titles.alt, titles.label]
     }
     if (elem) {
         if (page != null) {
             const suffix = elem.title.match(/\[.*/)
-            if (suffix) {
+            if (suffix) {  // keyboard shortcut
                 titles.label += ' ' + suffix
                 titles.alt += ' ' + suffix
             }
@@ -536,7 +540,8 @@ function make_header(reorder_contents=default_reorder_contents, new_tab_for_soci
             }
 
             button.innerHTML = label
-            button.title = `[pages=${all_keywords_stats[kw].count} info=${(all_keywords_stats[kw].info * 100).toFixed(1)}%] ${alt}`.trim()
+            button.dir = 'ltr'  // For left alignment of the multi-line title
+            button.title = `${alt}\npages=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
             if (page == '/')
                 button.onclick = kw_handler
             else {
@@ -731,7 +736,7 @@ function textarea_writeln(textarea, line='', chars_for_reset=500000) {
 }
 
 
-function show_cursor(elem) {
+function show_hide_cursor(elem) {
     elem.classList.remove('show_cursor')
     elem.offsetWidth  // Restart animation, see: https://css-tricks.com/restart-css-animation/
     elem.classList.add('show_cursor')

@@ -96,7 +96,7 @@ svg:not(.omni_is_green).active > image {
     100% { transform: rotate(1turn) }
 }
 
-/* Use integer font-size as Safari will wrongfully round to nearest 1px. See: https://bugs.webkit.org/show_bug.cgi?id=46987 */
+/* Use integer font-size as Safari (<17) will wrongfully round to nearest 1px. See: https://bugs.webkit.org/show_bug.cgi?id=46987 */
 /* Use px units for letter-spacing (together with text-rendering=geometricPrecision) to not break Safari zoom */
 
 g {

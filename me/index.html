@@ -11,7 +11,7 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="if (document.referrer != location.href.split('/').slice(0, -2).join('/') + '/') document.write('404 Not Found. Nothing to see here.'); document.body.style.visibility = 'visible'">
+<body onload="if (document.referrer.split('/').slice(0, -1).join('/') != location.href.split('/').slice(0, -2).join('/')) document.write('404 Not Found. Nothing to see here.'); document.body.style.visibility = 'visible'">
     <script>
         make_header()
         let allow_audio

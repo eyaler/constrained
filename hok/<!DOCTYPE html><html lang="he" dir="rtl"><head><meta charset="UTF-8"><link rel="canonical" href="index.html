@@ -95,7 +95,7 @@
 		}
 
 		function mousePressed() {
-			if (isOrdered)
+			if (isOrdered || mouseButton != 'left')
 				return
 			const mX = mouseX / width
 			const mY = mouseY / height

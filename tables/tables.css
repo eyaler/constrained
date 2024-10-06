@@ -56,15 +56,6 @@ table {
         z-index: -1;
     }
 
-    .rank tbody {
-        counter-reset: row_number;
-    }
-
-    .rank tbody td:first-child::before {
-        content: counter(row_number);
-        counter-increment: row_number;
-    }
-
     @keyframes sort {
         100% { rotate: x 65deg }
     }
@@ -94,6 +85,15 @@ table {
 
 .merge_first_col > tbody td:first-child:not(tr:last-child *) {
     border-bottom: none;
+}
+
+.rank tbody {
+    counter-reset: row_number;
+}
+
+.rank tbody td:first-child::before {
+    content: counter(row_number);
+    counter-increment: row_number;
 }
 
 .sort button:not(.copy *)::after {

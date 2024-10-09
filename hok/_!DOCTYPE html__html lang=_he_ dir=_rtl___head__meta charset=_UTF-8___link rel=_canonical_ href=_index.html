@@ -5,7 +5,7 @@
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/Alef-Mono.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
@@ -14,34 +14,37 @@
             align-items: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-around;
         }
 
         #div {
-            font-family: var(--mono_font);
+            width: 30ch;
+        }
+
+        #div > p {
+            margin-block: 2rem;
+            text-align-last: justify;
         }
 
         input {
             background: inherit;
             border: inherit;
             color: inherit;
-            font: inherit;
+            font-family: var(--mono_font);
+            font-size: 9em;
+            margin-block: 0;
             outline-style: none !important;
-        }
-
-        #a {
-            position: absolute;
-            top: 75%;
         }
     </style>
 </head>
 <body onload="document.body.style.visibility = 'visible'; input.focus()">
-<div id="div">
-    <p>הכבארור</p>
-    <p>מקיטונו</p>
-    <input id="input" type="text" autocomplete="off" maxlength="7" placeholder="_______" spellcheck="false" size="7" oninput="if (this.value.length == 7) {url = encodeURI(encodeURI(this.value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {a.href = url; a.textContent = 'יאשר רשאי'}})}">
-    <span>?</span>
-</div>
-<a id="a"></a>
+    <div id="div">
+        <p style="font-size: 1.9em">כֹּה אָמַר כּוֹרֶשׁ מֶלֶךְ פָּרַס</p>
+        <p>כָּל מַמְלְכוֹת הָאָרֶץ נָתַן לִי יְהוָה אֱלֹהֵי הַשָּׁמַיִם</p>
+        <p>וְהוּא פָקַד עָלַי לִבְנוֹת לוֹ בַיִת בִּירוּשָׁלִַם אֲשֶׁר</p>
+        <p>בִּיהוּדָה מִי בָכֶם מִכָּל עַמּוֹ יְהוָה אֱלֹהָיוְ עִמּוֹ וְ</p>
+        <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (this.value.length == 3) {url = encodeURI(encodeURI(this.value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {a.href = url; a.textContent = 'יאשר רשאי'}})}">
+    </div>
+    <a id="a">&nbsp;</a>
 </body>
 </html>

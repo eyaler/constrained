@@ -8,158 +8,40 @@
     <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
-    <script src="p5/p5.min.js"></script>
     <noscript><style>body {visibility: visible}</style></noscript>
-	<style>
-		body {
-			padding: 0;
-			overflow: clip;
-		}
-	</style>
+    <style>
+        body {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #div {
+            font-family: var(--mono_font);
+        }
+
+        input {
+            background: inherit;
+            border: inherit;
+            color: inherit;
+            font: inherit;
+            outline-style: none !important;
+        }
+
+        #a {
+            position: absolute;
+            top: 75%;
+        }
+    </style>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
-    <script>
-		const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replace(/ /g, ', ')})`
-
-		let values = ' ואשביעך ביהוה אלהי השמים ואלהי '
-		const answer = 'ڥڬڗژ#ژڟړ#ړڟڗڜڡ#ڗژړ#ڞڜ#ڬڔڔڜڡ#ڜڗڜڗ'
-
-		const marginFrac = 0.5
-		const minOverlap = 0.15
-		const animationRate = 0.05
-		const tol = 0.05
-
-		let boxWidth
-		let boxes
-		let dragIndex
-		let dragOffsetX
-		let dragOffsetY
-		let isOrdered
-        let a
-
-		function setup() {
-			createCanvas(windowWidth, windowHeight)
-			values = values.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ').split('')
-			boxWidth = 1 / ((values.length+2)+(values.length-1)*marginFrac)
-			boxes = []
-			for (let i = 0; i < values.length; i++) {
-				boxes.push({value: values[i], z: 0})
-				boxes[i].x = boxes[i].lastX = 1 - boxWidth*(1.5+i*(1+marginFrac))
-				boxes[i].y = boxes[i].lastY = 0.5
-			}
-			textAlign(CENTER, CENTER)
-			textFont('alef')
-		}
-
-		function draw() {
-			background('black')
-			let topZ = 0
-			boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
-			candidate = boxes.reduce((s, box) => s += box.value, '')
-			if (isOrdered) {
-			    if (!a)
-                    a = createA(`${(new TextEncoder).encode(candidate).join('')}.html`, 'יאשר רשאי')
-                a.position(0, height * .75)
-                a.center('horizontal')
-            }
-            else
-                isOrdered = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
-		}
-
-		function drawBox(box) {
-			const i = boxes.indexOf(box)
-			if (i == dragIndex)
-				fill(255, 224)
-			else {
-				box.x += (box.lastX-box.x) * animationRate
-				box.y += (box.lastY-box.y) * animationRate
-				if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxWidth * tol)
-					box.z = 0
-				fill(isOrdered ? fg : 224)
-			}
-			noStroke()
-			rect((box.x-boxWidth/2) * width, box.y*height - boxWidth/2*width , boxWidth * width, boxWidth * width, 3)
-			fill('black')
-			textSize(boxWidth * width * 0.8)
-			let value = box.value
-			if (i != dragIndex && ((i == boxes.length - 1) || boxes[i + 1].value == ' '))
-				value = value.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ').replace('ץ', 'צ')
-			text(value, box.x * width, box.y * height)
-			return box
-		}
-
-		function getOverlap(box1, box2) {
-			let overlapX = max(0, (min(box1.x, box2.x)-max(box1.x, box2.x))/boxWidth + 1)
-			let overlapY = max(0, (min(box1.y, box2.y)-max(box1.y, box2.y))/boxWidth + 1)
-			return overlapX * overlapY
-		}
-
-		function mousePressed() {
-			if (isOrdered || mouseButton != 'left')
-				return
-			const mX = mouseX / width
-			const mY = mouseY / height
-			for (let i = 0; i < boxes.length; i++)
-				if (abs(mX - boxes[i].x) < boxWidth/2 &&
-						abs(mY - boxes[i].y) < boxWidth/2) {
-							dragIndex = i
-							dragOffsetX = boxes[i].x - mX
-							dragOffsetY = boxes[i].y - mY
-							boxes[i].z = max(boxes.map(box => box.z)) + 1
-							break
-				}
-		}
-
-		function doMouseOver() {
-			if (dragIndex == null)
-				return
-			boxes[dragIndex].x = mouseX/width + dragOffsetX
-			boxes[dragIndex].y = mouseY/height + dragOffsetY
-			let targetIndex = null
-			let bestOverlap = minOverlap
-			for (let i = 0; i < boxes.length; i++)
-				if (!boxes[i].z) {
-					const overlap = getOverlap(boxes[i], boxes[dragIndex])
-					if (overlap > bestOverlap) {
-						bestOverlap = overlap
-						targetIndex = i
-					}
-				}
-			if (targetIndex != null) {
-				const {value, x, y, z} = boxes[dragIndex]
-				boxes[dragIndex].value = boxes[targetIndex].value
-				boxes[dragIndex].x = boxes[targetIndex].x
-				boxes[dragIndex].y = boxes[targetIndex].y
-				boxes[targetIndex].value = value
-				boxes[targetIndex].x = x
-				boxes[targetIndex].y = y
-				boxes[targetIndex].z = z + 1
-				dragIndex = targetIndex
-			}
-		}
-
-		function mouseDragged() {
-			doMouseOver()
-		}
-
-		function mouseReleased() {
-			dragIndex = null
-		}
-
-		// https://github.com/processing/p5.js/issues/7195
-		function touchStarted() {
-			mousePressed()
-		}
-		function touchMoved() {
-			mouseDragged()
-		}
-		function touchEnded() {
-			mouseReleased()
-		}
-
-		function windowResized() {
-			resizeCanvas(windowWidth, windowHeight)
-		}
-    </script>
+<body onload="document.body.style.visibility = 'visible'; input.focus()">
+<div id="div">
+    <p>הכבארור</p>
+    <p>מקיטונו</p>
+    <input id="input" type="text" autocomplete="off" maxlength="7" placeholder="_______" spellcheck="false" size="7" oninput="if (this.value.length == 7) {url = encodeURI(encodeURI(this.value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {a.href = url; a.textContent = 'יאשר רשאי'}})}">
+    <span>?</span>
+</div>
+<a id="a"></a>
 </body>
 </html>

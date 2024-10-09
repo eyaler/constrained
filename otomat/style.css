@@ -5,7 +5,7 @@
     color: inherit;
     font-family: var(--mono_font, 'Courier New', monospace);
     font-variant-ligatures: none;
-    font-size: calc(max(12px, var(--base_vw_font_size, 0vw)) / var(--factor));
+    font-size: calc(max(12px, var(--base_vw_font_size, 0vw)) / var(--factor, 1));
     line-height: .6667;
     padding: 0;
 }

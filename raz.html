@@ -58,10 +58,10 @@
         let i = 0
     </script>
     <div oncontextmenu="toggle_fullscreen(event)">
-        <video id="a" src="media/reverse.mp4" disablePictureInPicture muted playsinline preload></video>
-        <video id="b" src="media/reverse.mp4" disablePictureInPicture muted playsinline preload></video>
-        <video id="c" src="media/reverse.mp4" disablePictureInPicture muted playsinline preload></video>
-        <video id="d" src="media/reverse.mp4" disablePictureInPicture playsinline preload onclick="[a, b, c, d].forEach(e => e.play()); style.cursor = 'none'" onended="if (!i) {[a, b, c].forEach(e => {e.pause(); e.currentTime = 0; e.loop = true; e.muted = false})} play(); if (!i) {[a, b, c].forEach(e => e.play())} else if (i > 1) [a, b, c, d].forEach(e => e.playbackRate *= .7); i++" ontimeupdate="if (currentTime >= duration / 2) if (!i) {d.classList.add('hor'); c.classList.add('hor')} else if (i == 1) {b.classList.add('ver1'); d.classList.add('ver2')}"></video>
+        <video id="a" src="media/raz.mp4" disablePictureInPicture muted playsinline preload></video>
+        <video id="b" src="media/raz.mp4" disablePictureInPicture muted playsinline preload></video>
+        <video id="c" src="media/raz.mp4" disablePictureInPicture muted playsinline preload></video>
+        <video id="d" src="media/raz.mp4" disablePictureInPicture playsinline preload onclick="[a, b, c, d].forEach(e => e.play()); style.cursor = 'none'" onended="if (!i) {[a, b, c].forEach(e => {e.pause(); e.currentTime = 0; e.loop = true; e.muted = false})} play(); if (!i) {[a, b, c].forEach(e => e.play())} else if (i > 1) [a, b, c, d].forEach(e => e.playbackRate *= .7); i++" ontimeupdate="if (currentTime >= duration / 2) if (!i) {d.classList.add('hor'); c.classList.add('hor')} else if (i == 1) {b.classList.add('ver1'); d.classList.add('ver2')}"></video>
     </div>
     <script>make_footer()</script>
 </body>

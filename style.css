@@ -58,6 +58,7 @@
     --heading_font: var(--font);
     --mono_font: 'Alef Mono', 'Courier New', monospace;
 
+	--article_width: none;
     --font_size: 1.3rem;
     --h1_size: clamp(1.5em, 5rem, 10vw);
     --hor_scrollbar_offset: 16px;
@@ -259,6 +260,11 @@ nav * {
 
 nav a:not([href]) {
     color: var(--fg_verydim);
+}
+
+article:not(.overflow) {
+    margin-inline: auto;
+    max-width: var(--article_width);
 }
 
 nav[dir=ltr] ~ .author {
@@ -554,12 +560,16 @@ h2:not(header *) {
 
 h3 {
     font-size: inherit;
-    margin-top: 3em;
+    margin-block: 6rem 2rem;
 }
 
 h4 {
     font-size: initial;
-    margin-bottom: 2em;
+    margin-bottom: 3rem;
+}
+
+h4:not(article *) {
+    margin-bottom: 6rem;
 }
 
 .harden {
@@ -988,6 +998,10 @@ textarea {
     padding-block: 0;
     resize: none;
     width: var(--media_width);
+}
+
+.textblock {
+    margin-top: 6rem;
 }
 
 [oncontextmenu*=toggle_fullscreen] {  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */

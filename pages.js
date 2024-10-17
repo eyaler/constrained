@@ -13,7 +13,7 @@ const pages = {
     "rep": {title: "רֶפלינדרום", alt: "REPalindrome", kw: ["hebrew cheatery", "palindrome"]},
     "cogram": {title: "סכוּמילים", alt: "Cograms and codromes", kw: ["2d 3d", "combined forms", "cipher", "hebrew cheatery", "new constraint", "palindrome", "software"]},
     "palpal": {title: "פלינדרומים על פלינדרומים", alt: "Palindromes on palindromes", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "self referral", "visual"]},
-    "reverse": {title: "פולס רוורס לופ", alt: "Pulse Reverse Loop", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "self referral", "sound", "visual"], skip: true},
+    "raz": {title: "פולס רוורס לופ", alt: "Pulse Reverse Loop", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "self referral", "sound", "visual"], skip: true},
     "mate": {title: "מט מטמטם", alt: "Fool's mate", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "record", "self referral"]},
     "1e7/": {title: "תו כופה תו ותהפוכות", alt: "Writing lines", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "record", "self referral"], with: "noamdovev"},
     "cheat": {title: "מִרמת העברית", alt: "Hebrew cheatery", kw: ["discourse", "hebrew cheatery", "palindrome", "self referral"]},
@@ -586,7 +586,7 @@ function make_header(reorder_contents=default_reorder_contents, new_tab_for_soci
         if (current_authors)
             desc.push(current_authors)
     }
-    document.body.appendChild(header)
+    document.currentScript.parentElement.appendChild(header)
 
 
     if (desc.length) {

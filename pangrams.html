@@ -31,12 +31,12 @@
         לא מצאתי פתרון בן פחות משלוש מילים.
         הפתרון הקרוב ביותר בן שתי מילים וללא אותיות חוזרות היה <a href="https://en.wikipedia.org/wiki/Lipogram#Pangrammatic_lipogram">פנגרמה מושלמת ליפוגרמטית</a> בת 21 אותיות: "וכשלצפרדעה מבקזחסטאנית",
         ופנגרמות לא מושלמות בשתי מילים כאשר חזרות מותרות - לא מצאתי כלל.
-        מצד שני, נעם דובב חיבר <a href="https://palindromist.art/perfect-pangrams-from-maximum-words/">פנגרמה מושלמת מקסימלית</a> בת 11 מילים בנות שתי אותיות.
+        מצד שני, נעם דובב חיבר <a href="https://palindromes.co/perfect-pangrams-from-maximum-words/">פנגרמה מושלמת מקסימלית</a> בת 11 מילים בנות שתי אותיות.
     </p>
     <p dir="ltr">
         <b>Minimal perfect pangrams</b> - <a href="https://en.wikipedia.org/wiki/Pangram#Perfect_pangrams">perfect pangrams</a> containing every Hebrew letter exactly once, that form a phrase with the <b>minimal number of words</b> possible.
         I could not find a solution with less than three words. The closest two-word solution without letter repetition was a <a href="https://en.wikipedia.org/wiki/Lipogram#Pangrammatic_lipogram">lipogrammatic perfect pangram</a> with 21 letters, and I could not find any two-word (non-perfect) pangrams allowing repetitions.
-        On the other hand, Noam Dovev composed a <a href="https://palindromist.art/perfect-pangrams-from-maximum-words/">Maximal perfect pangram</a> with 11 2-letter words.
+        On the other hand, Noam Dovev composed a <a href="https://palindromes.co/perfect-pangrams-from-maximum-words/">Maximal perfect pangram</a> with 11 2-letter words.
     </p>
     <h2 id="compositional">פנגרמות קומפוזיציה מינימליות</h2>
     <p>
@@ -62,18 +62,18 @@
         <b>Minimal compositional pangrams</b> - minimal perfect pangrams with the additional constraint that a word can only contain letters that come in the alphabet after letters that appeared in previous words (no crossover <b>between</b> words).
         I could not find a solution with less than five words.
     <p dir="ltr">
-        The number of possible divisions of an alphabet with n letters into continuous letter sequences, or <a href="https://en.wikipedia.org/wiki/Composition_(combinatorics)">compositions</a>, is 2<sup>n-1</sup>.
+        The number of possible partitions of an alphabet with n letters into continuous letter sequences, or <a href="https://en.wikipedia.org/wiki/Composition_(combinatorics)">compositions</a>, is 2<sup>n-1</sup>.
         Or when excluding one-letter "words" (as in Hebrew), the number of compositions is given by the <a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci number</a> F<sub>n-1</sub>.
         The number of possibilities accounting for all internal permutations of each of the sequences is given by <a href="https://oeis.org/A051296">A051296</a>(n) (when including one-letter words).
     </p>
     <p dir="ltr" class="formula">
-        Considering only divisions to k words, the counts corresponding to the above are given by the <a href="https://en.wikipedia.org/wiki/Binomial_coefficient">Binomial coefficient</a> <span><span>C(n-k-1, k-1)</span> = <span>(n-1)!/(k-1)!/(n-k)!,</span></span> <span><span><a href="https://oeis.org/A011973">A011973</a>(n-2, k-1)</span> = <span>C(n-k-1, k-1)</span> = <span>(n-k-1)!/(k-1)!/(n-2k)!,</span></span> and <span><a href="https://oeis.org/A090238">A090238</a>(n, k)</span>, respectively.
+        Considering only partitions into k words, the counts corresponding to the above are given by the <a href="https://en.wikipedia.org/wiki/Binomial_coefficient">Binomial coefficient</a> <span><span>C(n-k-1, k-1)</span> = <span>(n-1)!/(k-1)!/(n-k)!,</span></span> <span><span><a href="https://oeis.org/A011973">A011973</a>(n-2, k-1)</span> = <span>C(n-k-1, k-1)</span> = <span>(n-k-1)!/(k-1)!/(n-2k)!,</span></span> and <span><a href="https://oeis.org/A090238">A090238</a>(n, k)</span>, respectively.
     </p>
     <div class="refs">
         <blockquote>Calvin Li, <a href="https://medium.com/@FallingForFallacies/all-perfect-pangrams-of-english-8c8d0f621bee">All* perfect pangrams of English</a>.</blockquote>
         <blockquote>Matt Parker, <a href="https://www.youtube.com/watch?v=c33AZBnRHks">Someone improved my code by 40,832,277,770%</a>.</blockquote>
         <blockquote>Benjamin Paaßen, <a href="https://docs.google.com/spreadsheets/d/11sUBkPSEhbGx2K8ah6WbGV62P8ii5l5vVeMpkzk17PI/edit#gid=0">Five Words Implementations</a>.</blockquote>
-        <blockquote>Noam Dovev, <a href="https://palindromist.art/perfect-pangrams-from-maximum-words/">פנגרמה מושלמת ממספר מילים מקסימלי</a>.</blockquote>
+        <blockquote>Noam Dovev, <a href="https://palindromes.co/perfect-pangrams-from-maximum-words/">פנגרמה מושלמת ממספר מילים מקסימלי</a>.</blockquote>
     </div>
     <script>make_footer()</script>
 </body>

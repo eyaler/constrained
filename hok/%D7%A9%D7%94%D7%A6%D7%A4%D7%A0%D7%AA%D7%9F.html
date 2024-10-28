@@ -57,7 +57,7 @@
 			candidate = boxes.reduce((s, box) => s += box.value, '')
 			if (isOrdered) {
 			    if (!a)
-                    a = createA(`${(new TextEncoder).encode(candidate).join('')}.html`, 'יאשר רשאי')
+                    a = createA(`${(new TextEncoder).encode(candidate).join('')}.html`, 'יאשר המשך לילך שמה רשאי')
                 a.position(0, height * .85)
                 a.center('horizontal')
             }

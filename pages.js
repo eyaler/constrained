@@ -52,7 +52,7 @@ const pages = {
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
-    "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]}
+    "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]},
 }
 
 const authors = {
@@ -63,22 +63,22 @@ const authors = {
         "twitter": "eyaler",
         "github": "eyaler",
         "sponsors": "eyaler",
-        "paypal": "LNJ6F3FR79ARE"
+        "paypal": "LNJ6F3FR79ARE",
     },
 
     "noamdovev": {
         "name": {"": "נעם דובב", "en": "Noam Dovev"},
-        "web": "palindromist.art/"
+        "web": "palindromes.co/",
     },
 
     "yaeltsabari": {
-        "name": {"": "יעל צברי", "en": "Yael Tsabari"}
+        "name": {"": "יעל צברי", "en": "Yael Tsabari"},
     }
 }
 
 const ui = {
     "": {"next": "הבא", "prev": "הקודם", "lang": "עברית", "theme_name": "עיצוב של מתכנת", "theme": "תבנית", "copyright": "כל הזכויות מורשות", "issue": "גיליון", "translator": "(תרגום)", "with": "נוצר עם"},
-    "en": {"next": "next", "prev": "prev", "lang": "english", "theme_name": "Designed by a programmer", "theme": "Theme", "copyright": "All rights reversed", "issue": "issue", "translator": "(translator)", "with": "created with", "dir": "ltr"}
+    "en": {"next": "next", "prev": "prev", "lang": "english", "theme_name": "Designed by a programmer", "theme": "Theme", "copyright": "All rights reversed", "issue": "issue", "translator": "(translator)", "with": "created with", "dir": "ltr"},
 }
 
 const default_rows_first = false
@@ -106,23 +106,23 @@ const kw_labels = {
     "sound": "צלילים",
     "story": "סיפור",
     "translation": "תרגום",
-    "visual": "חזותי"
+    "visual": "חזותי",
 }
 
 const social = {
     "mail": {"url": "mailto:", "label": "&#x2709;&#xfe0e;"},
     "web": {"label": "&#x1f3e0;&#xfe0e;"},
-    "twitter": {"url": "twitter.com", "label": "&#x1f426;"},
+    "twitter": {"url": "x.com", "label": "&#x1f426;"},
     "github": {"url": "github.com", "label": "&#x1f431;"},
     "sponsors": {"url": "github.com/sponsors", "label": "&hearts;"},
     "paypal": {"url": "www.paypal.com/donate/?hosted_button_id=", "label": "&#x1f4b8;"},
-    "subscribe": {"url": "forms.gle", "label": "הרשמה לעדכונים"}
+    "subscribe": {"url": "forms.gle", "label": "הרשמה לעדכונים"},
 }
 
 const shortcuts = {
     "back": "Alt+Backspace",
     "next": "Alt+PageDown",
-    "prev": "Alt+PageUp"
+    "prev": "Alt+PageUp",
 }
 
 const default_copyright_url = "https://creativecommons.org/licenses/by/4.0/"

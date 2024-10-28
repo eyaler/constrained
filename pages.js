@@ -463,7 +463,7 @@ function make_header(reorder_contents=default_reorder_contents, new_tab_for_soci
         keywords = reorder(pages[page].kw, lang)
     }
 
-    let url_kw = sanitize(decodeURI(location.hash))
+    let url_kw = sanitize(decodeURIComponent(location.hash))
     if (!keywords.map(sanitize).includes(url_kw))
         url_kw = ''
     if (page != '/' && url_kw)

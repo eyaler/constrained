@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="if (location.hash.slice(1)) document.body.style.visibility = 'visible'; else document.body.classList.add('running')" class="hide_overflow">
+    <script>
+        const h2 = document.body.appendChild(document.createElement('h2'))
+        h2.dataset.cube = decodeURIComponent(location.hash.slice(1) || 'אבגדהוזחטיךכלםמןנסעףפץצקרשת')
+    </script>
+    <ol></ol>
+    <script src="script.js"></script>
+    <script>
+        let elements = [...document.querySelectorAll('.face, .char, .square3')]
+        document.querySelectorAll('li').forEach((e, i) => elements.splice(elements.length - 6 + i*3, 0, e))
+
+        function reveal(i=0) {
+            elements[i++].style.visibility = 'visible'
+            if (i < elements.length)
+                setTimeout(reveal, i <= 12 ? 1000 : 700, i)
+        }
+        reveal()
+    </script>
+</body>
+</html>

@@ -232,7 +232,7 @@ body:not(.hide_overflow) .fullscreen {
 }
 
 @media (hover: hover) {
-    [data-cube] + div:hover:not(:active) > div, [data-cube] + div:hover:not(:active) .char > span {
+    body:not(.running) :is([data-cube] + div:hover:not(:active) > div, [data-cube] + div:hover:not(:active) .char > span) {
         animation-play-state: paused;
     }
 

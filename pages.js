@@ -113,6 +113,7 @@ const social = {
     "mail": {"url": "mailto:", "label": "&#x2709;&#xfe0e;"},
     "web": {"label": "&#x1f3e0;&#xfe0e;"},
     "twitter": {"url": "x.com", "label": "&#x1f426;"},
+    "instagram": {"url": "instagram.com", "label": "&#x1f4f7;&#xfe0e;"},
     "github": {"url": "github.com", "label": "&#x1f431;"},
     "sponsors": {"url": "github.com/sponsors", "label": "&hearts;"},
     "paypal": {"url": "www.paypal.com/donate/?hosted_button_id=", "label": "&#x1f4b8;"},
@@ -492,7 +493,7 @@ function make_header(reorder_contents=default_reorder_contents, new_tab_for_soci
 
         function kw_handler() {
             const on = this.classList.toggle('on')
-            const css = [...document.head.querySelectorAll('link[rel=stylesheet]')].pop().sheet
+            const css = document.head.querySelector('link[rel=stylesheet]:not([href^=data])').sheet
             let found
             for (const i in css.cssRules)
                 if (found = css.cssRules[i].selectorText?.slice(1) == this.id.replace(/^kw_/, 'non_')) {

@@ -27,7 +27,7 @@ svg {
 }
 
 svg [href] {
-    pointer-events: none;  /* Prevent context menu for Firefox mobile (<116). See: https://bugzilla.mozilla.org/show_bug.cgi?id=1736391 */
+    pointer-events: none;  /* Prevent context menu for Firefox Android (<116). See: https://bugzilla.mozilla.org/show_bug.cgi?id=1736391 */
 }
 
 filter {

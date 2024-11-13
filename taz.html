@@ -119,9 +119,6 @@
     </blockquote>
     <audio id="audio" src="media/taz.mp3" onended="play.click()" aria-label="הקראה של ההכרזה" aria-describedby="declaration"></audio>
     <button id="play" class="big" aria-label="נגן / עצור" onclick="if (classList.toggle('on')) audio.play(); else {audio.pause(); audio.currentTime = 0}"></button>
-    <!--
-    <button id="play" class="big" aria-label="נגן / עצור" onclick="if (classList.toggle('on')) {const utter = new SpeechSynthesisUtterance(declaration.textContent); utter.lang = 'he'; utter.onend = e => {if (e.charIndex % utter.text.length == 0) click()}; speechSynthesis.speak(utter)} else speechSynthesis.cancel()"></button>
-    -->
     <script>make_footer()</script>
 </body>
 </html>

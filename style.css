@@ -318,7 +318,6 @@ button, [id^=kw_] {
 
 .persistent {
     font-size: 1.5em;
-    margin-inline-end: .45em;
 }
 
 .always_on, button.on {
@@ -815,11 +814,11 @@ ol, ul {
 }
 
 button#play::before {
-    content: '\25b6';
+    content: '\25b6\fe0e';
 }
 
 button#play.on::before {
-    content: '\25fc';
+    content: '\2b1b\fe0e';
 }
 
 nav[dir=ltr] ~ * .preface_he {
@@ -999,6 +998,11 @@ a.sponsors {
     background-size: .5rem 2px, .5rem 2px, 2px .5rem, 2px .5rem;
     padding-bottom: .1em;
     padding-inline: .3em;
+}
+
+svg image {
+    user-select: none;  /* For Firefox Android */
+    -webkit-user-select: none;
 }
 
 textarea {

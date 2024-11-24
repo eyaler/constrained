@@ -50,7 +50,7 @@
         <p>כָּל מַמְלְכוֹת הָאָרֶץ נָתַן לִי יְהוָה אֱלֹהֵי הַשָּׁמַיִם</p>
         <p>וְהוּא פָקַד עָלַי לִבְנוֹת לוֹ בַיִת בִּירוּשָׁלִַם אֲשֶׁר</p>
         <p>בִּיהוּדָה מִי בָכֶם מִכָּל עַמּוֹ יְהוָה אֱלֹהָיוְ עִמּוֹ וְ</p>
-        <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (this.value.length == 3) {url = encodeURI(encodeURI(this.value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.classList.add('done'); a.href = url; a.textContent = 'יאשר רשאי'}})}">
+        <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (value.length == 3) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.classList.add('done'); a.href = url; a.textContent = 'יאשר רשאי'}})}">
     </div>
     <a id="a">&nbsp;</a>
 </body>

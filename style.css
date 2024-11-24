@@ -104,9 +104,15 @@ body {
     width: 100%;
 }
 
-body.todark, .todark ::backdrop {
+body.toblack, .toblack ::backdrop {
     --bg: black;
     --fg_rgb: var(--whitish_rgb);
+    --invert: 0;
+}
+
+body.todark, .todark ::backdrop {
+    --bg: #1b1b1b;
+    --fg_rgb: 255 255 255;
     --invert: 0;
 }
 
@@ -525,7 +531,7 @@ nav[dir=rtl] ~ footer > div {
 }
 
 .fullscreen::backdrop {
-    background-color: var(--bg);
+    background-color: var(--fullscreen_bg, var(--bg));
 }
 
 .fullscreen > :first-child {
@@ -583,6 +589,8 @@ h4:not(article *) {
 .harden {
     display: inline-block;
     text-decoration: inherit;
+    text-decoration-color: inherit;  /* For Safari */
+    text-decoration-style: inherit;  /* For Safari */
 }
 
 header {
@@ -639,6 +647,10 @@ iframe, object {
     max-height: var(--images_container_height);
     object-fit: contain;
     width: 100%;
+}
+
+.images.fullscreen > img:first-child:last-child {
+    --max_media_height: 100%;
 }
 
 .images > img:not(:first-child:last-child) {
@@ -721,6 +733,7 @@ ul.mono {
 }
 
 .narrow_poem {
+    line-height: 2;
     margin-block: 8ex;
     margin-inline: auto;
     max-width: fit-content;
@@ -756,6 +769,8 @@ nav a:not(.trans)::before {
 
 nav .back > span {
     text-decoration: inherit;
+    text-decoration-color: inherit;  /* For Safari */
+    text-decoration-style: inherit;  /* For Safari */
 }
 
 nav .back::before {
@@ -807,6 +822,11 @@ ol, ul {
     margin-block: 4ex 6ex;
 }
 
+.overflow, .cogram {
+    overflow-x: auto;
+    padding-bottom: var(--hor_scrollbar_offset);
+}
+
 :is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + :is(blockquote, h3, h4, p)[dir=ltr],
 :is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + div[dir=ltr] > :is(blockquote, h3, h4, p):first-child,
 :is(p[dir=ltr], p[dir=ltr] + br) + :is(blockquote, h3, h4, p):not([dir=ltr]) {
@@ -825,9 +845,14 @@ nav[dir=ltr] ~ * .preface_he {
     display: none;
 }
 
-.overflow, .cogram {
-    overflow-x: auto;
-    padding-bottom: var(--hor_scrollbar_offset);
+@keyframes psycler {  /* From: https://zzzen.com/psycler/ */
+    0% { filter: hue-rotate(5deg) saturate(2) invert(0) }
+    50% { filter: hue-rotate(160deg) saturate(8) invert(0.25) }
+    100% { filter: hue-rotate(350deg) saturate(2) invert(0) }
+}
+
+.psycler nav ~ * {
+    animation: 8s linear infinite psycler;
 }
 
 .punct {
@@ -852,6 +877,16 @@ nav[dir=ltr] ~ * .preface_he {
 
 .taam::after {
     content: '>';
+}
+
+.ref {
+    font-family: var(--font);
+    font-size: .7rem;
+    vertical-align: text-top;
+}
+
+.ref::after {
+    content: attr(href);
 }
 
 .refs {
@@ -884,8 +919,18 @@ nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
 }
 
 .refs > blockquote {
-    direction: ltr;
     font-size: initial;
+    position: relative;
+}
+
+.refs:not([dir=rtl]) > blockquote {
+    direction: ltr;
+}
+
+.refs > blockquote[id]::before {
+    content: attr(id);
+    margin-inline-start: -1.2em;
+    position: absolute;
 }
 
 .refs > blockquote a {
@@ -900,7 +945,7 @@ nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
     animation: 3s show_cursor;
 }
 
-button.show_cursor {
+:is(button, video).show_cursor {
     --cursor: pointer;
 }
 

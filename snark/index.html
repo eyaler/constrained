@@ -14,7 +14,8 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
-    <svg id="ABMH" viewBox="0 0 100 100" style="--fg: #64ff64" onmouseover="get_play(event)" onclick="click(event)" oncontextmenu="toggle_fullscreen(event, false)">
+    <div oncontextmenu="toggle_fullscreen(event, false)" onmousemove="classList.remove('keyboard')" onmousedown="classList.remove('keyboard')">
+    <svg id="ABMH" viewBox="0 0 100 100" style="--fg: #64ff64" onmouseover="if (!parentElement.classList.contains('keyboard')) get_play(event)" onclick="click(event)">
         <line x1="70" y1="50" x2="60" y2="32.68" />
         <line x1="60" y1="32.68" x2="40" y2="32.68" />
         <line x1="40" y1="32.68" x2="30" y2="50" />
@@ -160,8 +161,9 @@
             <text x="50" y="50">א</text>
         </g>
     </svg>
-
-    <svg id="ADWS" viewBox="0 0 100 100" style="--fg: #ff6464" onmouseover="get_play(event)" onclick="click(event)" oncontextmenu="toggle_fullscreen(event, false)">
+    </div>
+    <div oncontextmenu="toggle_fullscreen(event, false)" onmousemove="classList.remove('keyboard')" onmousedown="classList.remove('keyboard')">
+    <svg id="ADWS" viewBox="0 0 100 100" style="--fg: #ff6464" onmouseover="if (!parentElement.classList.contains('keyboard')) get_play(event)" onclick="click(event)">
         <line x1="70" y1="50" x2="60" y2="32.68" />
         <line x1="60" y1="32.68" x2="30" y2="15.36" />
         <line x1="70" y1="15.36" x2="40" y2="32.68" />
@@ -308,6 +310,7 @@
             <text x="50" y="50">א</text>
         </g>
     </svg>
+    </div>
     <br>
     <article>
     <p>
@@ -318,7 +321,7 @@
         שני ה<a href="https://en.wikipedia.org/wiki/Loupekine_snarks">כרחשים על שם לופֵּקין</a>
         הם בעלי 22 קודקודים, כמספר האותיות באלף־בית.
         כל המסלולים שמתחילים במרכז באורך של 2, 3 או 4 אותיות, יוצרים מילים בכתיב מלא.
-        אגב, הפתרונות היחידים שמצאתי שמגיעים ל־5 אותיות, ובכך מכסים את כל קשתות הגרף, מתחילים בה"א או ב־שי"ן, אשר מתפקדות כ־ה' השאלה וכ־ש' הזיקה בחלק מן המילים.
+        דרך אגב, הפתרונות היחידים שמצאתי שמגיעים ל־5 אותיות, ובכך מכסים את כל קשתות הגרף, מתחילים בה"א או ב־שי"ן, אשר מתפקדות כ־ה' השאלה וכ־ש' הזיקה בחלק מן המילים.
     </p>
     <p dir="ltr">
         A <a href="https://en.wikipedia.org/wiki/Snark_(graph_theory)">snark</a> is a simple bridgeless graph, where each vertex has 3 edges, and coloring the edges requires 4 colors.
@@ -327,10 +330,12 @@
         Incidentally, the only solutions I found reaching 5 letters, and thus covering all graph edges, begin with He or Shin, which in some of the words function as interrogative and conjunctive "that" prefixes.
     </p>
     <p>
-        העבודה נוצרה עבור  <a href="https://oulipoh.com/resen/#1">רֶסֶן א – קמעות</a>.
+        העבודה נוצרה עבור  <a href="https://oulipoh.com/resen/#1">רֶסֶן א – קמעות</a>,
+          והוצגה באירוע <a href="https://cda.org.il/events/who-comes-after-us/">מי בא אחרינו 3</a> במרכז לאומנות דיגיטלית חולון ב־2024.
     </p>
     <p dir="ltr">
-        Created for <a href="https://oulipoh.com/resen/?en#1">Resen #1 – Talismans</a>.
+        Created for <a href="https://oulipoh.com/resen/?en#1">Resen #1 – Talismans</a>,
+        and performed during <a href="https://cda.org.il/events/who-comes-after-us/">Who comes after us 3</a> at The Center for Digital Art Holon in 2024.
     </p>
     </article>
     <script>make_footer()</script>

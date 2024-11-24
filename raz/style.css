@@ -1,0 +1,34 @@
+@keyframes hor1 {
+    100% { rotate: y .5turn }
+}
+
+.hor1 {
+    animation: var(--dur) forwards hor1;
+}
+
+@keyframes hor2 {
+    0% { rotate: y .5turn }
+    100% { rotate: none }
+}
+
+.hor2 {
+    animation: var(--dur) forwards hor2;
+}
+
+video {
+    clip-path: inset(1px);
+    left: 50%;
+    margin: 0;
+    position: absolute;
+    transform-origin: 0 100%;
+    width: 50%;
+}
+
+#videos {
+    --dur: 5.8s;
+    aspect-ratio: 8 / 3;
+    margin-block: 8rem 12rem;
+    margin-inline: auto;
+    position: relative;
+    width: min(1200px, 100%);
+}

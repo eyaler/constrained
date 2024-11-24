@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <div id="videos" oncontextmenu="toggle_fullscreen(event)">
+        <video id="a" src="raz.mp4" onmousemove="show_hide_cursor(this)" disablePictureInPicture playsinline preload></video>
+        <video id="b" src="raz.mp4" onmousemove="show_hide_cursor(this)" disablePictureInPicture playsinline preload></video>
+    </div>
+    <p>
+        שירה שמתפלפת ומתלפפת, מתרפלקת ומתפלנדרמת, בזמן ובמרחב ובלב.
+        הוצג בתערוכה <a href="https://cda.org.il/events/who-comes-after-us/">מי בא אחרינו 3</a> במרכז לאומנות דיגיטלית חולון ב־2024.
+    </p>
+    <p>
+        זהו גם פלינדרום באותיות וגם פלינדרום פונטי (בהגייה נחצית של צד"י):
+    </p>
+    <pre class="narrow_poem">
+(פּוּלס רֵוֵורס לוּפּ)
+רז חושמל –
+שוּמרו איתךָ כי נוצרו מילים
+וּרצוני כך –
+תיאור מושלם שוחזר.
+(פּוּלס רֵוֵורס לוּפּ)</pre>
+    <p><b>מצלמה:</b> נועה גור.</p>
+    <p dir="ltr">
+        Poetry that flips and winds, replicates and palindrates, in time and in space and in the heart.
+        Exhibited in the exhibition <a href="https://cda.org.il/events/who-comes-after-us/">Who comes after us 3</a> at the Center for Digital Art Holon in 2024.
+    </p>
+    <p dir="ltr">This is both a letter palindrome and a phonetic palindrome (in the pharyngealized pronunciation of the letter Tsadi).</p>
+    <p dir="ltr"><b>Camera:</b> Noa Gur.</p>
+    <script>make_footer()</script>
+    <script src="script.js"></script>
+</body>
+</html>

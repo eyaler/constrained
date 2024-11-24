@@ -13,7 +13,7 @@ const pages = {
     "rep": {title: "רֶפלינדרום", alt: "REPalindrome", kw: ["hebrew cheatery", "palindrome"]},
     "cogram": {title: "סכוּמילים", alt: "Cograms and codromes", kw: ["2d 3d", "combined forms", "cipher", "hebrew cheatery", "new constraint", "palindrome", "software"]},
     "palpal": {title: "פלינדרומים על פלינדרומים", alt: "Palindromes on palindromes", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "self referral", "visual"]},
-    "raz": {title: "פולס רוורס לופ", alt: "Pulse Reverse Loop", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "self referral", "sound", "visual"], skip: true},
+    "raz/": {title: "פּוּלס רֵוֵורס לוּפּ", alt: "Pulse Reverse Loop", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "self referral", "sound", "visual"]},
     "mate": {title: "מט מטמטם", alt: "Fool's mate", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "record", "self referral"]},
     "1e7/": {title: "תו כופה תו ותהפוכות", alt: "Writing lines", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "record", "self referral"], with: "noamdovev"},
     "cheat": {title: "מִרמת העברית", alt: "Hebrew cheatery", kw: ["discourse", "hebrew cheatery", "palindrome", "self referral"]},
@@ -742,6 +742,9 @@ function show_hide_cursor(elem) {
     elem.offsetWidth  // Restart animation, see: https://css-tricks.com/restart-css-animation/
     elem.classList.add('show_cursor')
 }
+
+
+document.addEventListener('keydown', e => {if (e.key == '~') document.body.classList.toggle('psycler')})
 
 
 // FULLSCREEN

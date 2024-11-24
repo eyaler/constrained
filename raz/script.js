@@ -5,7 +5,7 @@ let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
 
 document.addEventListener('click', () => {
     if (!audioContext) {
-        [a, b].forEach(e => e.style.setProperty('cursor', 'none', 'important'))
+        videos.classList.remove('show_cursor')
         audioContext = new AudioContext()
         const audioSourceA = audioContext.createMediaElementSource(a)
         const audioSourceB = audioContext.createMediaElementSource(b)

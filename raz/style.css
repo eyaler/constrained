@@ -1,4 +1,5 @@
 .fullscreen {
+    align-items: center;
     --max_media_height: 100%;
 }
 
@@ -30,11 +31,11 @@ video {
 }
 
 #videos {
+    --cursor: pointer;
     --dur: 5.8s;
     aspect-ratio: 8 / 3;
     margin-block: 8rem 12rem;
     margin-inline: auto;
-    max-height: 100vh;
     position: relative;
     width: min(1200px, 100%);
 }

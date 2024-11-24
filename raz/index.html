@@ -13,11 +13,9 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
-    <div oncontextmenu="toggle_fullscreen(event)">
-        <div id="videos">
-            <video id="a" src="raz.mp4" onmousemove="show_hide_cursor(this)" disablePictureInPicture playsinline preload></video>
-            <video id="b" src="raz.mp4" onmousemove="show_hide_cursor(this)" disablePictureInPicture playsinline preload></video>
-        </div>
+    <div id="videos" oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
+        <video id="a" src="raz.mp4" disablePictureInPicture playsinline preload></video>
+        <video id="b" src="raz.mp4" disablePictureInPicture playsinline preload></video>
     </div>
     <p>
         שירה שמתפלפת ומתלפפת, מתרפלקת ומתפלנדרמת, בזמן ובמרחב ובלב.

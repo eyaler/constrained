@@ -95,7 +95,7 @@
 		}
 
 		function mousePressed() {
-			if (isOrdered || mouseButton != 'left')
+			if (isOrdered || mouseButton && mouseButton != 'left')  // https://github.com/processing/p5.js/issues/7397
 				return
 			const mX = mouseX / width
 			const mY = mouseY / height

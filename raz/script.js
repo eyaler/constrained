@@ -3,7 +3,7 @@ const delays = [0, 0, 0, .1, .15, .2, .25, .3, .35, .4]
 
 let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
 
-document.addEventListener('click', () => {
+videos.addEventListener('click', e => {
     if (!audioContext) {
         videos.classList.remove('show_cursor')
         audioContext = new AudioContext()

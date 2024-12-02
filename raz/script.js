@@ -6,6 +6,7 @@ let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
 videos.addEventListener('click', e => {
     if (!audioContext) {
         videos.classList.remove('show_cursor')
+        videos.style.background = 'initial'
         audioContext = new AudioContext()
         const audioSourceA = audioContext.createMediaElementSource(a)
         const audioSourceB = audioContext.createMediaElementSource(b)

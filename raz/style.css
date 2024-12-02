@@ -21,7 +21,7 @@
 }
 
 video {
-    clip-path: inset(1px);
+    clip-path: content-box;
     left: 50%;
     margin: 0;
     max-width: 50%;
@@ -31,11 +31,29 @@ video {
 }
 
 #videos {
+    aspect-ratio: 8 / 3;
+    --triangle_color: var(--fg_dim);
+    background-image: linear-gradient(to top right, transparent 80%, var(--triangle_color) 0), linear-gradient(to top left, var(--triangle_color) 20%, transparent 0);
+    background-position: bottom left, top left;
+    background-repeat: no-repeat;
+    background-size: 31.5% 50.01%;
     --cursor: pointer;
     --dur: 5.8s;
-    aspect-ratio: 8 / 3;
+    forced-color-adjust: none;
     margin-block: 8rem 12rem;
     margin-inline: auto;
+    max-height: var(--max_media_height);
     position: relative;
     width: min(1200px, 100%);
+}
+
+@media (hover: hover) {
+    #videos:is(:hover, :focus-visible) {
+        --triangle_color: var(--fg);
+        outline-color: transparent;
+    }
+}
+
+#videos:active {
+    --triangle_color: var(--fg);
 }

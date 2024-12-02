@@ -2,17 +2,17 @@ https://eyalgruss.com/constrained/hok/
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<link rel="canonical" href="index.html#">
+    <meta charset="UTF-8">
+    <link rel="canonical" href="index.html#">
     <style>
         body {
             visibility: hidden;
         }
     </style>
-    <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
+    <script src="../pages.js"></script>
     <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
@@ -26,7 +26,8 @@ https://eyalgruss.com/constrained/hok/
         }
     </style>
 </head>
-<body onload="div.style.visibility = 'visible'">
-    <div id="div">^ושבאה</div>
+<body onload="document.querySelectorAll('nav, div').forEach(e => e.style.visibility = 'visible')">
+    <script>make_header(true)</script>
+    <div>^ושבאה</div>
 </body>
 </html>

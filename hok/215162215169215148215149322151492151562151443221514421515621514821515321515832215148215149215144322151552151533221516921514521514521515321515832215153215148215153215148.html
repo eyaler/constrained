@@ -36,11 +36,13 @@
             color: var(--fg_verydim);
         }
 
-        .piece-349f8
-        {
+        .piece-349f8 {
             filter: brightness(.75) var(--fg_filter);
         }
 
+        .square-4b72b {
+            forced-color-adjust: none;  /* See: https://github.com/oakmac/chessboard2/issues/60 */
+        }
     </style>
 </head>
 <body onload="document.body.style.visibility = 'visible'">

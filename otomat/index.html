@@ -31,9 +31,9 @@
     <div id="otomat" onclick="hard_prev_time = prev_time = performance.now()" oncontextmenu="if (!hard_restart_secs || !classList.contains('fullscreen')) toggle_fullscreen(event); else event.preventDefault(); prev_time = performance.now()">
         <div class="sliders">
             <label>
-                <span onclick="lang_slider.value = 0; reset = true">English</span>
+                <span role="button" onclick="lang_slider.value = 0; reset = true">English</span>
                 <input type="range" id="lang_slider" max="1" value="1" autocomplete="off" oninput="hard_prev_time = performance.now()">
-                <span onclick="lang_slider.value = lang_slider.max || 100; reset = true">Hebrew</span>
+                <span role="button" onclick="lang_slider.value = lang_slider.max || 100; reset = true">Hebrew</span>
             </label>
             <label for="size_slider">
                 <button onclick="size_slider.value = 0;">160&times;80</button>

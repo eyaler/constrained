@@ -13,7 +13,7 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
-    <div id="videos" oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)" tabindex="0">
+    <div id="videos" role="button" oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)" tabindex="0">
         <video id="a" src="raz.mp4" disablePictureInPicture playsinline preload></video>
         <video id="b" src="raz.mp4" disablePictureInPicture playsinline preload></video>
     </div>

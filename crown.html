@@ -14,44 +14,46 @@
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
     <p>
-        <a href="https://he.wikipedia.org/wiki/%D7%9B%D7%9C%D7%99%D7%9C_%D7%A1%D7%95%D7%A0%D7%98%D7%95%D7%AA">כליל סונטות</a> הוא מחזור של 15 <a href="https://he.wikipedia.org/wiki/%D7%A1%D7%95%D7%A0%D7%98%D7%94">סונטות</a>, בו כל סונטה נפתחת בשורה הסוגרת את קודמתה (והראשונה פותחת במשפט הסוגר את האחרונה).
+        <a href="https://he.wikipedia.org/wiki/%D7%9B%D7%9C%D7%99%D7%9C_%D7%A1%D7%95%D7%A0%D7%98%D7%95%D7%AA#%D7%9B%D7%9C%D7%99%D7%9C_%D7%A1%D7%95%D7%A0%D7%98%D7%95%D7%AA_%D7%94%D7%A8%D7%95%D7%90%D7%99">כליל סונטות הרואי</a> הוא מחזור של 15 <a href="https://he.wikipedia.org/wiki/%D7%A1%D7%95%D7%A0%D7%98%D7%94">סונטות</a>, בו כל סונטה נפתחת בשורה הסוגרת את קודמתה, והסונטה האחרונה בנויה מן השורות הפותחות של כל הסונטות הקודמות על פי סדרן (על כן השורה הסוגרת את הסונטה הלפני אחרונה זהה לשורה הפותחת את הראשונה).
         בכליל <b>הקומבינטורי</b> לכל סונטה יש מבנה חריזה ייחודי כפי שיופרט להלן.
-        כמו בסגנון פטררקה, כל סונטה בנויה מזוג מרובעים בני 4 שורות כל אחד, ואחריהם זוג משולשים בני 3 שורות כל אחד.
+        כמו בסגנון פטררקה, כל סונטה בנויה מזוג מרובעים בני 4 שורות כל אחד, ואחריהם זוג משולשים בני 3 שורות כל <אחד class=""></אחד>
     </p>
     <p>במרובע הראשון יש שני חרוזים שונים, והחריזה במרובע השני היא זהה. מתאפשרים מבני החריזה הבאים:</p>
     <ul dir="ltr" class="mono">
-    <li>AABB AABB</li>
-    <li>ABAB ABAB</li>
-    <li>ABBA ABBA</li>
+        <li>ABBA ABBA</li>
+        <li>AABB AABB</li>
+        <li>ABAB ABAB</li>
     </ul>
-    <p>במשולשים יש סך הכל שני חרוזים, והחריזה במשולש השני היא או זהה לראשון או היפוך סדר של הראשון מהסוף להתחלה או כמו הראשון אבל בהיפוך תפקידים בין החרוזים, זאת כל עוד אין חרוז שחוזר שלוש שורות ברצף. מתאפשרים מבני החריזה הבאים:</p>
+    <p>במשולשים יש סך הכל שני חרוזים, והחריזה במשולש השני זהה לראשון, או היפוך סדר של הראשון מהסוף להתחלה, או כמו בראשון אבל בהיפוך תפקידים בין החרוזים. זאת כל עוד אין חרוז שחוזר שלוש שורות ברצף בתוך המשולשים. מתאפשרים מבני החריזה הבאים:</p>
     <ul dir="ltr" class="mono">
+        <li>CDD CDD</li>
         <li>CCD CCD</li>
         <li>CCD DCC</li>
         <li>CDC CDC</li>
         <li>CDC DCD</li>
-        <li>CDD CDD</li>
     </ul>
     <p><b>כליל הסונטות הקומבינטורי</b> מכיל את כל השילובים האפשריים של מבני החריזה של המרובעים והמשולשים לעיל, במבנה הבא:</p>
     <ol dir="ltr" class="mono">
-        <li><span>AABB AABB <span>CCD CCD</span></span></li>
-        <li><span>DDEE DDEE <span>FFG GFF</span></span></li>
-        <li><span>FFHH FFHH <span>IJI IJI</span></span></li>
-        <li><span>IIKK IIKK <span>LML MLM</span></span></li>
-        <li><span>MMNN MMNN <span>OPP OPP</span></span></li>
-        <li><span>PQPQ PQPQ <span>RRS RRS</span></span></li>
-        <li><span>STST STST <span>UUV VUU</span></span></li>
-        <li><span>UWUW UWUW <span>XYX XYX</span></span></li>
-        <li><span>XZXZ XZXZ <span>aba bab</span></span></li>
-        <li><span>bcbc bcbc <span>dee dee</span></span></li>
-        <li><span>effe effe <span>ggh ggh</span></span></li>
-        <li><span>hiih hiih <span>jjk kjj</span></span></li>
-        <li><span>jllj jllj <span>mnm mnm</span></span></li>
-        <li><span>moom moom <span>pqp qpq</span></span></li>
-        <li><span>qrrq qrrq <span>sAA sAA</span></span></li>
+        <li><span>ABBA ABBA <span>CDD CDD</span></span></li>
+        <li><span>DEED DEED <span>FFA FFA</span></span></li>
+        <li><span>AGGA AGGA <span>DDH HDD</span></span></li>
+        <li><span>DIID DIID <span>AJA AJA</span></span></li>
+        <li><span>AKKA AKKA <span>LDL DLD</span></span></li>
+        <li><span>DDMM DDMM <span>NAA NAA</span></span></li>
+        <li><span>AAOO AAOO <span>PPD PPD</span></span></li>
+        <li><span>DDQQ DDQQ <span>RRS SRR</span></span></li>
+        <li><span>RRTT RRTT <span>UVU UVU</span></span></li>
+        <li><span>UUWW UUWW <span>XRX RXR</span></span></li>
+        <li><span>RYRY RYRY <span>ZUU ZUU</span></span></li>
+        <li><span>UaUa UaUa <span>bbR bbR</span></span></li>
+        <li><span>RcRc RcRc <span>UUd dUU</span></span></li>
+        <li><span>UeUe UeUe <span>AfA AfA</span></span></li>
+        <li><span>ADAD ADAD <span>RUR URU</span></span></li>
     </ol>
+    <p>לא בכדי הסונטה האחרונה היא זו עם מבנה החריזה היחידי בו אין שתי שורות חורזות ברצף, כי אחרת הייתה מאלצת מבני חריזה מנוונים בקודמותיה.</p>
+
     <p dir="ltr">
-        <b>Combinatorial crown of sonnets</b> - a <a href="https://en.wikipedia.org/wiki/Crown_of_sonnets">crown of sonnets</a>, which is a sequence of 15 <a href="https://en.wikipedia.org/wiki/Petrarchan_sonnet">Petrarchan sonnets</a> in which each sonnet opens with the line closing the previous one (and the first one opens with the line closing the last one), where additionally each sonnet has a unique rhyme scheme as detailed above.
+        <b>Combinatorial crown of sonnets</b> - a <a href="https://en.wikipedia.org/wiki/Crown_of_sonnets#Heroic_crown">heroic crown of sonnets</a>, which is a sequence of 15 <a href="https://en.wikipedia.org/wiki/Petrarchan_sonnet">Petrarchan sonnets</a> in which each sonnet opens with the line closing the previous one, and the last sonnet is composed of the opening lines of all the previous sonnets by their order (therefore the closing line of the penultimate sonnet is the same as the opening line of the first), where additionally each sonnet has a unique rhyme scheme as detailed above.
     </p>
     <div class="refs">
         <blockquote>Terry S. Griggs, <a href="https://scholarship.claremont.edu/cgi/viewcontent.cgi?article=1248&context=jhm">Combinatorics of the Sonnet</a>, Journal of Humanistic Mathematics.</blockquote>

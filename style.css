@@ -1,19 +1,19 @@
 @font-face {
-    font-family: Alef;
     font-display: block;
+    font-family: Alef;
     src: url('fonts/Alef-Regular.woff2');
 }
 
 @font-face {
+    font-display: block;
     font-family: Alef;
     font-weight: bold;
-    font-display: block;
     src: url('fonts/Alef-Bold.woff2');
 }
 
 @font-face {
-    font-family: 'Alef Mono';
     font-display: block;
+    font-family: 'Alef Mono';
     src: url('fonts/Alef-Monospace.woff2');
 }
 
@@ -651,6 +651,7 @@ iframe, object {
 
 .images.fullscreen > img:first-child:last-child {
     --max_media_height: 100%;
+    min-height: 0;
 }
 
 .images > img:not(:first-child:last-child) {
@@ -925,6 +926,10 @@ nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
     direction: rtl;
 }
 
+.pull {
+    font-size: 1.4em;
+}
+
 .refs > blockquote {
     font-size: initial;
 }
@@ -1173,7 +1178,7 @@ video::-webkit-media-controls-enclosure {  /* Not supported in Firefox */
         --media_width: auto;
     }
 
-    .refs > blockquote {
+    .pull, .refs > blockquote {
         margin-inline: 0;
     }
 

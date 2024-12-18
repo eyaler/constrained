@@ -116,25 +116,6 @@ body.todark, .todark ::backdrop {
     --invert: 0;
 }
 
-.banner {
-    display: flex;
-    gap: 1em;
-    justify-content: space-around;
-    overflow-x: clip;
-}
-
-.banner > * {
-    flex-shrink: 0;
-}
-
-button, .dim_ref, footer, nav, .preface_he, .sliders {
-    font-size: initial;
-}
-
-button, pre {
-    font-family: inherit;
-}
-
 @media (hover: hover) {
     :root {
         --back: 1;
@@ -176,7 +157,7 @@ button, pre {
         animation: var(--icon_dur) infinite deco;
     }
 
-    .contents > p > a:is(:hover, :focus-visible) > img {
+    a:is(:hover, :focus-visible) img {
         box-shadow: 0 0 .8rem .4rem var(--glow);
     }
 
@@ -282,6 +263,12 @@ article:not(.overflow) {
     max-width: var(--article_width);
 }
 
+audio[controls] {
+    display: block;
+    margin-block: 4rem;
+    margin-inline: auto
+}
+
 nav[dir=ltr] ~ .author {
     direction: ltr;
 }
@@ -292,6 +279,17 @@ nav[dir=rtl] ~ .author {
 
 .author > :first-child {
     margin-inline-end: 1em;
+}
+
+.banner {
+    display: flex;
+    gap: 1em;
+    justify-content: space-around;
+    overflow-x: clip;
+}
+
+.banner > * {
+    flex-shrink: 0;
 }
 
 blockquote {
@@ -341,6 +339,14 @@ button.big {
     margin-block: 1.5em;
     margin-inline: auto;
     padding-inline: 1em;
+}
+
+button, .dim_ref, footer, nav, .preface_he, .sliders {
+    font-size: initial;
+}
+
+button, pre {
+    font-family: inherit;
 }
 
 .cogram {
@@ -478,7 +484,7 @@ figure {
     width: 100%;
 }
 
-figcaption:not(.images > figure > *) {
+figcaption:where(:not(.images figure > *)) {
     margin-inline-start: calc((100% - var(--media_width)) / 2);
 }
 
@@ -486,7 +492,7 @@ figure > figcaption + * {
     margin-top: .5rem;
 }
 
-.images > figure > img + figcaption {
+.images figure > img + figcaption {
     font-size: .7em;
     text-align: center;
 }
@@ -928,6 +934,14 @@ nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
 
 .pull {
     font-size: 1.4em;
+}
+
+.pull::before {
+  content: '"';
+}
+
+.pull::after {
+  content: '"';
 }
 
 .refs > blockquote {

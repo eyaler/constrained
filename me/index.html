@@ -19,7 +19,7 @@
     </script>
     <audio id="audio" src="media/basade.mp3" onended="allow_audio = false"></audio>
     <div>
-    <svg id="svg" viewBox="-350 -350 700 700" onpointerdown="this.classList.add('active')" onpointerleave="this.classList.remove('active')" onpointerup="this.classList.remove('active')" ontouchend="if (allow_audio) audio.play()" ontransitionend="allow_audio = true; this.classList.add('omni_is_green'); audio.play()" oncontextmenu="event.preventDefault()">  <!-- Safari requires using "this". See: https://bugs.webkit.org/show_bug.cgi?id=284692 -->
+    <svg id="svg" viewBox="-350 -350 700 700" onpointerdown="this.classList.add('active')" onpointercancel="this.classList.remove('active')" onpointerleave="this.classList.remove('active')" onpointerup="this.classList.remove('active')" ontouchend="if (allow_audio) audio.play()" ontransitionend="allow_audio = true; this.classList.add('omni_is_green'); audio.play()" oncontextmenu="event.preventDefault()">  <!-- Safari requires using "this". See: https://bugs.webkit.org/show_bug.cgi?id=284692 -->
     <!-- Using a centered view box because transform-origin breaks on Safari zooming. See: https://stackoverflow.com/questions/43642391/safari-svg-transform-origin-zoom-animation -->
         <filter id="rotate_red">
             <feColorMatrix type="hueRotate" values="-120" />
@@ -71,6 +71,7 @@
     </div>
     <script>
         svg.oncontextmenu = e => e.preventDefault()  // Firefox (<112) needed this via JS instead of inline. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1819533
+        addEventListener('blur', () => svg.classList.remove('active'))
         date.innerHTML = new Date().toISOString().slice(0, 10)
         make_footer()
     </script>

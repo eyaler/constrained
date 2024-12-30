@@ -261,6 +261,7 @@ nav a:not([href]) {
 article:not(.overflow) {
     margin-inline: auto;
     max-width: var(--article_width);
+    --media_width: 100%;
 }
 
 audio[controls] {
@@ -363,7 +364,7 @@ button, pre {
     margin-top: var(--row_gap);
 }
 
-.rows_first {
+.row_first {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(clamp((100% - (var(--columns) - 1)*var(--column_gap)) / var(--columns), 250px, 100%), 1fr));
     row-gap: var(--row_gap);
@@ -384,7 +385,6 @@ button, pre {
     display: block;
     margin-bottom: 1rem;
     object-fit: cover;
-    object-position: top;
     width: 100%;
 }
 
@@ -492,7 +492,7 @@ figure > figcaption + * {
     margin-top: .5rem;
 }
 
-.images figure > img + figcaption {
+.images figure img + figcaption {
     font-size: .7em;
     text-align: center;
 }
@@ -548,6 +548,10 @@ nav[dir=rtl] ~ footer > div {
 .fullscreen > :last-child {
     margin-bottom: auto !important;
     padding-bottom: 0 !important;
+}
+
+img.fullscreen {
+    --fullscreen_bg: black;
 }
 
 .github, .paypal {
@@ -653,11 +657,6 @@ iframe, object {
     max-height: var(--images_container_height);
     object-fit: contain;
     width: 100%;
-}
-
-.images.fullscreen > img:first-child:last-child {
-    --max_media_height: 100%;
-    min-height: 0;
 }
 
 .images > img:not(:first-child:last-child) {
@@ -838,9 +837,9 @@ ol, ul {
     padding-bottom: var(--hor_scrollbar_offset);
 }
 
-:is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + :is(blockquote, h3, h4, p)[dir=ltr],
-:is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + div[dir=ltr] > :is(blockquote, h3, h4, p):first-child,
-:is(p[dir=ltr], p[dir=ltr] + br) + :is(blockquote, h3, h4, p):not([dir=ltr]) {
+:is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + :is(blockquote, h4, p)[dir=ltr],
+:is(p:not([dir=ltr]), p:not([dir=ltr]) + br) + div[dir=ltr] > :is(blockquote, h4, p):first-child,
+:is(p[dir=ltr], p[dir=ltr] + br) + :is(blockquote, h4, p):not([dir=ltr]) {
     margin-top: max(6ex, 4.5rem);
 }
 
@@ -1089,7 +1088,7 @@ textarea {
     margin-top: 6rem;
 }
 
-[oncontextmenu*=toggle_fullscreen] {  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
+[oncontextmenu*=toggle_fullscreen], [ondblclick*=toggle_fullscreen] {  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
     user-select: none;
     -webkit-user-select: none;
 }
@@ -1170,7 +1169,7 @@ video::-webkit-media-controls-enclosure {  /* Not supported in Firefox */
         text-align: start;
     }
 
-    .contents:not(.rows_first) {
+    .contents:not(.row_first) {
         --columns: 1;
     }
 
@@ -1192,7 +1191,7 @@ video::-webkit-media-controls-enclosure {  /* Not supported in Firefox */
         --media_width: auto;
     }
 
-    .pull, .refs > blockquote {
+    .pull, .quote, .refs > blockquote {
         margin-inline: 0;
     }
 

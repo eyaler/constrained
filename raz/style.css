@@ -3,6 +3,10 @@
     --max_media_height: 100%;
 }
 
+#videos.fullscreen > video {
+    margin-block: 0 !important;  /* For Safari */
+}
+
 @keyframes hor1 {
     100% { rotate: y .5turn }
 }
@@ -36,7 +40,7 @@ video {
     background-image: linear-gradient(to top right, transparent 80%, var(--triangle_color) 0), linear-gradient(to top left, var(--triangle_color) 20%, transparent 0);
     background-position: bottom left, top left;
     background-repeat: no-repeat;
-    background-size: 31.5% 50.01%;
+    background-size: 31.5% 50.04%;
     --cursor: pointer;
     --dur: 5.8s;
     forced-color-adjust: none;

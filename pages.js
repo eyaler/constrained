@@ -81,9 +81,6 @@ const ui = {
     "en": {"next": "next", "prev": "prev", "lang": "english", "theme_name": "Designed by a programmer", "theme": "Theme", "copyright": "All rights reversed", "issue": "issue", "translator": "(translator)", "with": "created with", "dir": "ltr"},
 }
 
-const default_rows_first = false
-const default_reorder_contents = false
-
 const kw_labels = {
     "2d 3d": "רב־ממדי",
     "biblical": "תורני",
@@ -131,6 +128,9 @@ const default_copyright_label = "(CC)(&#xc6c3;)"
 const default_force_new_tab_for_mailto_tel = false
 const default_new_tab_for_social = false
 const default_new_tab_for_footer = false
+const default_reorder_contents = false
+const default_reverse_issues_kw = true
+const default_row_first = false
 const default_show_snippet = true
 const default_show_author = true
 
@@ -146,32 +146,32 @@ function get_lang() {
 const collator = Intl.Collator(document.documentElement.lang, {numeric: true})
 
 
-function reorder(list_of_strings, lang='', labels=kw_labels) {
+function reorder(list_of_strings, lang='', reverse_issues=default_reverse_issues_kw, labels=kw_labels) {
     return [...new Set(list_of_strings)].map(String).sort((a, b) => {
-        const issues = !!b.match(/^\d+$/) - !!(a.match(/^\d+$/))
+        const a_is_issue = !!a.match(/^\d+$/)
+        const b_is_issue = !!b.match(/^\d+$/)
         if (!lang) {
             a = labels[a] ?? a
             b = labels[b] ?? b
         }
-        return issues || collator.compare(a, b)
+        return b_is_issue - a_is_issue || (reverse_issues && a_is_issue && b_is_issue ? -1 : 1) * collator.compare(a, b)
     })
 }
 
 
-function get_all_keywords(lang='', page) {
+function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, page) {
     const keywords = Object.entries(pages).flatMap(([k, v]) => (k == page || !v.skip) && v.kw || [])
-    const ordered = reorder(keywords, lang)
-    if (page != null) {
+    const ordered = reorder(keywords, lang, reverse_issues)
+    if (page == null)
+        return ordered
         const counts = keywords.reduce((acc, kw) => (acc[kw] = ++acc[kw] || 1, acc), {})
         const len = Object.values(pages).filter(v => !v.skip).length
         const freq = Object.fromEntries(Object.entries(counts).map(([kw, c]) => [kw, c / len]))
         const entropy = Object.fromEntries(Object.entries(freq).map(([kw, f]) => [kw, -f * Math.log2(f)]))
         const maxent = Math.log2(len)
         const info = Object.fromEntries(Object.entries(entropy).map(([kw, e]) => [kw, e / maxent]))
-        return Object.fromEntries(ordered.map(kw => [kw, {count: counts[kw], info: info[kw]}]))  // Note keys parsing as integers keys will appear first
+    return [ordered, Object.fromEntries(ordered.map(kw => [kw, {count: counts[kw], info: info[kw]}]))]  // Note object keys parsing as integers will appear first an ascending order. See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
     }
-    return ordered
-}
 
 
 function harden(s) {
@@ -268,14 +268,14 @@ function merge(...lists) {
 }
 
 
-function make_contents(show_snippet=default_show_snippet, show_author=default_show_author, rows_first=default_rows_first) {
+function make_contents(show_snippet=default_show_snippet, show_author=default_show_author, row_first=default_row_first) {
     const contents = get_page()
     const lang = get_lang()
     const all_keywords = get_all_keywords(lang)
     const contents_authors = get_make_author(contents, lang)[0].map(harden).join()
     const div = document.createElement('div')
     div.className = 'contents'
-    div.classList.toggle('rows_first', rows_first)
+    div.classList.toggle('row_first', row_first)
     for (const page in pages) {
         if (pages[page].skip)
             continue
@@ -435,10 +435,10 @@ function get_kw_label(kw, lang='') {
 }
 
 
-function make_header(nav_only=false, reorder_contents=default_reorder_contents, new_tab_for_social=default_new_tab_for_social) {
+function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw, reorder_contents=default_reorder_contents, new_tab_for_social=default_new_tab_for_social) {
     const page = get_page()
     const lang = get_lang()
-    const all_keywords_stats = get_all_keywords(lang, page)
+    const [all_keywords, all_keywords_stats] = get_all_keywords(lang, reverse_issues_kw, page)
     const titles = get_set_titles(page, lang)
     document.title = titles.label
 
@@ -458,10 +458,10 @@ function make_header(nav_only=false, reorder_contents=default_reorder_contents, 
         span.dir = 'ltr'
         span.innerHTML = parent_title
         add_nav_element(nav, parent_title ? '..' : '', span, 'back', diff, shortcuts.back)
-        keywords = Object.keys(all_keywords_stats)
+        keywords = all_keywords
     } else {
         add_nav_element(nav, page2url('.', lang, page), index_title, 'back', -diff, shortcuts.back)
-        keywords = reorder(pages[page].kw, lang)
+        keywords = reorder(pages[page].kw, lang, reverse_issues_kw)
     }
 
     let url_kw = sanitize(decodeURIComponent(location.hash))

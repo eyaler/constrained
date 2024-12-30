@@ -76,9 +76,9 @@
     margin-block: 10rem;
     margin-inline: auto;
     perspective: 1000px;
-    width: fit-content;
     user-select: none;
     -webkit-user-select: none;
+    width: fit-content;
 }
 
 [data-cube].anad + div {

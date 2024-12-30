@@ -550,6 +550,10 @@ nav[dir=rtl] ~ footer > div {
     padding-bottom: 0 !important;
 }
 
+.images.fullscreen {
+    --max_media_height: 100%;
+}
+
 img.fullscreen {
     --fullscreen_bg: black;
 }

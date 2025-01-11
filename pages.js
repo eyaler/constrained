@@ -45,7 +45,7 @@ const pages = {
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self referral", "software", "visual"]},
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
-    "otogram": {title: "אות־וֹגרמה", alt: "OT-o-gram: letter-letter autogram", kw: ["combined forms", "pangram", "record", "self referral", "software"]},
+    "otogram": {title: "אות־וֹגרמה", alt: "OT-o-gram: letter-letter autogram", kw: ["combinatorial", "combined forms", "pangram", "record", "self referral", "software"]},
     "hayush": {title: "סדרות היוּש", alt: "Aronson sequences in Hebrew", kw: ["data available", "record", "self referral", "software"]},
     "barosh/": {title: "בראש יתברא / יתד בקלשוני", alt: "BaRosh Yitbare / Yated BeKilshoni", kw: ["biblical", "combinatorial", "data available", "interactive", "live code", "record", "software", "visual"]},
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},

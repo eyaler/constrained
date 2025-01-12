@@ -18,7 +18,7 @@
     <p>
         האם יכולה צורה כלשהי לכלול את כל אותיות האלף־בית כך שנוצרות מילים בכל אחד מממדי הצורה?
         כך תהו (במקור בהתייחס לאנגלית) הכותבים פיליפ כהן ורוס אקלר במאמר בכתב העת Word Ways מ־1979, שכותרתו "Word Ways Challenges (Part 1)".
-        ול מיי דיר פרנדז, בעברית, בשימוש ב־27 אותיות (כולל סופיות), אפשר שצורה זו תהיה קובייה, אפשר שכל אות תופיע בה פעם אחת בדיוק, ואפשר שחלק מכיווני הקריאה יכילו משפטים תקינים.
+        ול מיי דיר פרנדז, בעברית, בשימוש ב־27 אותיות (כולל סופיות), אפשר שצורה זו תהיה קובייה, אפשר שכל אות תופיע בה פעם אחת בדיוק, ואפילו אפשר שחלק מכיווני הקריאה יכילו משפטים תקינים.
         אבל למה לעצור כאן?
         אפשר למשל שהמשפטים שנוצרו יתייחסו לצורה עצמה ("קְשה מֶזג צָפַן צַעד מִכּל אות").
         לחלופין, אפשר אפשר שאחד מכיווני הקריאה יהיה ברכת יומולדת אישית למי שגרם לך להתעניין בכתיבה אילוצית מלכתחילה ("נצח שאג פיך. קפץ מזל טוב. מַתָך ערן הדס").
@@ -26,18 +26,20 @@
     </p>
     <p>
         הכינו משלכם ב<a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/pan3d/pan3d_ortools.ipynb">גוגל קולאב</a>.
-        לפרטים טכניים ראו את <a href="https://www.youtube.com/watch?v=0gwp9ad2X4E">הרצאתי ב־PyData Tel Aviv 2024</a>.
+        לפרטים טכניים ראו <a href="https://www.youtube.com/watch?v=0gwp9ad2X4E">הרצאתי ב־PyData Tel Aviv 2024</a>
+        (<a href="https://docs.google.com/presentation/d/1XwGUkprVfCdDp9Z1ZMbcDOxTSLhVopPyiRTCGYWmDGQ/edit?usp=sharing">שקפים</a>).
     </p>
     <p dir="ltr">
         The question in the title, pertaining to the formation of words in each of the form's dimensions, was posed (originally for English) by Philip Cohen and Ross Eckler in an article in the journal Word Ways from 1979, titled "Word Ways Challenges (Part 1)".
-        Well my dear friends, in Hebrew, using 27 letters (including final letter forms), this form can be a cube, it can contain each letter exactly once, and some reading directions can contain proper sentences.
+        Well my dear friends, in Hebrew, using 27 letters (including final letter forms), this form can be a cube, it can contain each letter exactly once, and some reading directions can even contain proper sentences.
         But why stop here?
         You could, for example, have the formed sentences refer to the form itself.
         Alternatively, you could have one of the reading directions be a personal birthday greeting to the person who got you interested in constrained writing in the first place.
         Or alternatively, you could have all the words readable from end to beginning, and have the middle word be the name of your sweetheart.
     </p>
     <p dir="ltr">
-        Make your own in <a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/pan3d/pan3d_ortools.ipynb">Google Colab</a>. For technical details see my <a href="https://www.youtube.com/watch?v=0gwp9ad2X4E">PyData Tel Aviv 2024 talk</a>.
+        Make your own in <a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/pan3d/pan3d_ortools.ipynb">Google Colab</a>. For technical details see my <a href="https://www.youtube.com/watch?v=0gwp9ad2X4E">PyData Tel Aviv 2024 talk</a>
+        (<a href="https://docs.google.com/presentation/d/1XwGUkprVfCdDp9Z1ZMbcDOxTSLhVopPyiRTCGYWmDGQ/edit?usp=sharing">slides</a>).
     </p>
     <h2 id="auto" data-cube="קשהמזגצפןץעדםכלאותבףסטיחנךר">פנגרמה מושלמת תלת־ממדית</h2>
     <p>
@@ -45,7 +47,7 @@
         בה כל אחת מאותיות האלף־בית (כולל סופיות) מופיעה בדיוק פעם אחת, והן מסודרות בתוך קובייה בגודל 3x3x3,
         כך שנוצרות 3 פנגרמות מושלמות, אחת בכל ממד, ובכל פנגרמה 9 מילים.
         סך הכול מופיעות לפחות 27 מילים שונות, וכולן בכתיב מלא.
-        בקריאה יש להתעלם מהאבחנה בין אותיות מנצפ"ך סופיות ולא סופיות, שכן אין אפשרות מתמטית לסידור שיכבד את מקומן הטבעי.
+        בקריאה יש להתעלם מהאבחנה בין אותיות מנצפ"ך סופיות ולא סופיות, שכן אין אפשרות גאומטרית לסידור שיכבד את מקומן הטבעי.
         הפנגרמה הראשונה היא אוטולוגית ומתייחסת כמובן לעצמה ולמעשה חיבורה.
     </p>
     <ol></ol>
@@ -53,7 +55,13 @@
         A <b>three-dimensional</b> <a href="https://en.wikipedia.org/wiki/Pangram#Perfect_pangrams">perfect pangram</a> - each of the alphabet letters (including the 5 final forms) appears exactly once, and are arranged in a 3x3x3 cube,
         to form 3 perfect pangrams, one in each dimension (row, depths and columns), and each pangram contains 9 words.
         In total at least 27 distinct words appear, all of them in ktiv-male - long-form spelling.
-        The reading must ignore the distinction between final and non-final letters (כ/ך, מ/ם, נ/ן, פ/ף, צ/ץ), as there is no mathematical possibility for an arrangement that would respect their natural place.
+        The reading must ignore the distinction between final and non-final letters
+        (כ/ך,
+        מ/ם,
+        נ/ן,
+        פ/ף,
+        צ/ץ),
+        as an arrangement respecting their natural place is geometrically infeasible.
         The first pangram is autological, and refers to itself and to its conjuration, because of course it does.
     </p>
 
@@ -66,7 +74,7 @@
         <img src="eran.jpg" alt="פנגרמה מושלמת תלת־ממדית שהיא ברכת יום הולדת לערן הדס, צרובה בקוביית בדולח" aria-describedby="eran_text">
     </div>
     <p dir="ltr">
-        A three-dimensional perfect pangram which is a birthday greeting: <b>Mazal tov <a href="https://eranhadas.com/english/">Eran Hadas</a></b>!
+        A three-dimensional perfect pangram which is a birthday greeting - <b>Mazal tov <a href="https://eranhadas.com/english/">Eran Hadas</a></b>!
     </p>
 
     <h2 id="yael" class="anad" data-cube="מטחדיגאבןצוץרעפףזנקשהתלךםכס">פנגרמה מושלמת תלת־ממדית אנדרומית</h2>

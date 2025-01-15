@@ -42,6 +42,7 @@ const pages = {
     "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software"]},
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
 
+    "superanagrams": {title: "אנגרמות־על", alt: "Super anagrams", kw: ["combinatorial", "hebrew cheatery", "new constraint"]},
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self referral", "software", "visual"]},
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
@@ -52,6 +53,7 @@ const pages = {
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
+
     "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]},
 }
 

@@ -873,7 +873,7 @@ nav[dir=ltr] ~ * .preface_he {
     100% { filter: hue-rotate(350deg) saturate(2) invert(0) }
 }
 
-.psycler nav ~ * {
+.psycler nav ~ *, span.psycler {
     animation: 8s linear infinite psycler;
 }
 

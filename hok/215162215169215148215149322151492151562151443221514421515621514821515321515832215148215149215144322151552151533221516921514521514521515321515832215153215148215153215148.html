@@ -72,7 +72,6 @@
         const example = 'e3f3cea3hfBed3NfKfRaQedNeba'.match(/[KQRBN]?[a-h]\d?/g)
         let move_num = 0
         let allowed = {}
-        let turn
         setTimeout(white, 2000)
 
         function filter(move_num) {
@@ -112,7 +111,6 @@
         }
 
         function white(moves) {
-            turn = 'w'
             if (move_num == example.length) {
                 p.textContent = 'בתוך זמר בשחמט מחשב רמז כותב'
                 console.log(game.pgn().split(' ').filter((n,i)=>!((i-1)%3|0)).join('').replace(/\d/g,'').replaceAll('a','א').replaceAll('b','ב').replaceAll('c','ג').replaceAll('d','ד').replaceAll('e','ה').replaceAll('f','ו').replaceAll('g','ז').replaceAll('h','ח').replaceAll('B','ר').replaceAll('R','צ').replaceAll('N','פ').replaceAll('K','מ').replaceAll('Q','מה'))
@@ -153,15 +151,12 @@
             if (stuck)
                 location.reload()
 
-            setTimeout(() => {
-                board.position(game.fen())
-                turn = 'b'
-            }, 500)
+            setTimeout(() => board.position(game.fen()), 500)
         }
 
         function onMouseenterSquare(evt, domEvt) {
             if (evt.piece?.startsWith('b'))
-                domEvt.target.style.cursor = 'grab'
+                myBoard.style.cursor = 'grab'
         }
 
         function onMouseleaveSquare(evt, domEvt) {
@@ -169,7 +164,7 @@
         }
 
         function onDragStart(dragStartEvt) {
-            if (turn == 'w' || dragStartEvt.piece.startsWith('w'))
+            if (dragStartEvt.piece.startsWith('w'))
                 return false
             myBoard.querySelector(`[data-square-coord=${dragStartEvt.square}]`).style.opacity = .999  // See: https://github.com/oakmac/chessboard2/issues/52#issuecomment-2501926197
         }
@@ -196,6 +191,7 @@
                 white(allowed[move])
             } else {
                 square.style.opacity = 1
+                myBoard.style.cursor = 'auto'
                 return 'snapback'
             }
         }

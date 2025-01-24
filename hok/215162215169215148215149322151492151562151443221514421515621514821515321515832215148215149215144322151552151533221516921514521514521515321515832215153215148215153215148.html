@@ -36,6 +36,10 @@
             color: var(--fg_verydim);
         }
 
+        .dragging-4a6c1 {
+            cursor: grabbing;
+        }
+
         .piece-349f8 {
             filter: brightness(.75) var(--fg_filter);
         }
@@ -49,17 +53,19 @@
     <div id="myBoard"></div>
     <p id="p">&ZeroWidthSpace;</p>
     <script type="module">
-        import { Chessboard2 } from './chessboard2/chessboard2.min.mjs'
+        import { Chessboard2 } from './chessboard2/chessboard2.min.js'
         import { Chess } from './chess/chess.min.js'
 
         const game = new Chess()
 
         const boardConfig = {
-          draggable: true,
-          position: game.fen(),
-          orientation: 'black',
-          onDragStart,
-          onDrop,
+            draggable: true,
+            position: game.fen(),
+            orientation: 'black',
+            onDragStart,
+            onDrop,
+            onMouseenterSquare,
+            onMouseleaveSquare,
         }
         const board = Chessboard2('myBoard', boardConfig)
 
@@ -67,7 +73,7 @@
         let move_num = 0
         let allowed = {}
         let turn
-        white()
+        setTimeout(white, 2000)
 
         function filter(move_num) {
             return game.moves().filter(m => m.match(/^[KQRBN]?\d?x?[a-h]\d(?!x)/) && m.replace('x', '').startsWith(example[move_num]) || move_num == example.length - 2 && example[move_num].match(/^[a-h]/) && m[0] == example[move_num][0] && m.slice(-2).startsWith(example[move_num + 1]))
@@ -153,8 +159,17 @@
             }, 500)
         }
 
+        function onMouseenterSquare(evt, domEvt) {
+            if (evt.piece?.startsWith('b'))
+                domEvt.target.style.cursor = 'grab'
+        }
+
+        function onMouseleaveSquare(evt, domEvt) {
+            myBoard.style.cursor = 'auto'
+        }
+
         function onDragStart(dragStartEvt) {
-            if (turn == 'w' || dragStartEvt.piece.match(/^w/))
+            if (turn == 'w' || dragStartEvt.piece.startsWith('w'))
                 return false
             myBoard.querySelector(`[data-square-coord=${dragStartEvt.square}]`).style.opacity = .999  // See: https://github.com/oakmac/chessboard2/issues/52#issuecomment-2501926197
         }

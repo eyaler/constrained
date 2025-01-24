@@ -55,6 +55,10 @@ class Table {
         buttons.forEach((e, i) => {
             const config_other = {...this.config._all_columns, ...this.config[e.name]}
             e.value = (i == index || config_key.index * (config_other.index || config_other.implied)) * order || 0
+            if (i == index)
+                e.parentElement.ariaSort = order == 1 ? 'ascending' : 'descending'
+            else
+                e.parentElement.removeAttribute('aria-sort')
         })
         let compare
         if (is_number)
@@ -68,7 +72,7 @@ class Table {
         this.sort_order = order
     }
 
-    restore_state() {  // requires id's for table rows (can be set in table config). only last sort column order is restored
+    restore_state() {  // Requires id's for table rows (can be set in table config). Only last sort column order is restored
         let state = {}
         if ([...this.table.querySelectorAll('[id]')].map(e => e.id).includes(history.state?.id)) {
             state = {...history.state}
@@ -149,11 +153,13 @@ class Table {
         }
         const first_cell = this.table.tHead.rows[0]?.cells[0]
         if (first_cell?.textContent == '') {
-            first_cell.classList.add('copy', 'fg_filter')
+            first_cell.classList.add('copy')
             const button = first_cell.appendChild(document.createElement('button'))
-            button.innerHTML = '&#x1f4cb;'
             button.title = 'Copy table to clipboard'
             button.onclick = () => navigator.clipboard.writeText(this.table.outerHTML)
+            const span = button.appendChild(document.createElement('span'))
+            span.innerHTML = '&#x1f4cb;'
+            span.classList.add('fg_filter')
         }
     }
 

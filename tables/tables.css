@@ -42,7 +42,6 @@ table {
 
     :is(.highlight, .col_highlight):hover [colspan]:not([colspan='1']), :is(.highlight, .row_highlight):hover :is(.merge_first_col > tbody td:first-child, [rowspan]:not([rowspan='1'])) {
         background-color: var(--tables_bg);
-        background-clip: padding-box;
     }
 
     /* Note: skipping first columns highlight may be broken due to rowspan > 1 cells in first columns */
@@ -128,7 +127,6 @@ thead button {
     border: none;
     border-radius: 0;
     color: inherit;
-    cursor: pointer;
     display: flex;
     font-family: inherit;
     font-size: initial;

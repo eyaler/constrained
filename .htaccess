@@ -11,7 +11,7 @@ Header always unset X-Frame-Options
 </IfModule>
 
 # Disable caching
-<FilesMatch "\.(css|html|js|json|mjs)$">
+<FilesMatch "\.(css|html|js|json)$">
     <IfModule mod_expires.c>
         ExpiresActive Off
     </IfModule>

@@ -41,7 +41,6 @@ video {
     background-position: bottom left, top left;
     background-repeat: no-repeat;
     background-size: 31.5% 50.04%;
-    --cursor: pointer;
     --dur: 5.8s;
     forced-color-adjust: none;
     margin-block: 8rem 12rem;

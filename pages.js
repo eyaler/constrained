@@ -556,12 +556,11 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             div.appendChild(button)
         })
         if (page == '/') {
-            button = document.createElement('button')
+            button = div.appendChild(document.createElement('button'))
             button.ariaLabel = 'הסר את כל המסננים'
             button.id = 'kw_x'
             button.innerHTML = 'X'
             button.onclick = () => div.querySelectorAll('.on').forEach(e => e.click())
-            div.appendChild(button)
         }
         header.appendChild(div)
     }
@@ -661,8 +660,7 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
         all_alt_names.push(alt_name || name)
 
         if (elem) {
-            const a = make_link('', name)
-            h2.appendChild(a)
+            const a = h2.appendChild(make_link('', name))
             let url = key
             if (author_pages_folder)
                 url = author_pages_folder + '/' + url
@@ -672,7 +670,7 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
 
             const networks = Object.keys(author || {}).filter(k => k != 'name' && k in social)
             if (networks.length) {
-                const span = document.createElement('span')
+                const span = h2.appendChild(document.createElement('span'))
                 span.className = 'social'
                 networks.forEach(net => {
                     if (span.innerHTML)
@@ -689,7 +687,6 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
                     const a = span.appendChild(make_link(prefix + author[net] + (social[net].suffix || ''), social[net].label, net, net[0].toUpperCase() + net.slice(1), new_tab_for_social))
                     a.dataset.label = a.textContent
                 })
-                h2.appendChild(span)
             }
             elem.appendChild(h2)
         }

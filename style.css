@@ -309,7 +309,6 @@ button, [id^=kw_] {
     border-style: solid;
     border-width: 2px;
     color: inherit;
-    cursor: pointer;
     margin: 0;
     padding-block: .1em;
     padding-inline: .5em;
@@ -520,6 +519,14 @@ nav[dir=rtl] ~ footer > div {
     direction: rtl;
 }
 
+footer, .kw, nav,
+svg image,  /* For Firefox Android */
+[oncontextmenu*=toggle_fullscreen], [ondblclick*=toggle_fullscreen]  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
+{
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .formula {
     text-align: start;
 }
@@ -701,10 +708,6 @@ input::placeholder {
 
 #kw_x {
     visibility: hidden;
-}
-
-label, label > * {
-    cursor: pointer;
 }
 
 .large {
@@ -980,10 +983,6 @@ nav[dir=rtl] ~ :nth-last-child(1 of .refs):not([data-title]) {
     animation: 3s show_cursor;
 }
 
-:is(button, video).show_cursor {
-    --cursor: pointer;
-}
-
 [onmousemove*=show_hide_cursor],  /* Note this will miss elements where the handler was added programmatically */
 .hide_cursor {
     cursor: none;
@@ -1080,11 +1079,6 @@ a.sponsors {
     padding-inline: .3em;
 }
 
-svg image {
-    user-select: none;  /* For Firefox Android */
-    -webkit-user-select: none;
-}
-
 textarea {
     border: none;
     box-sizing: border-box;
@@ -1098,11 +1092,6 @@ textarea {
 
 .textblock {
     margin-top: 6rem;
-}
-
-[oncontextmenu*=toggle_fullscreen], [ondblclick*=toggle_fullscreen] {  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 .twitter {

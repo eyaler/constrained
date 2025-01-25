@@ -41,7 +41,7 @@ function get_play(event, sticky) {
     const circle = event.target
     const svg = event.currentTarget
     let cls = ''
-    if (navigator.userActivation.hasBeenActive && circle && circle.tagName.toLowerCase() == 'circle') {
+    if (navigator.userActivation.hasBeenActive && circle.tagName.toLowerCase() == 'circle') {
         cls = [...circle.parentElement.classList].find(c => c.match(/^m\d+$/))
         const num = cls.slice(1)
         const path = [...svg.querySelectorAll(`.n${num}`)].map(node => [...node.classList].find(c => c.match(/^m\d+$/)).slice(1))
@@ -49,11 +49,13 @@ function get_play(event, sticky) {
         const notes_array = notes[svg.id].split(' ')
         const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), path.map(i => notes_array[i]), delay_sec).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
 	    seq.loop = false
+
         function mute() {
             seq.mute = true;
             circle.removeEventListener('click', mute)
             circle.removeEventListener('mouseleave', mute)
         }
+
 	    circle.addEventListener('click', mute)
 	    circle.addEventListener('mouseleave', mute)  // Will also fire when clicking outside for touch interaction
         Tone.Transport.start()

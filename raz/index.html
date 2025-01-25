@@ -13,10 +13,10 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
-    <div id="videos" role="button" oncontextmenu="toggle_fullscreen(event)" ondblclick="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)" tabindex="0">
-        <video id="a" src="raz.mp4" disablePictureInPicture playsinline preload></video>
-        <video id="b" src="raz.mp4" disablePictureInPicture playsinline preload></video>
-    </div>
+    <button id="videos" oncontextmenu="toggle_fullscreen(event)" ondblclick="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
+        <video id="a" src="raz.mp4" disablePictureInPicture playsinline preload aria-label="סרטון הקראת השיר מהתחלה לסוף ומהסוף להתחלה"></video>
+        <video id="b" src="raz.mp4" disablePictureInPicture playsinline preload aria-labelby="a"></video>
+    </button>
     <p>
         שירה שמתפלפת ומתלפפת, מתרפלקת ומתפלנדרמת, בזמן ובמרחב ובלב.
         הוצג בתערוכה <a href="https://cda.org.il/events/who-comes-after-us/">מי בא אחרינו 3</a> במרכז לאומנות דיגיטלית חולון ב־2024.

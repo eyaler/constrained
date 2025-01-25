@@ -6,7 +6,7 @@ const pages = {
     "/": {title: "כתיבה אילוצית עברית", alt: "Constrained Hebrew writing", author: "eyalgruss", skip: true},
     "me/": {title: "על אודותיי", alt: "About me", author: "eyalgruss", skip: true},
 
-    "site": {title: "אודות אסופה ואתר אלו", alt: "About this collection and website", kw: ["software"]},
+    "site": {title: "אודות אסופה ואתר אלו", alt: "About this collection and website"},
     "longword": {title: "המילה הפלינדרומית הארוכה בעברית", alt: "Longest palindromic Hebrew word", kw: ["palindrome", "record"]},
     "squares": {title: "ריבועי הקסם הגדולים בעברית", alt: "Largest magic squares in Hebrew", kw: ["2d 3d", "hebrew cheatery", "palindrome", "record", "software"]},
     "double": {title: "פלינדרום קפוא־כפול", alt: "Doubly-frozen palindrome", kw: ["cipher", "hebrew cheatery", "new constraint", "palindrome"]},

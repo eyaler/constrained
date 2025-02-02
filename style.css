@@ -667,7 +667,7 @@ iframe, object {
     line-height: 0;
 }
 
-.images a:not(:first-child:last-child) {
+.images a:not(:only-child) {
     display: contents;
 }
 
@@ -678,7 +678,7 @@ iframe, object {
     width: 100%;
 }
 
-.images > a:not(:first-child:last-child) img, .images > img:not(:first-child:last-child) {
+.images > a:not(:only-child) img, .images > img:not(:only-child) {
     --multi_image_height_factor: .9;  /* Assumes difference between images aspect ratios is less than 10% */
     height: calc(var(--multi_image_height_factor) * 100%);
     max-height: calc(var(--images_container_height) / var(--multi_image_height_factor));

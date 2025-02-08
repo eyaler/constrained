@@ -1,4 +1,4 @@
-// Copyright 2023-2024 by Eyal Yehowa Gruss, licensed under CC BY 4.0
+// Copyright 2023-2025 by Eyal Yehowa Gruss, licensed under CC BY 4.0
 // Please attribute by linking to a version of this file [e.g. as done in make_footer()], containing these comments
 
 
@@ -616,7 +616,8 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
     page ??= get_page()
     lang ??= get_lang()
     const translators = merge(pages[page].translator, pages[page].translators)
-    let keys = [...new Set(merge(pages[page].author, pages[page].authors, translators, pages[page].with))]
+    const colabs = merge(pages[page].with)
+    let keys = [...new Set(merge(pages[page].author, pages[page].authors, translators, colabs))]
     if (elem && authors && !keys.length)
         keys = Object.keys(authors).slice(0, 1)
     const all_names = []
@@ -637,12 +638,12 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
         if (names) {
         	name = names[lang] || names[''] || Object.values(names)[0] || name
             alt_name = Object.entries(names).find(([k, v]) => k != lang && v)?.[1]
-            if (translators.includes(key) || pages[page].with?.includes(key)) {
+            if (translators.includes(key) || colabs.includes(key)) {
                 const alt_langs = Object.keys(ui).filter(k => k != lang)
                 if (alt_langs.length) {
                     if (translators.includes(key))
                     	alt_name += ' ' + ui[alt_langs[0]].translator
-                    if (!have_with && pages[page].with?.includes(key))
+                    if (!have_with && colabs.includes(key))
                         alt_name = ui[alt_langs[0]].with + ' ' + alt_name
                 }
             }
@@ -651,7 +652,7 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
         }
         if (translators.includes(key))
             name += ' ' + ui[lang].translator
-        if (!have_with && pages[page].with?.includes(key)) {
+        if (!have_with && colabs.includes(key)) {
             name = ui[lang].with + ' ' + name
             have_with = true
         }

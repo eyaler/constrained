@@ -25,9 +25,9 @@ class Table {
                     this.sort_table(sort_index, sort_order)
                 this.table.style.visibility = 'visible'
                 if (!id && [...this.table.querySelectorAll('[id]')].map(e => e.id).includes(location.hash.slice(1).toLowerCase()))
-                    id = location.hash.slice(1).toLowerCase()
+                    id = location.hash.toLowerCase()
                 if (id)
-                    document.getElementById(id).scrollIntoView()
+                    document.querySelector(id).scrollIntoView()
             })
     }
 

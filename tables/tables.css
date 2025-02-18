@@ -90,7 +90,7 @@ table {
     counter-reset: row_number;
 }
 
-.rank tbody td:first-child::before {
+.rank tbody td:first-child a::before {
     content: counter(row_number);
     counter-increment: row_number;
 }

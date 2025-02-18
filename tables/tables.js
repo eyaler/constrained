@@ -177,8 +177,12 @@ class Table {
                     const tr = document.createElement('tr')
                     const is_data_header = (data_header_rows && j < data_header_rows) ?? !Object.keys(row)[0].split('_')[0]
                     have_data_header ||= is_data_header
-                    if (is_rank && !is_data_header && keys[0].split('_')[0])
-                        tr.appendChild(document.createElement('td'))
+                    let row_link
+                    if (is_rank && !is_data_header && keys[0].split('_')[0]) {
+                        const td = tr.appendChild(document.createElement('td'))
+                        td.classList.add('number')
+                        row_link = td.appendChild(document.createElement('a'))
+                    }
                     const ids = new Set()
                     keys.forEach((k, i) => {
                         const td = tr.appendChild(document.createElement('td'))
@@ -200,6 +204,8 @@ class Table {
                                     id += '__' + i
                                 ids.add(id)
                                 tr.id = id
+                                if (row_link)
+                                    row_link.href = '#' + id
                             }
                             if (conf.type == 'checkmark') {
                                 td.style.textAlign = 'center'

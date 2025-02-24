@@ -3,7 +3,7 @@ const delays = [0, 0, 0, .1, .15, .2, .25, .3, .35, .4]
 
 let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
 
-videos.addEventListener('click', e => {
+videos.addEventListener('click', () => {
     if (!audioContext) {
         videos.classList.remove('show_cursor')
         videos.style.background = 'initial'

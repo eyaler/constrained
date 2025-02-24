@@ -105,11 +105,11 @@
         make_footer()
 
         function update_nikud() {
-            document.querySelectorAll('.nikud').forEach(e => {
-                text = e.dataset.sort
+            document.querySelectorAll('.nikud').forEach(event => {
+                text = event.dataset.sort
                 if (!nikud.checked)
                     text = text.replace(/[\u05be]/g, ' ').replace(/[\u0591-\u05c7\u034f\u200c\u200d]/g, '')
-                e.innerHTML = text
+                event.innerHTML = text
             })
         }
 

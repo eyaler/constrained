@@ -26,7 +26,7 @@ const pages = {
     "epipangram": {title: "אפיפנגרמה מושלמת מקסימלית", alt: "Maximal perfect epipangram", kw: ["combined forms", "hebrew cheatery", "pangram", "poem"]},
     "pan2d": {title: "פנגרמה מושלמת דו־ממדית", alt: "2D perfect pangram", kw: ["2d 3d", "cipher", "combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "software"]},
     "pan3d/": {title: "פנגרמה מושלמת תלת־ממדית", alt: "3D perfect pangram", kw: ["2d 3d", "combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "self referral", "software", "visual"]},
-    "snark/": {title: "כרחש אבמ\"ח וכרחש אדו\"ש", alt: "ABMḤ snark and ADWŠ", kw: ["2d 3d", "combinatorial", "interactive", "new constraint", "pangram", "software", "sound", "visual"]},
+    "snark/": {title: "כרחש אבמ\"ח וכרחש אדו\"ש", alt: "ABMḤ snark and ADWŠ snark", kw: ["2d 3d", "combinatorial", "interactive", "new constraint", "pangram", "software", "sound", "visual"]},
     "wordle": {title: "תחפצו ניעקד אסכלה משרבט", alt: "Words for Wordle", kw: ["combinatorial", "pangram", "software"]},
     "eyal": {title: "אֱיָליטרציה", alt: "Eyalliteration", kw: ["2d 3d", "combined forms", "discourse", "poem", "self referral", "visual"]},
     "toki": {title: "הייקו / toki musi aku", alt: "Haiku / toki musi aku", kw: ["combined forms", "poem", "translation"]},
@@ -545,7 +545,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 
             button.innerHTML = label
             button.dir = 'ltr'  // For left alignment of the multi-line title
-            button.title = `${alt}\npages=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
+            button.title = `${alt}\nworks=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
             if (page == '/')
                 button.onclick = kw_handler
             else {

@@ -83,7 +83,7 @@ class Table {
             history.replaceState(new_state, '')
         }
         this.table.addEventListener('click', function(event) {
-            if (this.href && !event.getModifierState('Control') && !event.getModifierState('Shift') && !event.getModifierState('Meta'))
+            if (this.href && !event.getModifierState?.('Control') && !event.getModifierState?.('Shift') && !event.getModifierState?.('Meta'))
                 history.replaceState({...history.state, id: this.closest('tr')?.id, sort_index: this.sort_index, sort_order: this.sort_order}, '')
         })
         return state

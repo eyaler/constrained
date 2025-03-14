@@ -19,7 +19,7 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>
-		const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replace(/ /g, ', ')})`
+		const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replaceAll(' ', ', ')})`
 
 		let values = ' ואשביעך ביהוה אלהי השמים ואלהי '
 		const answer = 'ڥڬڗژ#ژڟړ#ړڟڗڜڡ#ڗژړ#ڞڜ#ڬڔڔڜڡ#ڜڗڜڗ'

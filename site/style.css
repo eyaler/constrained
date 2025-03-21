@@ -1,0 +1,23 @@
+pre {
+    font-size: min(1em, 4.5vw);
+}
+
+pre img {
+    display: inline-block;
+    filter: invert();
+    width: 27ch;
+}
+
+pre span {
+    font-size: 2em;
+}
+
+@media (min-width: 650px) {
+    pre {
+        padding-inline: 3em;
+        border: 2em solid;
+        border-image: url('border.png');
+        border-image-slice: 45;
+        border-image-repeat: round;
+    }
+}

@@ -61,7 +61,7 @@ svg:not(.omni_is_green).active {
     91.67%, 100% { filter: none }
 }
 
-svg.active > g {  /* Safari (<16.4) could only rotate SVG groups not text */
+svg.active > g {  /* Safari (<16.4) could only rotate SVG groups, not text */
     animation-name: rotate_restart_count !important;  /* See https://css-tricks.com/restart-css-animation/ */
     animation-iteration-count: 3 !important;
     --factor: .13;

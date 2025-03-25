@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
+    <script src="p5/p5.min.js"></script>
     <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
-    <script src="p5/p5.min.js"></script>
     <noscript><style>body {visibility: visible}</style></noscript>
 	<style>
 		body {
@@ -52,15 +52,20 @@
 		}
 
 		function draw() {
-			background('black')
+			background(0)
 			let topZ = 0
 			boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
 			candidate = boxes.reduce((s, box) => s += box.value, '')
+			let needFocus = false
 			if (isOrdered) {
-			    if (!a)
-                    a = createA(`${(new TextEncoder).encode(candidate).join('')}.html`, 'יאשר המשך לילך שמה רשאי')
+			    if (!a) {
+                    a = createA((new TextEncoder).encode(candidate).join(''), 'יאשר המשך לילך שמה רשאי')
+                    needFocus = true
+                }
                 a.position(0, height * .85)
                 a.center('horizontal')
+                if (needFocus)
+                    a.elt.focus()
             } else
                 isOrdered = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
 		}
@@ -78,7 +83,7 @@
 			}
 			noStroke()
 			rect((box.x-boxWidth/2) * width, box.y*height - boxWidth/2*width , boxWidth * width, boxWidth * width, 3)
-			fill('black')
+			fill(0)
 			textSize(boxWidth * width * 0.8)
 			let value = box.value
 			if (i != dragIndex && ((i == boxes.length - 1) || boxes[i + 1].value == ' '))
@@ -99,8 +104,8 @@
 			const mX = mouseX / width
 			const mY = mouseY / height
 			for (let i = 0; i < boxes.length; i++)
-				if (abs(mX - boxes[i].x) < boxWidth/2 &&
-						abs(mY - boxes[i].y) < boxWidth/2) {
+				if (abs(mX - boxes[i].x) < boxWidth / 2 &&
+						abs(mY - boxes[i].y) < boxWidth / 2) {
 							dragIndex = i
 							dragOffsetX = boxes[i].x - mX
 							dragOffsetY = boxes[i].y - mY

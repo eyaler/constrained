@@ -41,6 +41,7 @@
     --fg_filter: sepia() saturate(3.5) hue-rotate(59deg);
     --fg_highlight: white;
     --glow: var(--fg_verydim);
+    --glow_blur: 13px;
     --inverse_bg: rgb(255 100 255);
     --inverse_fg: var(--fg_verydim);
     --invert: 0;
@@ -158,7 +159,7 @@ body.todark, .todark ::backdrop {
     }
 
     a:is(:hover, :focus-visible) img {
-        box-shadow: 0 0 .8rem .4rem var(--glow);
+        box-shadow: 0 0 var(--glow_blur) 6.5px var(--glow);
     }
 
     @keyframes border {

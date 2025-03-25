@@ -60,8 +60,8 @@ function update() {
     if (hard_restart_secs && start_time - hard_prev_time >= hard_restart_secs * 1000) {
         hard_prev_time = start_time;
         lang_slider.value = Math.round(Math.random());
-        size_slider.value = Math.random() * (max_size + 1) | 0;
-        rate_slider.value = Math.random() * (max_rate - initial_rate + 1) + initial_rate | 0;
+        size_slider.value = Math.random() * (max_size+1) | 0;
+        rate_slider.value = Math.random()*(max_rate-initial_rate+1) + initial_rate | 0;
         temp_slider.value = initial_temp;
         glitch_checkbox.checked = Math.random() > .8;
         restarts_checkbox.checked = true;
@@ -110,6 +110,6 @@ function update() {
         grid.textContent = ind_grid.map((x, k) => (k % w || !k ? '' : '\n') + chars[lang][x]).join('');
     glitch = glitch_checkbox.checked;
     ind_grid = ind_grid.map(next);
-    setTimeout(update, 1000 - Math.log10(rate_slider.value/max_rate*9999 + 1)*250 - (performance.now()-start_time));
+    setTimeout(update, 1000 - Math.log10(rate_slider.value/max_rate*9999 + 1)*250 + start_time - performance.now());
 }
 update();

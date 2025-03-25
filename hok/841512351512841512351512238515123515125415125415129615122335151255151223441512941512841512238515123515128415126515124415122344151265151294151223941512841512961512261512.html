@@ -6,18 +6,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
+    <script src="p5/p5.min.js"></script>
     <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
-        body {
-            align-items: center;
-            display: flex;
-            justify-content: center;
+		body {
+			padding: 0;
+			overflow: clip;
+		}
+
+        a {
+            font-size: 4vmin;
+            white-space: pre-line;
         }
-    </style>
+	</style>
 </head>
 <body onload="document.body.style.visibility = 'visible'">
-    <div>השער הבא בבנייה - מוזמנים לשוב לכאן בעתיד (זו לא חידה - לא כל שורה רומזת רמז)</div>
+    <script>
+        const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replaceAll(' ', ', ')})`
+                        
+        const letters = ['ת', 'כ', 'ל', 'י', 'ו']
+        const nodeRadius = 30
+        const arrowSize = 10
+
+        const offset = nodeRadius * .4
+        const edges = []
+        const path = []
+        let nodes = []
+        let dragging
+        let dragStartNode = null
+        let completed
+        let currentColor
+        let firstNode
+        let direction
+        let alink
+        
+        function setup() {
+          createCanvas(windowWidth, windowHeight)
+          textAlign(CENTER, CENTER)
+          textFont('alef')
+          currentColor = 224
+          firstNode = Math.random() * 5 | 0
+          direction = Math.random() > .5
+          setupNodes()
+        }
+        
+        function setupNodes() {
+          nodes = []
+          const centerX = width / 2
+          const centerY = height / 2
+          const radius = min(width, height) * .35
+          for (let i = 0; i < 5; i++) {
+            let c = (i+firstNode) % 5
+            if (direction)
+                c = 4 - c
+            const angle = -PI / 2 + i * TWO_PI / 5
+            const x = centerX + radius * cos(angle)
+            const y = centerY + radius * sin(angle)
+            nodes.push({x: x, y: y, letter: letters[c], index: i})
+          }
+        }
+        
+        function draw() {
+          background(0)
+          strokeWeight(2)
+          textSize(nodeRadius * 1.4)
+          for (const n of nodes) {
+            fill(currentColor)
+            stroke(currentColor)
+            ellipse(n.x, n.y, nodeRadius * 2, nodeRadius * 2)
+            fill(0)
+            noStroke()
+            text(n.letter, n.x, n.y)
+          }
+          let hoveredNode = getNodeUnderMouse()
+          let activeIndex = path.length ? path[path.length - 1] : null
+          noFill()
+          if (!completed && path.length) {
+            const activeNode = nodes[activeIndex]
+            stroke(255)
+            strokeWeight(4)
+            ellipse(activeNode.x, activeNode.y, nodeRadius * 2 + 12, nodeRadius * 2 + 12)
+          }
+          if (hoveredNode != null && !completed) {
+            stroke(fg)
+            strokeWeight(4)
+            ellipse(hoveredNode.x, hoveredNode.y, nodeRadius * 2 + 5, nodeRadius * 2 + 5)
+          }
+          for (const edge of edges) {
+            const n1 = nodes[edge.a]
+            const n2 = nodes[edge.b]
+            drawArrow(n1, n2, edge.order)
+          }
+          if (dragging && dragStartNode != null)
+            drawArrow(nodes[dragStartNode], {x: mouseX, y: mouseY})
+          if (alink)
+            alink.center()
+        }
+        
+        function mousePressed() {
+          if (completed)
+            return
+          if (path.length) {
+            dragging = true
+            dragStartNode = path[path.length - 1]
+          } else {
+            const clickedNode = getNodeUnderMouse()
+            if (clickedNode != null) {
+              dragging = true
+              dragStartNode = clickedNode.index
+              path.push(clickedNode.index)
+            }
+          }
+        }
+        
+        function cancel() {
+          dragging = false
+          dragStartNode = null
+        }
+        
+        function mouseReleased() {
+          if (completed)
+            return
+          if (dragging && dragStartNode != null) {
+            const releasedNode = getNodeUnderMouse()
+            if (releasedNode != null && releasedNode.index != dragStartNode) {
+              const a = dragStartNode
+              const b = releasedNode.index
+              if (!edges.some(e => a == e.a && b == e.b || a == e.b && b == e.a)) {
+                edges.push({a: a, b: b, order: edges.length + 1})
+                path.push(releasedNode.index)
+                if (edges.length == 10 && path[0] == path[path.length - 1]) {
+                  const candidate = path.map(i => nodes[i].letter).join('')
+                  const url = encodeURI(encodeURI(candidate)) + '.html'
+                  fetch(url, {method: 'HEAD'}).then(response => {
+                    if (response.ok) {
+                      completed = true
+                      currentColor = fg
+                      alink = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
+                    } else
+                      location.reload()
+                  })
+                }
+              }
+            }
+          }
+          cancel()
+        }
+        
+        function getNodeUnderMouse() {
+          for (const n of nodes)
+            if (dist(mouseX, mouseY, n.x, n.y) < nodeRadius)
+              return n
+          return null
+        }
+        
+        function getAdjustedEndpoints(n1, n2, fix_n2) {
+          const dx = n2.x - n1.x
+          const dy = n2.y - n1.y
+          const d = sqrt(dx * dx + dy * dy)
+          const ux = dx / d
+          const uy = dy / d
+          const startX = n1.x + ux * nodeRadius
+          const startY = n1.y + uy * nodeRadius
+          const endX = n2.x - ux * nodeRadius * fix_n2
+          const endY = n2.y - uy * nodeRadius * fix_n2
+          return [{startX, startY, endX, endY, ux, uy}, d]
+        }
+        
+        function drawArrow(n1, n2, order=null) {
+          const [endpoints, dist] = getAdjustedEndpoints(n1, n2, order != null)
+          if (order == null && !dist)
+            return
+          fill(currentColor)
+          stroke(currentColor)
+          strokeWeight(2)
+          line(endpoints.startX, endpoints.startY, endpoints.endX, endpoints.endY)
+          const angle = atan2(endpoints.endY - endpoints.startY, endpoints.endX - endpoints.startX)
+          noStroke()
+          push()
+          translate(endpoints.endX, endpoints.endY)
+          rotate(angle)
+          triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2)
+          pop()
+          if (order != null) {
+            const mx = (endpoints.startX + endpoints.endX) / 2
+            const my = (endpoints.startY + endpoints.endY) / 2
+            let perpAngle = angle - PI / 2
+            const centerX = width / 2
+            const centerY = height / 2
+            if (cos(perpAngle) * (mx - centerX) + sin(perpAngle) * (my - centerY) < 0)
+              perpAngle += PI
+            const offsetX = cos(perpAngle) * offset
+            const offsetY = sin(perpAngle) * offset
+            textSize(nodeRadius * .4)
+            text(order, mx + offsetX, my + offsetY)
+          }
+        }
+        
+        document.addEventListener('pointercancel', cancel)
+        addEventListener('blur', cancel)
+        
+        // https://github.com/processing/p5.js/issues/7195
+        function touchStarted() {
+          mousePressed()
+        }
+        function touchEnded() {
+          mouseReleased()
+        }
+        
+        function windowResized() {
+          resizeCanvas(windowWidth, windowHeight)
+          setupNodes()
+        }
+    </script>
 </body>
 </html>

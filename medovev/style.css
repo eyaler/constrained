@@ -1,0 +1,68 @@
+#container {
+    height: 400px;
+    position: relative;
+    margin-bottom: 3em;
+}
+
+#editing, #highlighting {
+  /* Both elements need the same text and space styling so they are directly on top of each other */
+  margin: 1em;
+  padding: 1em;
+  border: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 400px;
+}
+
+#editing, #highlighting, #highlighting * {
+  font-family: 'Alef Mono';
+  font-size: 1em;
+  letter-spacing: var(--letter_spacing);
+}
+
+#editing, #highlighting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-inline: auto;
+}
+
+#editing {
+  z-index: 1;
+}
+
+#highlighting {
+  z-index: 0;
+}
+
+#editing {
+  color: transparent;
+  background: transparent;
+  caret-color: var(--fg);
+}
+
+#editing, #highlighting {
+  overflow: auto;
+  white-space: pre; /* Allows textarea to scroll horizontally */
+}
+
+#editing {
+  resize: none;
+}
+
+.error {
+  color: #ff6464;
+}
+
+.highlight:is(:first-child, :last-child) {
+  background: #ff6464;
+}
+
+.highlight:not(:is(:first-child, :last-child)) {
+  background: #aa6464;
+}
+
+#stats {
+    margin-inline-start: 1em;
+    white-space: pre-wrap;
+}

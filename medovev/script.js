@@ -31,9 +31,7 @@ function check_outer(str) {
 }
 
 function update(text) {
-  const decoder = document.createElement('textarea')
-  decoder.innerHTML = text
-  text = decoder.value
+  text = new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
   
   if (text[text.length-1] == '\n')
     text += ' '

@@ -297,7 +297,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
             const meta = a.appendChild(document.createElement('meta'))
             meta.setAttribute('itemprop', 'accessibilityHazard')
             meta.content = hazard
-            a.setAttribute('itemscope')
+            a.setAttribute('itemscope', '')
         })
             
         const p = document.createElement('p')

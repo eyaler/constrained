@@ -14,7 +14,7 @@
 }
 
 #editing, #highlighting, #highlighting * {
-  font-family: 'Alef Mono';
+  font-family: 'Alef';
   font-size: 1em;
   letter-spacing: var(--letter_spacing);
 }

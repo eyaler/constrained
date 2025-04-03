@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
     <script src="../pages.js"></script>
@@ -13,11 +12,12 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
+<body onload="document.body.style.visibility = 'visible'; editing.focus()">
     <script>make_header()</script>
+    <style>body {visibility: visible}</style>
     <div id="container">
-        <textarea id="editing" autocomplete="off" spellcheck="false" oninput="update(this.value); sync_scroll(this);" onscroll="sync_scroll(this)"></textarea>
-        <div id="highlighting" aria-hidden="true"><div id="highlighting_content">ינסני!</div></div>
+        <textarea id="editing" spellcheck="false" oninput="update(this.value); sync_scroll(this)" onscroll="sync_scroll(this)"></textarea>
+        <div id="highlighting"><div id="highlighting_content">ינסני!</div></div>
     </div>
     <div id="stats">
         <p id="counts"></p>

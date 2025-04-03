@@ -31,7 +31,8 @@ function check_outer(str) {
 }
 
 function update(text) {
-  text = new DOMParser().parseFromString(text, 'text/html').documentElement.textContent.replaceAll('<', '&lt;')
+  text = new DOMParser().parseFromString(text.replaceAll('<', '\uff1c'), 'text/html').documentElement.textContent.replaceAll('<', '\uff1c')
+  editing.value = text.replaceAll('\uff1c', '<')
   
   if (text[text.length-1] == '\n')
     text += ' '
@@ -50,7 +51,7 @@ function update(text) {
     for (const i of errors)
         text = text.slice(0, positions[i]) + `<span>${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
   }
-  highlighting_content.innerHTML = text  
+  highlighting_content.innerHTML = text.replaceAll('\uff1c', '&lt;')
   counts.textContent = `מילים: ${words}\t\tאותיות: ${chars}`
   palindrome_status.textContent = is_palindrome
   palindrome_status.classList.toggle('error', !!errors)

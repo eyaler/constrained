@@ -19,7 +19,10 @@
         <textarea id="editing" autocomplete="off" spellcheck="false" oninput="update(this.value); sync_scroll(this);" onscroll="sync_scroll(this)"></textarea>
         <div id="highlighting" aria-hidden="true"><div id="highlighting_content">ינסני!</div></div>
     </div>
-    <div id="stats"></div>
+    <div id="stats">
+        <p id="counts"></p>
+        <p><span id="palindrome_status"></span></p>
+    </div>
     <script>make_footer()</script>
 </body>
 </html>

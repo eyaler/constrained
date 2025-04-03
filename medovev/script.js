@@ -6,7 +6,7 @@ function process(text) {
   for (let i = 0; i < text.length; i++) {
     let char = text[i]
     if (char.match(/[\p{L}\p{N}]/u)) {
-      normalized += char.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/כ/, 'ך').replace(/מ/, 'ם').replace(/נ/, 'ן').replace(/פ/, 'ף').replace(/צ/, 'ץ')
+      normalized += char.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/כ/, 'ך').replace(/מ/, 'ם').replace(/נ/, 'ן').replace(/פ/, 'ף').replace(/צ/, 'ץ')
       positions[normalized.length - 1] = i
     }
   }
@@ -39,8 +39,8 @@ function update(text) {
     text += ' '
 
   const [normalized, positions] = process(text)
-  const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0
-  const charCount = normalized.length
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0
+  const chars = normalized.length
   
   let is_palindrome = 'פלינדרום'
   let errors = check_outer(normalized)
@@ -50,10 +50,12 @@ function update(text) {
     if (inner[0] != errors[0])
         errors.splice(1, 0, ...inner)
     for (const i of errors)
-        text = text.slice(0, positions[i]) + `<span class="highlight">${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
+        text = text.slice(0, positions[i]) + `<span>${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
   }
   highlighting_content.innerHTML = text  
-  stats.innerHTML = `מילים: ${wordCount}\t\tאותיות: ${charCount}\t\t<span class="error nowrap">${is_palindrome}</span>`
+  counts.textContent = `מילים: ${words}\t\tאותיות: ${chars}`
+  palindrome_status.textContent = is_palindrome
+  palindrome_status.classList.toggle('error', !!errors)
 }
 
 function sync_scroll(element) {

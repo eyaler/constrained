@@ -31,7 +31,7 @@ function check_outer(str) {
 }
 
 function update(text) {
-  text = new DOMParser().parseFromString(text, 'text/html').documentElement.textContent
+  text = new DOMParser().parseFromString(text, 'text/html').documentElement.textContent.replaceAll('<', '&lt;')
   
   if (text[text.length-1] == '\n')
     text += ' '

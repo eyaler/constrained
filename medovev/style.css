@@ -42,7 +42,8 @@
 
 #editing, #highlighting {
   overflow: auto;
-  white-space: pre; /* Allows textarea to scroll horizontally */
+  overscroll-behavior: none;
+  white-space: pre;  /* Allows textarea to scroll horizontally */
 }
 
 #editing {

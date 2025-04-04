@@ -19,7 +19,7 @@ const pages = {
     "cheat": {title: "מִרמת העברית", alt: "Hebrew cheatery", kw: ["discourse", "hebrew cheatery", "palindrome", "self-referral"]},
     "bio": {title: "ביו־פלינדרומים", alt: "Bio-palindromes", kw: ["combined forms", "new constraint", "palindrome", "pangram", "record"]},
 
-    "medovev/": {title: "בודק פלינדרומים", alt: "Palindrome checker", kw: ["live code", "palindrome"]},
+    "medovev/": {title: "בודק פלינדרומים", alt: "Palindrome checker", kw: ["interactive", "live code", "palindrome"]},
     "panpan": {title: "פנגרמות מושלמות על פנגרמות מושלמות", alt: "Perfect pangrams on perfect pangrams", kw: ["combined forms", "hebrew cheatery", "pangram", "self-referral"]},
     "undercover": {title: "פנגרמה מושלמת מסתערבת", alt: "Undercover perfect pangram", kw: ["discourse", "hebrew cheatery", "pangram"]},
     "pangrams": {title: "פנגרמות מושלמות מינימליות", alt: "Minimal perfect pangrams", kw: ["combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "record", "software"]},
@@ -34,7 +34,7 @@ const pages = {
     
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
-    "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"]},
+    "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
     "otomat/": {title: "אות־וֹמט תאי", alt: "OT-o-mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
     "xx17n": {title: "חרותת / xx17n", alt: "xx17n", kw: ["cipher", "poem", "software", "visual"]},
@@ -66,6 +66,11 @@ const authors = {
         "github": "eyaler",
         "sponsors": "eyaler",
         "paypal": "LNJ6F3FR79ARE",
+    },
+
+    "eranhadas": {
+        "name": {"": "ערן הדס", "en": "Eran Hadas"},
+        "web": ".com",
     },
 
     "noamdovev": {

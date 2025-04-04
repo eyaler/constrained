@@ -6,7 +6,7 @@ function process(text) {
   for (let i = 0; i < text.length; i++) {
     let char = text[i]
     if (char.match(/[\p{L}\p{N}]/u)) {
-      normalized += char.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/כ/, 'ך').replace(/מ/, 'ם').replace(/נ/, 'ן').replace(/פ/, 'ף').replace(/צ/, 'ץ')
+      normalized += char.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/כ/, 'ך').replace(/מ/, 'ם').replace(/נ/, 'ן').replace(/פ/, 'ף').replace(/צ/, 'ץ')
       positions[normalized.length - 1] = i
     }
   }
@@ -38,7 +38,7 @@ function update(text) {
     text += ' '
 
   const [normalized, positions] = process(text)
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0
+  const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
   const chars = normalized.length
   
   let is_palindrome = 'פלינדרום'

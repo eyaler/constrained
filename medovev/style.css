@@ -1,13 +1,13 @@
 #container {
     height: 400px;
-    margin-bottom: 3em;
+    margin-bottom: 2em;
     position: relative;
 }
 
 #editing, #highlighting {
   outline: 1px solid;
   box-sizing: border-box;
-  height: 400px;
+  height: 100%;
   margin: 1em;
   padding: 1em;
   width: 100%;
@@ -59,9 +59,13 @@
 }
 
 #stats {
-  margin-inline-start: 1em;
+  margin-inline: 1em;
 }
 
 #counts {
-  white-space: pre;
+  white-space: pre-wrap;
+}
+
+#palindrome_status {
+  float: left;
 }

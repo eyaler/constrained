@@ -52,7 +52,7 @@ function update(text) {
         text = text.slice(0, positions[i]) + `<span>${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
   }
   highlighting_content.innerHTML = text.replaceAll('\uff1c', '&lt;')
-  counts.textContent = `מילים: ${words}\t\tאותיות: ${chars}`
+  counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${chars}`
   palindrome_status.textContent = is_palindrome
   palindrome_status.classList.toggle('error', !!errors)
 }

@@ -12,11 +12,11 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="document.body.style.visibility = 'visible'; editing.focus(); update(editing.value)">
+<body onload="document.body.style.visibility = 'visible'; editing.focus(); if (editing.value) update(editing.value)">
     <script>make_header()</script>
     <div id="container">
-        <textarea id="editing" spellcheck="false" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
-        <div id="highlighting"><div id="highlighting_content">ינסני!</div></div>
+        <textarea id="editing" spellcheck="false" aria-hidden="true" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
+        <div id="highlighting"><span class="placeholder">ינסני!</span></div>
     </div>
     <div id="stats">
         <p>

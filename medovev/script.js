@@ -4,7 +4,7 @@ function process(text) {
   let normalized = ''
   const positions = {}
   for (let i = 0; i < text.length; i++) {
-    let char = text[i]
+    const char = text[i]
     if (char.match(/[\p{L}\p{N}]/u)) {
       normalized += char.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/כ/, 'ך').replace(/מ/, 'ם').replace(/נ/, 'ן').replace(/פ/, 'ף').replace(/צ/, 'ץ')
       positions[normalized.length - 1] = i
@@ -18,7 +18,7 @@ function check_inner(str) {
   const right = n / 2 | 0
   const left = (n-1) / 2 | 0
   for (let i = 0; right + i < n; i++)
-    if (str[left - i] !== str[right + i])
+    if (str[left - i] != str[right + i])
       return [right + i, left - i]
 }    
 
@@ -51,13 +51,13 @@ function update(text) {
     for (const i of errors)
         text = text.slice(0, positions[i]) + `<span>${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
   }
-  highlighting_content.innerHTML = text.replaceAll('\uff1c', '&lt;')
+  highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
   counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${chars}`
   palindrome_status.textContent = is_palindrome
   palindrome_status.classList.toggle('error', !!errors)
 }
 
-function sync_scroll(element) {
-  highlighting.scrollTop = element.scrollTop
-  highlighting.scrollLeft = element.scrollLeft
+function sync_scroll(elem) {
+  highlighting.scrollTop = elem.scrollTop
+  highlighting.scrollLeft = elem.scrollLeft
 }

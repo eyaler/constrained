@@ -15,7 +15,7 @@
 <body onload="document.body.style.visibility = 'visible'; editing.focus(); if (editing.value) update(editing.value)">
     <script>make_header()</script>
     <div id="container">
-        <textarea id="editing" spellcheck="false" aria-hidden="true" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
+        <textarea id="editing" class="outline" spellcheck="false" aria-hidden="true" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
         <div id="highlighting"><span class="placeholder">ינסני!</span></div>
     </div>
     <div id="stats">
@@ -24,6 +24,9 @@
             <span id="palindrome_status"></span>
         </p>
     </div>
-    <script>make_footer()</script>
+    <script>
+        make_footer()
+        new ResizeObserver(() => container.style.height = editing.clientHeight + 'px').observe(editing)
+    </script>
 </body>
 </html>

@@ -1,4 +1,7 @@
-// Based on https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
+// Based on:
+// https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
+// https://phuoc.ng/collection/mirror-a-text-area/
+
 
 function process(text) {
   let normalized = ''
@@ -13,21 +16,20 @@ function process(text) {
   return [normalized, positions]
 }
 
-function check_inner(str) {
-  const n = str.length
+function check_inner(text) {
+  const n = text.length
   const right = n / 2 | 0
   const left = (n-1) / 2 | 0
   for (let i = 0; right + i < n; i++)
-    if (str[left - i] != str[right + i])
+    if (text[left - i] != text[right + i])
       return [right + i, left - i]
 }    
 
-function check_outer(str) {
-  const n = str.length
-  for (let i = 0; i < n / 2 | 0; i++) {
-    if (str[i] != str[n - 1 - i])
+function check_outer(text) {
+  const n = text.length
+  for (let i = 0; i < n / 2 | 0; i++)
+    if (text[i] != text[n - 1 - i])
       return [n - 1 - i, i]
-  }
 }
 
 function update(text) {
@@ -38,23 +40,32 @@ function update(text) {
     text += ' '
 
   const [normalized, positions] = process(text)
-  const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
-  const chars = normalized.length
-  
-  let is_palindrome = 'פלינדרום'
-  let errors = check_outer(normalized)
-  if (errors) {
-    is_palindrome = 'לא ' + is_palindrome
-    const inner = check_inner(normalized)
-    if (inner[0] != errors[0])
-        errors.splice(1, 0, ...inner)
-    for (const i of errors)
-        text = text.slice(0, positions[i]) + `<span>${text[positions[i]]}</span>` + text.slice(positions[i] + 1)
+  const n = normalized.length
+  const mid = n / 2 | 0
+  let marks = []
+  if (n) {
+      marks = [[(n-1) / 2 | 0, 'middle']]
+      if (mid != marks[0][0])
+        marks.unshift([mid, 'middle'])
   }
+  let is_palindrome = 'פלינדרום'
+  const inner = check_inner(normalized)
+  if (inner) {
+    is_palindrome = 'לא ' + is_palindrome
+    if (inner[0] == mid)
+        marks = marks.map(([pos, cls]) => [pos, cls + ' inner'])
+    else
+        marks = [[inner[0], 'inner'], ...marks, [inner[1], 'inner']]
+    const outer = check_outer(normalized)
+    if (outer[0] != inner[0])
+      marks = [[outer[0], 'outer'], ...marks, [outer[1], 'outer']]
+  }
+  marks.forEach(([pos, cls]) => text = text.slice(0, positions[pos]) + `<mark class="${cls}">${text[positions[pos]]}</mark>` + text.slice(positions[pos] + 1))
   highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
-  counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${chars}`
+  const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
+  counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${normalized.length}`
   palindrome_status.textContent = is_palindrome
-  palindrome_status.classList.toggle('error', !!errors)
+  palindrome_status.classList.toggle('error', !!inner)
 }
 
 function sync_scroll(elem) {

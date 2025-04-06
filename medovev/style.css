@@ -8,10 +8,14 @@
     box-sizing: border-box;
     height: 100%;
     margin-block: 1em;
-    padding: 1em;
+    padding-block: 1em;
     position: absolute;
     white-space: pre;  /* Allows textarea to scroll horizontally */
     width: 100%;
+}
+
+#container > *, #stats {
+    padding-inline: 1em;
 }
 
 #editing {
@@ -21,32 +25,39 @@
     color: transparent;
     font: inherit;
     letter-spacing: inherit;
+    outline-width: 1px;
     overscroll-behavior: none;
-    resize: none;
+    resize: vertical;
     z-index: 1;
 }
 
-#highlighting {
-    outline-offset: 7.5px;
-    outline-style: solid;
-    outline-width: 1px;
-    overflow-y: hidden;
+#editing:not(:focus-visible) {
+    outline-style: dashed;
 }
 
-#highlighting span:is(:first-child, :last-child):not(.placeholder), .error {
+#highlighting {
+    overflow: hidden;
+}
+
+#highlighting .middle {
+    background-color: initial;
+    color: var(--fg_highlight);
+}
+
+#highlighting mark {
+    color: inherit;
+}
+
+#highlighting .inner, .error {
     background-color: #ff6464;
 }
 
-#highlighting span:not(:is(:first-child, :last-child)) {
+#highlighting .outer {
     background-color: #aa6464;
 }
 
 .placeholder {
     color: var(--fg_dim);
-}
-
-#stats {
-    margin-inline: 1em;
 }
 
 #stats #counts {

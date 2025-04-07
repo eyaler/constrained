@@ -39,6 +39,8 @@ function update(text) {
   if (text[text.length-1] == '\n')
     text += ' '
 
+  const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
+  
   const [normalized, positions] = process(text)
   const n = normalized.length
   const mid = n / 2 | 0
@@ -62,7 +64,6 @@ function update(text) {
   }
   marks.forEach(([pos, cls]) => text = text.slice(0, positions[pos]) + `<mark class="${cls}">${text[positions[pos]]}</mark>` + text.slice(positions[pos] + 1))
   highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
-  const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
   counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${normalized.length}`
   palindrome_status.textContent = is_palindrome
   palindrome_status.classList.toggle('error', !!inner)

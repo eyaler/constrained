@@ -25,9 +25,9 @@ class Table {
                     this.sort_table(sort_index, sort_order)
                 this.table.style.visibility = 'visible'
                 if (!id && [...this.table.querySelectorAll('[id]')].map(e => e.id).includes(location.hash.slice(1).toLowerCase()))
-                    id = location.hash.toLowerCase()
+                    id = location.hash.slice(1).toLowerCase()
                 if (id)
-                    document.querySelector(id).scrollIntoView()
+                    document.getElementById(id).scrollIntoView()  // Do not use querySelector() as id may not be a valid CSS identifier
             })
     }
 
@@ -82,9 +82,9 @@ class Table {
             delete new_state.sort_order
             history.replaceState(new_state, '')
         }
-        this.table.addEventListener('click', function(event) {
-            if (this.href && !event.getModifierState?.('Control') && !event.getModifierState?.('Shift') && !event.getModifierState?.('Meta'))
-                history.replaceState({...history.state, id: this.closest('tr')?.id, sort_index: this.sort_index, sort_order: this.sort_order}, '')
+        this.table.addEventListener('click', event => {
+            if (event.target.href && !event.getModifierState?.('Control') && !event.getModifierState?.('Shift') && !event.getModifierState?.('Meta'))
+                history.replaceState({...history.state, id: event.target.closest('tr')?.id, sort_index: this.sort_index, sort_order: this.sort_order}, '')
         })
         return state
     }

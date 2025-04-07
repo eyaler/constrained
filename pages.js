@@ -172,14 +172,14 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
     const ordered = reorder(keywords, lang, reverse_issues)
     if (page == null)
         return ordered
-        const counts = keywords.reduce((acc, kw) => (acc[kw] = ++acc[kw] || 1, acc), {})
-        const len = Object.values(pages).filter(v => !v.skip).length
-        const freq = Object.fromEntries(Object.entries(counts).map(([kw, c]) => [kw, c / len]))
-        const entropy = Object.fromEntries(Object.entries(freq).map(([kw, f]) => [kw, -f * Math.log2(f)]))
-        const maxent = Math.log2(len)
-        const info = Object.fromEntries(Object.entries(entropy).map(([kw, e]) => [kw, e / maxent]))
+    const counts = keywords.reduce((acc, kw) => (acc[kw] = ++acc[kw] || 1, acc), {})
+    const len = Object.values(pages).filter(v => !v.skip).length
+    const freq = Object.fromEntries(Object.entries(counts).map(([kw, c]) => [kw, c / len]))
+    const entropy = Object.fromEntries(Object.entries(freq).map(([kw, f]) => [kw, -f * Math.log2(f)]))
+    const maxent = Math.log2(len)
+    const info = Object.fromEntries(Object.entries(entropy).map(([kw, e]) => [kw, e / maxent]))
     return [ordered, Object.fromEntries(ordered.map(kw => [kw, {count: counts[kw], info: info[kw]}]))]  // Note object keys parsing as integers will appear first an ascending order. See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
-    }
+}
 
 
 function harden(s) {
@@ -304,7 +304,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
             meta.content = hazard
             a.setAttribute('itemscope', '')
         })
-            
+
         const p = document.createElement('p')
         p.classList.add(...all_keywords.filter(kw => !pages[page].kw?.map(String).includes(kw)).map(kw => 'non_' + sanitize(kw)))
         p.id = 'page_' + div.children.length

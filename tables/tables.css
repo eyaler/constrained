@@ -73,6 +73,11 @@ table {
     }
 }
 
+.copy > button::before {
+    content: '\1f4cb';
+    filter: var(--fg_filter);
+}
+
 .harden {
     display: inline-block;
     text-decoration: inherit;
@@ -146,7 +151,7 @@ thead button:active {
 
 thead.data_header {
     border-bottom-style: double;
-    border-color: currentColor;
+    border-color: currentcolor;
 }
 
 tr {

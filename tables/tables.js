@@ -157,9 +157,6 @@ class Table {
             const button = first_cell.appendChild(document.createElement('button'))
             button.title = 'Copy table to clipboard'
             button.onclick = () => navigator.clipboard.writeText(this.table.outerHTML)
-            const span = button.appendChild(document.createElement('span'))
-            span.innerHTML = '&#x1f4cb;'
-            span.classList.add('fg_filter')
         }
     }
 

@@ -34,6 +34,7 @@ const pages = {
     
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
+    "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "sound", "translation", "visual"], by: "graceslick", skip: true},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
     "otomat/": {title: "אות־וֹמט תאי", alt: "OT-o-mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
@@ -73,9 +74,14 @@ const authors = {
         "web": ".com",
     },
 
+    "graceslick": {
+        "name": {"": "גרייס סליק", "en": "Grace Slick"},
+    },
+
     "noamdovev": {
         "name": {"": "נעם דובב", "en": "Noam Dovev"},
         "web": "palindromes.co/",
+        "mail": "noamdo@gmail.com",
     },
 
     "yaeltsabari": {
@@ -184,6 +190,7 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
 
 function harden(s) {
     return s.replace(/(.*) \/ (.*)/, '<span class="harden">$1 /</span> <span class="harden">$2</span>').replace(/[\p{L}\p{M}\p{N}\xa0]+[\u05be-][\p{L}\p{M}\p{N}\xa0\u05be-]+/gu, '<span class="harden">$&</span>')
+
 }
 
 
@@ -307,7 +314,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
 
         const p = document.createElement('p')
         p.classList.add(...all_keywords.filter(kw => !pages[page].kw?.map(String).includes(kw)).map(kw => 'non_' + sanitize(kw)))
-        p.id = 'page_' + div.children.length
+        p.id = 'page_' + div.childElementCount
         p.appendChild(a)
 
         if (show_author) {
@@ -377,7 +384,7 @@ function is_shortcut(event, shortcut) {
 
 function add_shortcut(elem, shortcut) {
     if (shortcut) {
-        elem.ariaKeyshortcuts = shortcut.replaceAll(' ', '')
+        elem.ariaKeyShortcuts = shortcut.replaceAll(' ', '')
         document.addEventListener('keydown', e => {if (is_shortcut(e, shortcut)) elem.click()})
     }
 }
@@ -590,7 +597,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const desc = []
     if (en_title)
         desc.push(en_title)
-    if (pages[page].author || pages[page].authors || pages[page].translator || pages[page].translators || pages[page].with) {
+    if (pages[page].author || pages[page].authors || pages[page].by || pages[page].trans || pages[page].translation || pages[page].translator || pages[page].translators || pages[page].colab || pages[page].colabs || pages[page].collab || pages[page].collabs || pages[page].collaboration || pages[page].collaborator || pages[page].collaborators || pages[page].with) {
         const current_authors = get_make_author(page, lang, header, new_tab_for_social)[lang != 'en' | 0].join(', ')
         if (current_authors)
             desc.push(current_authors)
@@ -621,9 +628,9 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_for_social) {
     page ??= get_page()
     lang ??= get_lang()
-    const translators = merge(pages[page].translator, pages[page].translators)
-    const colabs = merge(pages[page].with)
-    let keys = [...new Set(merge(pages[page].author, pages[page].authors, translators, colabs))]
+    const translators = merge(pages[page].trans, pages[page].translation, pages[page].translator, pages[page].translators)
+    const collaborators = merge(pages[page].colab, pages[page].colabs, pages[page].collab, pages[page].collabs, pages[page].collaboration, pages[page].collaborator, pages[page].collaborators, pages[page].with)
+    let keys = [...new Set(merge(pages[page].author, pages[page].authors, pages[page].by, translators, collaborators))]
     if (elem && authors && !keys.length)
         keys = Object.keys(authors).slice(0, 1)
     const all_names = []
@@ -644,12 +651,12 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
         if (names) {
         	name = names[lang] || names[''] || Object.values(names)[0] || name
             alt_name = Object.entries(names).find(([k, v]) => k != lang && v)?.[1]
-            if (translators.includes(key) || colabs.includes(key)) {
+            if (translators.includes(key) || collaborators.includes(key)) {
                 const alt_langs = Object.keys(ui).filter(k => k != lang)
                 if (alt_langs.length) {
                     if (translators.includes(key))
                     	alt_name += ' ' + ui[alt_langs[0]].translator
-                    if (!have_with && colabs.includes(key))
+                    if (!have_with && collaborators.includes(key))
                         alt_name = ui[alt_langs[0]].with + ' ' + alt_name
                 }
             }
@@ -658,7 +665,7 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
         }
         if (translators.includes(key))
             name += ' ' + ui[lang].translator
-        if (!have_with && colabs.includes(key)) {
+        if (!have_with && collaborators.includes(key)) {
             name = ui[lang].with + ' ' + name
             have_with = true
         }
@@ -744,7 +751,17 @@ function textarea_writeln(textarea, line='', chars_for_reset=500000) {
 }
 
 
-function show_hide_cursor(elem) {
+function sidebyside_align(...elems) {
+    (elems.length ? elems : document.querySelectorAll('.sidebyside')).forEach(elem => {
+        const lines = elem.textContent.split('\n')
+        const maxlen = Math.max(...lines.map(line => get_width(line, elem)))
+        elem.style.setProperty('--sidebyside_long_line', `'${lines.find(line => get_width(line, elem) == maxlen)}'`)
+    })
+}
+
+
+function show_hide_cursor(event_or_elem) {
+    const elem = event_or_elem.currentTarget || event_or_elem
     elem.classList.remove('show_cursor')
     elem.offsetWidth  // Restart animation, see: https://css-tricks.com/restart-css-animation/
     elem.classList.add('show_cursor')
@@ -772,8 +789,7 @@ function visibility_change_handler() {
 
 
 function toggle_fullscreen(event_or_elem, landscape=true, target_screen, elem) {
-    if (event_or_elem.preventDefault)
-        event_or_elem.preventDefault()
+    event_or_elem?.preventDefault?.()
     elem ??= event_or_elem?.currentTarget || event_or_elem
     const was_not_fullscreen_before = !document.fullscreenElement
     if (was_not_fullscreen_before) {

@@ -25,6 +25,8 @@
     color: transparent;
     font: inherit;
     letter-spacing: inherit;
+    outline-color: var(--fg);
+    outline-style: solid;
     outline-width: 1px;
     overscroll-behavior: none;
     resize: vertical;
@@ -48,7 +50,11 @@
     color: inherit;
 }
 
-#highlighting .inner, .error {
+.bio {
+    color: #ff6464;
+}
+
+#highlighting .inner, .bad {
     background-color: #ff6464;
 }
 
@@ -60,12 +66,22 @@
     color: var(--fg_dim);
 }
 
+#stats {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#stats #buttons button:not(:first-child) {
+    margin-inline-start: .8rem;
+}
+
 #stats #counts {
     white-space: pre-wrap;
 }
 
 #stats #palindrome_status {
-    float: left;
-    margin-inline-start: 1em;
+    margin-inline-start: -.3em;
     padding-inline: .3em;
 }

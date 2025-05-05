@@ -12,7 +12,7 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="document.body.style.visibility = 'visible'; editing.focus(); const hash = decodeURIComponent(location.hash.slice(1)); content = hash[0] == '\t' ? hash.slice(1) : editing.value; if (content) update(content)">
+<body onload="document.body.style.visibility = 'visible'; if (!navigator.share) {share.innerHTML = 'העתק קישור לשיתוף'; share.title = 'Copy shareable link'; share.classList.add('unsupported')}; editing.focus(); const hash = decodeURIComponent(location.hash.slice(1)); content = hash[0] == '\t' ? hash.slice(1) : editing.value; if (content) update(content)">
     <script>make_header()</script>
     <div id="container">
         <textarea id="editing" class="outline" spellcheck="false" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
@@ -22,7 +22,8 @@
         <span id="counts"></span>
         <span id="palindrome_status"></span>
         <span id="buttons" class="border">
-            <button onclick="navigator.clipboard.writeText(editing.value)">העתק</button><button onclick="const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + editing.value); navigator.share?.({url: url}).catch(() => {}) ?? navigator.clipboard.writeText(url)">שתף</button>
+            <button onclick="navigator.clipboard.writeText(editing.value)" title="Copy">העתק</button>
+            <button id="share" onclick="const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + editing.value); navigator.share?.({url: url}).catch(() => {}) ?? navigator.clipboard.writeText(url)" title="Share">שתף</button>
         </span>
     </div>
     <script>

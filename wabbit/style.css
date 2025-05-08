@@ -20,7 +20,6 @@ article {
 }
 
 #backward > span > span {
-    --anim_dur: .5s;
     display: inline-block;
     visibility: hidden;
 }

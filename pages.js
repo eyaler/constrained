@@ -53,6 +53,7 @@ const pages = {
     "barosh/": {title: "בראש יתברא / יתד בקלשוני", alt: "BaRosh Yitbare / Yated BeKilshoni", kw: ["biblical", "combinatorial", "data available", "interactive", "live code", "record", "software", "visual"]},
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
+    "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "software", "visual"], skip: true},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
     "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]},

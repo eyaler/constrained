@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../pages.js"></script>
+    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'; me.focus()">
+    <script>make_header(true)</script>
+    <main id="main" oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
+        <div id="me" contenteditable="true" spellcheck="false"></div>
+        <div id="controls" class="border">
+          <button id="right_button" aria-keyshortcuts="ArrowRight">&rarr;</button>
+          <button id="up_button" aria-keyshortcuts="ArrowUp">&uarr;</button>
+          <button id="tab_button" aria-keyshortcuts="Tab">&#x21b9;</button>
+          <button id="down_button" aria-keyshortcuts="ArrowDown">&darr;</button>
+          <button id="left_button" aria-keyshortcuts="ArrowLeft">&larr;</button>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

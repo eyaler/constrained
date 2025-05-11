@@ -16,7 +16,7 @@ pre span {
     pre {
         padding-inline: 3em;
         border: 2em solid;
-        border-image: url('border.png');
+        border-image: url('media/border.png');
         border-image-slice: 44;  /* 45 works in Firefox but not in Chrome/Safari */ 
         border-image-repeat: round;
     }

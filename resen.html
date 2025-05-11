@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+    <style>
+        #resen_link:is(:hover, :focus-visible) {
+            --fg_filter: hue-rotate(180deg);
+        }
+    </style>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <a id="resen_link" href="https://oulipoh.com/resen" class="images" style="filter: invert() var(--fg_filter); margin-block: 8rem; --max_height: min(250px, 50vmin); overflow-x: clip; position: relative">
+        <img src="../media/resen.svg" alt="רֶסֶן">
+        <img class="abs_center" style="scale: 1.7; top: 48%" src="../media/ring.svg" alt="כתב עת מקוון ליצירה אילוצית // חישובית // מושגית // פרוצדורלית // דיגיטלית // מרוסנת // מאולצת // מיצויית // מתכונתית // אלגוריתמית // עברית, אוליפֹּה, לינק: tfi.la/r">
+    </a>
+    <script>make_footer()</script>
+    <script>
+        const lang = get_lang()
+        if (lang)
+            resen_link.href += '?' + lang
+    </script>
+</body>
+</html>

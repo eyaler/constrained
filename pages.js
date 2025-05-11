@@ -34,7 +34,7 @@ const pages = {
     
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
-    "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing", skip: true},
+    "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing"},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
     "otomat/": {title: "אות־וֹמט תאי", alt: "OT-o-mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
@@ -53,10 +53,10 @@ const pages = {
     "barosh/": {title: "בראש יתברא / יתד בקלשוני", alt: "BaRosh Yitbare / Yated BeKilshoni", kw: ["biblical", "combinatorial", "data available", "interactive", "live code", "record", "software", "visual"]},
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
-    "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "software", "visual"], skip: true},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
-    "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"]},
+    "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "software", "visual"], wip: true},
+    "a_": {title: "א_", kw: ["cipher", "combined forms", "new constraint", "poem", "software"], wip: true},
 }
 
 const authors = {
@@ -91,8 +91,8 @@ const authors = {
 }
 
 const ui = {
-    "": {"next": "הבא", "prev": "הקודם", "lang": "עברית", "theme_name": "עיצוב של מתכנת", "theme": "תבנית", "copyright": "כל הזכויות מורשות", "issue": "גיליון", "translator": "(תרגום)", "with": "נוצר עם"},
-    "en": {"next": "next", "prev": "prev", "lang": "english", "theme_name": "Designed by a programmer", "theme": "Theme", "copyright": "All rights reversed", "issue": "issue", "translator": "(translator)", "with": "created with", "dir": "ltr"},
+    "": {"next": "הבא", "prev": "הקודם", "lang": "עברית", "theme_name": "עיצוב של מתכנת", "theme": "תבנית", "copyright": "כל הזכויות מורשות", "issue": "גיליון", "translator": "(תרגום)", "with": "נוצר עם", "wip": "(בפיתוח)"},
+    "en": {"next": "next", "prev": "prev", "lang": "english", "theme_name": "Designed by a programmer", "theme": "Theme", "copyright": "All rights reversed", "issue": "issue", "translator": "(translator)", "with": "created with", "wip": "(wip)", "dir": "ltr"},
 }
 
 const kw_labels = {
@@ -318,12 +318,21 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
         p.id = 'page_' + div.childElementCount
         p.appendChild(a)
 
+        let span = null
+                if (pages[page].wip) {
+            span = p.appendChild(document.createElement('span'))
+            const s = span.appendChild(document.createElement('span'))
+            s.classList.add('wip')
+            s.textContent = ui[lang].wip
+        }
+
         if (show_author) {
             let [authors, alt_authors] = get_make_author(page, lang)
             authors = authors.map(harden)
             alt_authors = alt_authors.map(harden)
             if (authors.join() != contents_authors) {
-                const span = p.appendChild(document.createElement('span'))
+                if (!span)
+                    span = p.appendChild(document.createElement('span'))
                 authors.forEach((author, i) => {
                     const s = span.appendChild(document.createElement('span'))
                     s.innerHTML = author

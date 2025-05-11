@@ -390,6 +390,10 @@ button, pre {
     text-align: start;
 }
 
+.contents > p > a {
+    unicode-bidi: isolate;
+}
+
 .contents > p > a img {
     aspect-ratio: 16 / 9;
     border-color: var(--fg);

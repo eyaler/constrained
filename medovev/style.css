@@ -50,11 +50,7 @@
     color: inherit;
 }
 
-.bio {
-    color: #ff6464;
-}
-
-#highlighting .inner, .bad {
+#highlighting .inner {
     background-color: #ff6464;
 }
 
@@ -64,6 +60,28 @@
 
 .placeholder {
     color: var(--fg_dim);
+}
+
+#buttons, #statuses {
+    display: flex;
+    gap: .8rem;
+}
+
+#counts {
+    white-space: pre-wrap;
+}
+
+#palindrome {
+    background-color: var(--fg_verydim);
+}
+
+#palindrome.bio, #pangram {
+    background-color: #400000;
+    color: #ff6464;
+}
+
+#share.unsupported {
+    font-size: .6em;
 }
 
 #stats {
@@ -76,19 +94,19 @@
     margin-inline-start: auto;
 }
 
-#stats #buttons {
-    display: flex;
-    gap: .8rem;
+#statuses {
+    flex-wrap: wrap;
 }
 
-#stats #counts {
-    white-space: pre-wrap;
+#statuses span {
+    width: max-content;
 }
 
-#stats #palindrome_status {
+#statuses span:empty {
+    display: none;
+}
+
+#statuses span:not(:empty) {
     padding-inline: .3em;
 }
 
-#stats #share.unsupported {
-    font-size: .6em;
-}

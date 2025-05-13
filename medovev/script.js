@@ -56,31 +56,36 @@ function update(text) {
   const n = normalized.length
   const mid = n / 2 | 0
   let marks = []
+  let is_palindrome = ''
+  let bio = false
   if (n) {
-      marks = [[(n-1) / 2 | 0, 'middle']]
-      if (mid != marks[0][0])
-        marks.unshift([mid, 'middle'])
-  }
-  let is_palindrome = 'פלינדרום'
-  const inner = check_inner(normalized)
-  let bio = false 
-  if (inner) {
-    if (inner[0] == mid)
-        marks = marks.map(([pos, cls]) => [pos, cls + ' inner'])
-    else
-        marks = [[inner[0], 'inner'], ...marks, [inner[1], 'inner']]
-    const outer = check_outer(normalized)
-    if (outer[0] != inner[0])
-      marks = [[outer[0], 'outer'], ...marks, [outer[1], 'outer']]
+    marks = [[(n-1) / 2 | 0, 'middle']]
+    if (mid != marks[0][0])
+      marks.unshift([mid, 'middle'])
+    is_palindrome = 'פלינדרום'
     bio = check_bio(normalized)
-    is_palindrome = (bio ? 'ביו־' : 'לא ') + is_palindrome
+    if (bio)
+      is_palindrome = 'ביו־' + is_palindrome
+    else {
+      const inner = check_inner(normalized)   
+      if (inner) {
+        if (inner[0] == mid)
+          marks = marks.map(([pos, cls]) => [pos, cls + ' inner'])
+        else
+          marks = [[inner[0], 'inner'], ...marks, [inner[1], 'inner']]
+        const outer = check_outer(normalized)
+        if (outer[0] != inner[0])
+          marks = [[outer[0], 'outer'], ...marks, [outer[1], 'outer']]
+        is_palindrome = ''      
+      }
+    }
   }
   marks.forEach(([pos, cls]) => text = text.slice(0, positions[pos]) + `<mark class="${cls}">${text[positions[pos]]}</mark>` + text.slice(positions[pos] + 1))
   highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
   counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${normalized.length}`
-  palindrome_status.textContent = is_palindrome
-  palindrome_status.classList.toggle('bad', !!inner && !bio)
-  palindrome_status.classList.toggle('bio', bio) 
+  palindrome.textContent = is_palindrome
+  palindrome.classList.toggle('bio', bio)
+  pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match('[א-ת]') ? 'פנגרמה מושלמת (עברית)' : ''
 }
 
 function sync_scroll(elem) {

@@ -10,15 +10,14 @@ function process(text, perfect) {
     text = text.replace(/[\s-\u05be\u2013\u2014]/g, ' ')
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
-    while (perfect && char[0] == ' ' && text[i + 1] == ' ') {
+    while (perfect && char == ' ' && text[i + 1] == ' ')
       i++
-    }
-    if (char.match(/[\p{L}\p{N}]/u) || perfect && char[0] == ' ') {
+    if (char.match(/[\p{L}\p{N}]/u) || perfect && char == ' ') {
       normalized += char.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/ך/, 'כ').replace(/ם/, 'מ').replace(/ן/, 'נ').replace(/ף/, 'פ').replace(/ץ/, 'צ')
       positions[normalized.length - 1] = i
     }
   }
-  return [normalized, positions]
+  return [normalized.trim(), positions]
 }
 
 function check_inner(text) {

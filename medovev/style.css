@@ -64,7 +64,12 @@
 
 #buttons, #statuses {
     display: flex;
+    flex-wrap: wrap;
     gap: .8rem;
+}
+
+:is(#buttons, #statuses) > * {
+    width: max-content;
 }
 
 #counts {
@@ -90,16 +95,8 @@
     flex-wrap: wrap;
 }
 
-#stats :not(:first-child) {
+#stats > :not(:first-child) {
     margin-inline-start: auto;
-}
-
-#statuses {
-    flex-wrap: wrap;
-}
-
-#statuses span {
-    width: max-content;
 }
 
 #statuses span:empty {

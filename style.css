@@ -328,6 +328,7 @@ button, [id^=kw_] {
 }
 
 [id^=kw_] {
+    direction: ltr;  /* For left alignment of the multi-line tooltip title */
     font-size: inherit;
     letter-spacing: initial;
     text-decoration: none;
@@ -390,10 +391,6 @@ button, pre {
     text-align: start;
 }
 
-.contents > p > a {
-    unicode-bidi: isolate;
-}
-
 .contents > p > a img {
     aspect-ratio: 16 / 9;
     border-color: var(--fg);
@@ -423,7 +420,6 @@ button, pre {
 .contents > p > a ~ span > span {
     display: inline-block;
     font-size: initial;
-    unicode-bidi: isolate;
 }
 
 .contents > p > a ~ span > span:not(:last-of-type):after {
@@ -810,7 +806,7 @@ nav a:not(.trans)::before {
     width: 1.1rem;
 }
 
-nav .back > span {
+nav .back * {
     text-decoration: inherit;
     text-decoration-color: inherit;  /* For Safari */
     text-decoration-style: inherit;  /* For Safari */

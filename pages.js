@@ -236,11 +236,11 @@ function get_set_titles(page, lang, elem) {
     lang ??= get_lang()
     const titles = {label: pages[page]?.title ?? page.split('/')[0], alt: ''}
     if (titles.label.match(/\p{P}$/u))
-        titles.label = '⁨' + titles.label
+        titles.label = '\u2068' + titles.label + '\u2069'
     if (pages[page]?.alt) {
         titles.alt = pages[page].alt
         if (titles.alt.match(/\p{P}$/u))
-            titles.alt = '⁨' + titles.alt
+            titles.alt = '\u2068' + titles.alt + '\u2069'
         if (lang)
             [titles.label, titles.alt] = [titles.alt, titles.label]
     }
@@ -321,7 +321,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
         p.appendChild(a)
 
         let span = null
-                if (pages[page].wip) {
+        if (pages[page].wip) {
             span = p.appendChild(document.createElement('span'))
             const s = span.appendChild(document.createElement('span'))
             s.classList.add('wip')
@@ -332,16 +332,15 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
             let [authors, alt_authors] = get_make_author(page, lang)
             authors = authors.map(harden)
             alt_authors = alt_authors.map(harden)
-            if (authors.join() != contents_authors) {
-                if (!span)
-                    span = p.appendChild(document.createElement('span'))
+            if (authors.join() != contents_authors)
                 authors.forEach((author, i) => {
+                    if (!span)
+                        span = p.appendChild(document.createElement('span'))
                     const s = span.appendChild(document.createElement('span'))
                     s.innerHTML = author
                     if (alt_authors[i] != author)
                         s.title = alt_authors[i]
                 })
-            }
         }
         div.appendChild(p)
     }
@@ -481,10 +480,9 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     let diff = get_width(index_title, nav) - get_width(parent_title, nav)
     let span, back, keywords, trans
     if (page == '/') {
-        span = document.createElement('span')
-        span.dir = 'ltr'
-        span.innerHTML = parent_title
-        add_nav_element(nav, parent_title ? '..' : '', span, 'back', diff, shortcuts.back)
+        bdi = document.createElement('bdi')
+        bdi.innerHTML = parent_title
+        add_nav_element(nav, parent_title ? '..' : '', bdi, 'back', diff, shortcuts.back)
         keywords = all_keywords
     } else {
         add_nav_element(nav, page2url('.', lang, page), index_title, 'back', -diff, shortcuts.back)
@@ -569,7 +567,6 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             }
 
             button.innerHTML = label
-            button.dir = 'ltr'  // For left alignment of the multi-line title
             button.title = `${alt}\nworks=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
             if (page == '/')
                 button.onclick = kw_handler

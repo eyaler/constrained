@@ -5,7 +5,8 @@ const reverse_spans = [...forward.children].toReversed()
 const spans = backward.querySelectorAll('span > span')
 
 const lang = get_lang()
-reverse_button.innerHTML = lang ? 'To read the poem<br>end to beginning' : 'לקריאת השיר<br>מהסוף להתחלה'
+if (lang)
+    [reverse_button.innerHTML, reverse_button.title] = [reverse_button.title.replaceAll('\n', '<br>'), reverse_button.innerHTML.replaceAll('<br>', '\n')] 
 reverse_button.onclick = () => {
     reverse_button.style.visibility = 'hidden'
     const anim_dur_ms = 500

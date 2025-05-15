@@ -112,10 +112,6 @@ article {
     width: 60vmax;
 }
 
-button.big {
-    font-size: initial;
-}
-
 .fullscreen :is(nav, .kw, h2, article, footer) {
     display: none;
 }
@@ -163,6 +159,14 @@ button.big {
 
 .reveal {
     animation: var(--anim_dur) step-end reveal forwards;
+}
+
+#reverse_button {
+    font-size: initial;
+}
+
+nav:not([dir=ltr]) ~ #reverse_button {
+    direction: ltr;  /* For left alignment of the multi-line tooltip title */
 }
 
 .sidebyside > pre {

@@ -334,8 +334,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
             alt_authors = alt_authors.map(harden)
             if (authors.join() != contents_authors)
                 authors.forEach((author, i) => {
-                    if (!span)
-                        span = p.appendChild(document.createElement('span'))
+                    span ??= p.appendChild(document.createElement('span'))
                     const s = span.appendChild(document.createElement('span'))
                     s.innerHTML = author
                     if (alt_authors[i] != author)

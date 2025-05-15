@@ -4,6 +4,8 @@ backward.innerHTML = backward.textContent.replace(/\S/g, '<span>$&</span>').repl
 const reverse_spans = [...forward.children].toReversed()
 const spans = backward.querySelectorAll('span > span')
 
+const lang = get_lang()
+reverse_button.innerHTML = lang ? 'To read the poem<br>end to beginning' : 'לקריאת השיר<br>מהסוף להתחלה'
 reverse_button.onclick = () => {
     reverse_button.style.visibility = 'hidden'
     const anim_dur_ms = 500
@@ -12,7 +14,7 @@ reverse_button.onclick = () => {
     document.body.addEventListener('mousemove', show_hide_cursor)
     setTimeout(() => psychedelic.style.visibility = 'visible', 15000)
     setTimeout(() => h1.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 21000)
-    setTimeout(() => h1.textContent = get_lang() ? 'White rabbit' : 'הארנב הלבן', 23000)
+    setTimeout(() => h1.textContent = lang ? 'White rabbit' : 'הארנב הלבן', 23000)
     ;[[28000, 180], [54000, 190], [78000, 210], [102000, 180]].forEach(([t, dt]) => setTimeout(reverse, t, dt))
     audio.play()
 }

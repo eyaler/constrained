@@ -148,7 +148,7 @@ const default_new_tab_for_footer = false
 const default_reorder_contents = false
 const default_reverse_issues_kw = true
 const default_row_first = false
-const default_show_snippet = true
+const default_show_snippet = false
 const default_show_author = true
 
 let author_pages_folder = ''

@@ -163,7 +163,9 @@ body.todark, .todark ::backdrop {
         animation: var(--icon_dur) infinite deco;
     }
 
-    a:is(:hover, :focus-visible) img:only-of-type {
+    :is(a:is(:hover, :focus-visible),
+    a:is(:hover, :focus-visible) > :is(div, figure):only-of-type,
+    a:is(:hover, :focus-visible) > figure:only-of-type > div:only-of-type) > img:only-of-type {
         box-shadow: 0 0 var(--glow_blur) 6.5px var(--glow);
     }
 

@@ -57,6 +57,6 @@
         <p>בִּיהוּדָה מִי בָכֶם מִכָּל עַמּוֹ יְהוָה אֱלֹהָיוְ עִמּוֹ וְ</p>
         <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (value.length == 3) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.classList.add('done'); a.href = url; a.textContent = 'יאשר רשאי'; a.focus()}})}">
     </div>
-    <a id="a" onclick="open_internal_link(this, true)">&ZeroWidthSpace;</a>
+    <a id="a">&ZeroWidthSpace;</a>
 </body>
 </html>

@@ -45,6 +45,6 @@
         <input id="input" type="text" autocomplete="off" maxlength="7" placeholder="_______" spellcheck="false" size="7" oninput="if (value.length == 7) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {a.href = url; a.textContent = 'יאשר המשך שמה רשאי'; a.focus()}})}">
         <span style="position: absolute; float: left;">?</span>
     </div>
-    <a id="a" onclick="open_internal_link(this, true)">&ZeroWidthSpace;</a>
+    <a id="a">&ZeroWidthSpace;</a>
 </body>
 </html>

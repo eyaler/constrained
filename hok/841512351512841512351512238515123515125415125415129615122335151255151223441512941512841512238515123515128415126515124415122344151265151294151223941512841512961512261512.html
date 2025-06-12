@@ -40,7 +40,7 @@
         let currentColor
         let firstNode
         let direction
-        let alink
+        let anchor
         
         function setup() {
           createCanvas(windowWidth, windowHeight)
@@ -101,8 +101,8 @@
           }
           if (dragging && dragStartNode != null)
             drawArrow(nodes[dragStartNode], {x: mouseX, y: mouseY})
-          if (alink)
-            alink.center()
+          if (anchor)
+            anchor.center()
         }
         
         function mousePressed() {
@@ -144,7 +144,11 @@
                     if (response.ok) {
                       completed = true
                       currentColor = fg
-                      alink = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
+                      anchor = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
+                      anchor.mouseClicked(e => {
+                        e.preventDefault()
+                        location.replace(anchor.elt.href)
+                      })
                     } else
                       location.reload()
                   })

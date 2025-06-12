@@ -60,6 +60,7 @@
 			if (isOrdered) {
 			    if (!a) {
                     a = createA((new TextEncoder).encode(candidate).join(''), 'יאשר המשך לילך שמה רשאי')
+                    a.mouseClicked(() => open_internal_link(a.elt, true))
                     needFocus = true
                 }
                 a.position(0, height * .85)

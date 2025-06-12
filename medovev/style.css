@@ -76,6 +76,10 @@
     white-space: pre-wrap;
 }
 
+#counts > span {
+    font-family: var(--mono_font);
+}
+
 #palindrome {
     background-color: var(--fg_verydim);
 }

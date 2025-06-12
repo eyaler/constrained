@@ -91,7 +91,7 @@ function update(text) {
   }
   marks.forEach(([pos, cls]) => text = text.slice(0, positions[pos]) + `<mark class="${cls}">${text[positions[pos]]}</mark>` + text.slice(positions[pos] + 1))
   highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
-  counts.innerHTML = `מילים:&nbsp;${words}\t\tאותיות:&nbsp;${normalized.length}`
+  counts.innerHTML = `מילים:&nbsp;<span>${words.toLocaleString()}</span>\t\tאותיות:&nbsp;<span>${normalized.length.toLocaleString()}</span>`
   palindrome.textContent = is_palindrome
   palindrome.classList.toggle('bio', bio)
   pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match('[א-ת]') ? 'פנגרמה מושלמת (עברית)' : ''

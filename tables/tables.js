@@ -26,8 +26,12 @@ class Table {
                 this.table.style.visibility = 'visible'
                 if (!id && [...this.table.querySelectorAll('[id]')].map(e => e.id).includes(location.hash.slice(1).toLowerCase()))
                     id = location.hash.slice(1).toLowerCase()
-                if (id)
-                    document.getElementById(id).scrollIntoView()  // Do not use querySelector() as id may not be a valid CSS identifier
+                if (id) {
+                    const tr = document.getElementById(id)  // Do not use querySelector() as id may not be a valid CSS identifier
+                    tr.classList.add('inview')
+                    location.hash = id  // Scroll into view
+                    setTimeout(() => tr.classList.remove('inview'), 1)
+                }
             })
     }
 

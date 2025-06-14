@@ -193,7 +193,6 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
 
 function harden(s) {
     return s.replace(/(.*) \/ (.*)/, '<span class="harden">$1 /</span> <span class="harden">$2</span>').replace(/[\p{L}\p{M}\p{N}\xa0]+[\u05be-][\p{L}\p{M}\p{N}\xa0\u05be-]+/gu, '<span class="harden">$&</span>')
-
 }
 
 
@@ -414,9 +413,13 @@ function add_nav_element(nav, url, label, cls, delta=0, key) {
 
 
 function get_page() {
-    const page = decodeURI(location.pathname).match(/([^/]*?\/?)(index)?(\.html)?$/)[1]
+    const path = decodeURI(location.pathname)
+    const page = path.match(/([^/]*?\/?)(index)?(\.html)?$/)[1]
     if (page in pages)
         return page
+    const folder = path.match(/([^/]*?\/?)[^\/]*$/)[1]
+    if (folder in pages)
+        return folder
     return '/'
 }
 
@@ -775,7 +778,7 @@ function sidebyside_align(...elems) {
 function show_hide_cursor(event_or_elem) {
     const elem = event_or_elem.currentTarget || event_or_elem
     elem.classList.remove('show_cursor')
-    elem.offsetWidth  // Restart animation, see: https://css-tricks.com/restart-css-animation/
+    elem.offsetWidth  // Restart animation. See: https://css-tricks.com/restart-css-animation/
     elem.classList.add('show_cursor')
 }
 

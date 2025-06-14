@@ -937,6 +937,14 @@ nav[dir=ltr] ~ * .preface_he {
     font-size: 0;
 }
 
+@keyframes frag {
+    0% {background-color: var(--fg_verydim)}
+}
+
+.refs blockquote:target {
+    animation: var(--frag_dur) ease-in frag;
+}
+
 .refs, .refs + p {
     margin-top: 6ex;
 }

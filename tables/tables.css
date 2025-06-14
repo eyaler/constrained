@@ -13,8 +13,10 @@ table {
     --tables_on: var(--on, var(--tables_fg));
     --tables_fg_dim: var(--fg_dim, GrayText);
     --tables_fg_verydim: var(--fg_verydim, Highlight);
+    --tables_fg_filter: var(--fg_filter, brightness());
     --tables_inverse_fg: var(--inverse_fg, var(--tables_fg_verydim));
     --tables_icon_dur: var(--icon_dur, .3s);
+    --tables_frag_dur: var(--frag_dur, 7s);
 
     border-collapse: collapse;
     font-size: initial;
@@ -75,7 +77,7 @@ table {
 
 .copy > button::before {
     content: '\1f4cb';
-    filter: var(--fg_filter);
+    filter: invert() var(--tables_fg_filter);
 }
 
 .harden {
@@ -156,6 +158,15 @@ thead.data_header {
 
 tr {
     height: 100%;  /* Needed in Firefox for buttons in table cells */
+}
+
+tr.inview:target {
+    background-color: var(--tables_fg_verydim);
+    transition: none;
+}
+
+tr:target {
+    transition: background-color var(--tables_frag_dur);
 }
 
 @media (forced-colors: active) {

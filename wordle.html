@@ -16,31 +16,51 @@
         אזהרת קלקלן: אני עומד להרוס לכם את וורדל (מה שהכותרת אינה עושה).
     </p>
     <p>
-        במשחק <a href="https://he.wikipedia.org/wiki/Wordle">וורדל</a> צריך לנחש מילה בת חמש אותיות בתוך שישה ניסיונות כאשר מותר להזין רק מילים תקינות, ומתקבל משוב האם האותיות שנוחשו שייכות למילה הנסתרת ("פגיעה", מסומנת בצהוב) והאם הן נמצאות מקום הנכון ("בול", מסומן בירוק).
-        נשאלת השאלה אילו מילים משתלם ביותר לנחש, וכאן נדון במקרה שניחושים אלו מתבצעים "על עיוור", משמע בהתעלם מן המשוב (ומן הסתם משחקים ב"מצב קל", בו ניחושים חדשים אינם מחויבים להתאים לפגיעות ולבולים הקודמים).
+        במשחק <a href="https://he.wikipedia.org/wiki/Wordle">וורדל</a> צריך לנחש מילה בת חמש אותיות בתוך שישה ניסיונות כאשר מותר להזין רק מילים תקינות,
+        ומתקבל משוב האם האותיות שנוחשו נמצאות במקום הנכון ("בול", מסומן בירוק), או שהן שייכות למילה הנסתרת אבל במקום אחר ("פגיעה", מסומנת בצהוב).
+        נשאלת השאלה אילו מילים משתלם ביותר לנחש, וכאן נדון במקרה שניחושים אלו מתבצעים "על עיוור", משמע בהתעלם מן המשוב
+        (ומן הסתם משחקים ב"מצב קל", בו ניחושים חדשים אינם מחויבים להתאים לבולים ולפגיעות הקודמים).
         זה תמיד המצב עבור המילה הראשונה, אבל נתייחס גם למקרים שרוצים להתחיל מרצף קבוע מראש של שתיים, שלוש או ארבע מילים ראשונות.
-        בשונה מרוב העבודות הרציניות יותר בתחום (באנגלית), המטרה שלנו תהיה שהניחוש יספק את המידע הכי "שימושי" ברמת האות (במובן הלא־ריגורוזי שיוסבר להלן), ולאו דווקא שהניחוש ימקסם את האינפורמציה הסטטיסטית הכוללת, או יביא למצב שיאפטם קריטריון מסוים תחת הנחה של המשך משחק אופטימלי (כמו למשל מספר ניחושים מינימלי או סיכוי ניחוש מקסימלי, שיכולים להתייחס לממוצע המקרים או למקרה הקשה ביותר).
-        הרציונל הוא לתת רשימה קבועה של מילים שתאפשר לשחקן אנושי עצל לפתור את המשחק בקלות.
+        מטרתנו היא לתת רשימה קבועה של מילים שתאפשר לשחקן אנושי עצל לפתור את המשחק בקלות.
     </p>
     <p>
-        בעוד שלמילים שנמצא כן תהיה שימושיות מעשית, אנו מתעניינים בבעיה הכללית, ולא מנסים למצוא פתרון מיטבי למימוש מסוים של המשחק.
-        על כן נניח באופן אידאלי ובשונה מן המצב בפועל, שהמילה הנסתרת נבחרת באופן אקראי בהתפלגות אחידה מתוך רשימה של מילים מותרות (בהתעלם מן הפופולריות של המילים).
-        וכדי לשמור על כלליות אבל גם על קשר למציאות, נשתמש באוצר מילים מילונאי ללא תחיליות מש"ה וכל"ב (למעט בשם הפועל), ללא הטיות סמיכות וקניין, ללא צורות נקבה־רבות עתיד וציווי בסיומת ־נה, וללא כינויי נושא או מושא חבורים.
-        באנגלית, אגב, מקובל שברשימת המילים אין כלל הטיות כמו שמות עצם ברבים (es ,-s-) או פעלים בעבר (ed-), אבל נדמה שבעברית הגבלה כזאת היא פחות טבעית ושאין מקובל להחריג הטיות שכאלו.
+        בעוד שלמילים שנמצא כן תהיה שימושיות מעשית, אנו מתעניינים בבעיה הכללית,
+        ולא מנסים למצוא פתרון מיטבי למימוש מסוים של המשחק עם רשימות מילים ידועות.
+        על כן נניח באופן אידאלי ובשונה מן המצב בפועל,
+        שהמילה הנסתרת נבחרת באופן אקראי בהתפלגות אחידה מתוך רשימת מילים כללית (בהתעלם מן הפופולריות של המילים).
+        וכדי לשמור על כלליות אבל גם על קשר למציאות,
+        נשתמש באוצר מילים מילונאי ללא תחיליות מש"ה וכל"ב (למעט בשם הפועל),
+        ללא הטיות סמיכות וקניין, ללא צורות נקבה־רבות עתיד וציווי בסיומת ־נה, וללא כינויי נושא או מושא חבורים.
+        באנגלית, אגב, מקובל שברשימת המילים אין כלל הטיות כמו שמות עצם ברבים (es ,-s-) או פעלים בעבר (ed-),
+        אבל נדמה שבעברית הגבלה כזאת היא פחות טבעית ושאין מקובל להחריג הטיות שכאלו.
         בפרט נשתמש ב<a href="https://github.com/eyaler/hebrew_wordlists/blob/main/hspell_simple.txt">אוצר מילים</a> כזה שהופק מ־<a href="http://hspell.ivrix.org.il/">Hspell</a>, שמכיל כ־40,000 מילים בנות חמש אותיות.
     </p>
     <p>
         עבור כל אחד מחמשת מיקומי האותיות, נספור עבור כל אחת מאותיות האלף־בית כמה פעמים היא מופיעה בכל המילים.
         ואז לכל מילה נוכל לתת ציון כסכום הספירות של כל אות במילה על פי מקומה, והציון של רצף מילים יהיה סכום ציוני המילים.
-        מילים עם ציון גבוה אינן בהכרח מילים נפוצות, אלא מילים תקינות שמכילות אותיות ששכיחוֹת באותו מקום במילה.
+        ציון זה מתייחס באופן ישיר רק לקליעות בול ולא לוקח בחשבון את הפגיעות שאדישות למיקום המסוים בתוך המילה.
+        כמו כן הציון מתייחס רק לשכיחות של אותיות בודדות ולא לוקח בחשבון סטטיסטיקה של רצפי אותיות או מילים.
+        מילים עם ציון גבוה אינן בהכרח מילים נפוצות, אלא מילים תקינות שמכילות אותיות ששכיחוֹת באותו מקום בתוך המילה.
         בעוד שבמילה הנסתרת אותיות יכולות לחזור יותר מפעם אחת,
         מספר המילים עם חזרות של האות השכיחה ביותר לחזור בתוך המילה (יו"ד), דומה למספר המילים עם מופע אחד לפחות של האות הנדירה ביותר (זי"ן).
-        מכיוון שאנחנו מתעניינים ברצפים שמכילים רק עד 20 אותיות (4 מילים), תהא זו הנחה סבירה לאסור על אותיות להופיע יותר מפעם אחת במילה או ברצף המילים.
+        מכיוון שאנו מתעניינים ברצפים שמכילים רק עד 20 אותיות (4 מילים), תהא זו הנחה סבירה לאסור על אותיות להופיע יותר מפעם אחת במילה או ברצף המילים.
+    </p>
+    <p>
+        הפתרון שלנו הוא פשטני בכמה היבטים. כפי שכבר הזכרנו, אנו מתעלמים מן המשוב בזמן המשחק,
+        לא נעזרים בסטטיסטיקה של רשימות המילים המסוימות בהן משתמש המשחק,
+        מתייחסים רק לשכיחויות של אות בודדת, וזאת רק במיקומים מסוימים (בול),
+        ומניחים שניתן להתעלם מחזרה של אותה אות בתוך מילה או בין המילים.
+        יתר על כן, אנו לא מנסים לאפטם באופן ישיר קריטריונים של אינפורמציה (למשל מבוססי אנטרופיה),
+        או קריטריונים סימולטיביים כמו מספר מינימלי של ניחושים נדרשים או סיכוי מקסימלי למציאת ניחוש נכון,
+        בין אם בממוצע או בהתייחס לתרחיש הקשה ביותר,
+        ותחת הנחות מסוימות על איך מתבצע המשך המשחק.
+        באופן בלתי מבוסס, נדמה לנו שהקריטריון הפשטני שלנו ברמת האות, עשוי לייצר ניחושים שיהיו שימושיים יותר בצורה אינטואיטיבית לשחקן האנושי.
     </p>
     <p>
         המילים ברצף מסודרות מהציון הגבוה לנמוך, לטובת מי שירצו לקחת את המושכות לעצמם טרם השלמת הרצף,
         והיכן שנמצא תיקו בין רצפים עם מילים שונות, נבחר הרצף שלמילים הראשונות בו ציונים גבוהים יותר.
-        אלו הרצפים עם הציונים הגבוהים ביותר לפי מספר המילים ברצף, ובסוגריים מובאות חלופות מעט פחות טובות אבל עם מילים מוכרות יותר (קרי: מתקבלות כתקינות ב־<a href="https://www.haaretz.co.il/riddles/5-letters">וורעדל</a> של "הארץ"):
+        אלו הרצפים עם הציונים הגבוהים ביותר לפי מספר המילים ברצף,
+        ובסוגריים מובאות חלופות מעט פחות טובות אבל עם מילים מוכרות יותר (קרי: מתקבלות כתקינות ב־<a href="https://www.haaretz.co.il/riddles/5-letters">וורעדל</a> של "הארץ"):
     </p>
     <ol>
         <li>נורית</li>
@@ -56,14 +76,14 @@
         <img src="media/wordle.png" alt="ניכרה תצחקו משעבד אספלט">
     </div>
     <div class="refs">
-        <blockquote>Tom Neill, <a href="https://notfunatparties.substack.com/p/wordle-solver">Ruining the fun: A Wordle auto-solver</a>.</blockquote>
-        <blockquote>Benton J. Anderson, Jesse G. Meyer, <a href="https://arxiv.org/pdf/2202.00557">Finding the optimal human strategy for Wordle using maximum correct letter probabilities and reinforcement learning</a>.</blockquote>
+        <blockquote>Tom Neill, <a href="https://notfunatparties.substack.com/p/wordle-solver">Ruining the fun: A Wordle auto-solver</a> (<a href="https://gist.github.com/tomjohnneill/1f2593f61618eca9071c2006aa6ba786">code</a>).</blockquote>
+        <blockquote>Benton J. Anderson, Jesse G. Meyer, <a href="https://arxiv.org/pdf/2202.00557">Finding the optimal human strategy for Wordle using maximum correct letter probabilities and reinforcement learning</a> (<a href="https://github.com/benton-anderson/wordle-opt">code</a>).</blockquote>
         <blockquote>Martin B. Short , <a href="https://arxiv.org/pdf/2202.02148">Winning Wordle Wisely or How to ruin a fun little Internet game with math</a>, The Mathematical Intelligencer 44 (2022).</blockquote>
         <blockquote>Nisansa de Silva, <a href="https://arxiv.org/pdf/2202.03457">Selecting seed words for Wordle using character statistics</a>, 2022 Moratuwa Engineering Research Conference.</blockquote>
         <blockquote>Dave Rusin, <a href="https://web.ma.utexas.edu/users/rusin/wordle/">The best starting words for Wordle</a>.</blockquote>
-        <blockquote>Brian Hayes, <a href="http://bit-player.org/2022/words-for-the-wordle-weary">Words for the Wordle-Weary</a>.</blockquote>
+        <blockquote>Brian Hayes, <a href="http://bit-player.org/2022/words-for-the-wordle-weary">Words for the Wordle-Weary</a> (<a href="https://github.com/bit-player/thewordler">code 1</a>, <a href="https://github.com/bit-player/wordlespectrum">code 2</a>).</blockquote>
         <blockquote>Grant Sanderson, <a href="https://www.youtube.com/watch?v=v68zYyaEmEA">Solving Wordle using information theory</a>, 3Blue1Brown.</blockquote>
-        <blockquote>Grant Sanderson, <a href="https://www.youtube.com/watch?v=fRed0Xmc2Wg">Oh, wait, actually the best Wordle opener is not "crane"...</a>, 3Blue1Brown.</blockquote>
+        <blockquote>Grant Sanderson, <a href="https://www.youtube.com/watch?v=fRed0Xmc2Wg">Oh, wait, actually the best Wordle opener is not "crane"...</a>, 3Blue1Brown (<a href="https://github.com/3b1b/videos/tree/master/_2022/wordle">code</a>).</blockquote>
         <blockquote>Matt Parker, <a href="https://www.youtube.com/watch?v=_-AfhLQfb6w">Can you find: Five five-letter words with twenty-five unique letters?</a>, Stand-up Maths.</blockquote>
         <blockquote>Matt Parker, <a href="https://www.youtube.com/watch?v=c33AZBnRHks">Someone improved my code by 40,832,277,770%</a>, Stand-up Maths.</blockquote>
         <blockquote>Benjamin Paaßen, <a href="https://docs.google.com/spreadsheets/d/11sUBkPSEhbGx2K8ah6WbGV62P8ii5l5vVeMpkzk17PI/edit#gid=0">Five words implementations</a>.</blockquote>

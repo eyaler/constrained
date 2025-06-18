@@ -2,6 +2,10 @@
 // https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
 // https://phuoc.ng/collection/mirror-a-text-area/
 
+new ResizeObserver(() => container.style.height = editing.offsetHeight + 'px').observe(editing)
+
+if (!navigator.share) {share.innerHTML = 'העתק קישור לשיתוף'; share.title = 'Copy shareable link'; share.classList.add('unsupported')};
+
 function process(text, perfect) {
     let normalized = ''
     const positions = {}

@@ -37,6 +37,18 @@
     outline-style: dashed;
 }
 
+#editing[dir=auto] + #highlighting {
+    unicode-bidi: plaintext;
+}
+
+#editing[dir=ltr] + #highlighting {
+    direction: ltr;
+}
+
+#editing[dir=rtl] + #highlighting {
+    direction: rtl;
+}
+
 #highlighting {
     overflow: hidden;
 }

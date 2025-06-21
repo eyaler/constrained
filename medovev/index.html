@@ -15,7 +15,7 @@
 <body onload="document.body.style.visibility = 'visible'; editing.focus(); const hash = decodeURIComponent(location.hash.slice(1)); content = hash[0] == '\t' ? hash.slice(1) : editing.value; if (content) update(content)">
     <script>make_header()</script>
     <div id="container">
-        <textarea id="editing" class="outline" autocomplete="off" dir="auto" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
+        <textarea id="editing" class="outline" autocomplete="off" oninput="update(this.value)" onscroll="sync_scroll(this)"></textarea>
         <div id="highlighting" aria-hidden="true"><span class="placeholder">ינסני!</span></div>
     </div>
     <div id="stats">

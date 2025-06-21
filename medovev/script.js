@@ -10,7 +10,7 @@ function process(text, perfect) {
     let normalized = ''
     const positions = {}
     if (perfect)
-        text = text.replace(/[\s-\u05be\u2013\u2014]/g, ' ')
+        text = text.replace(/[\s\p{Pd}]/gu, ' ')
     for (let i = 0; i < text.length; i++) {
         const char = text[i]
         while (perfect && char == ' ' && text[i + 1] == ' ')
@@ -54,10 +54,10 @@ function update(text) {
     text = new DOMParser().parseFromString(text.replaceAll('<', '\uff1c'), 'text/html').documentElement.textContent.replaceAll('<', '\uff1c')
     editing.value = text.replaceAll('\uff1c', '<')
 
-    if (text[text.length-1] == '\n')
+    if (text[text.length - 1] == '\n')
         text += ' '
 
-    const words = text.trim().split(/[\s\u2013\u2014]+|(?<=\p{L}{2,})[-\u05be]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
+    const words = text.trim().split(/[\s\u2013\u2014]+|(?<=(?:\p{L}\p{M}*){2,})[-\u05be\u2010\u2011]/u).filter(w => w.match(/[\p{L}\p{N}]/u)).length
 
     const [normalized, positions] = process(text)
     const n = normalized.length

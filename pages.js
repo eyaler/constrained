@@ -482,8 +482,8 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     if (is_mobile = matchMedia('(max-width: 480px), (max-height: 480px)').matches)
         index_title = index_title.split(' ').slice(0, lang ? 1 : 2).join(' ')
     const base = page2url('.', lang, page)
-    const parent = URL.parse(base + '/..', location).href
-    const parent_title = URL.parse(base, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
+    const parent = new URL(base + '/..', location).href
+    const parent_title = new URL(base, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
     const nav = document.createElement('nav')
     let diff = get_width(index_title, nav) - get_width(parent_title, nav)
     let span, back, keywords, trans

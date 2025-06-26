@@ -4,7 +4,11 @@
 
 new ResizeObserver(() => container.style.height = editing.offsetHeight + 'px').observe(editing)
 
-if (!navigator.share) {share.innerHTML = 'העתק קישור לשיתוף'; share.title = 'Copy shareable link'; share.classList.add('unsupported')};
+if (!navigator.share) {
+    share.classList.add('unsupported')
+    share.textContent = 'העתק קישור לשיתוף'
+    share.title = 'Copy shareable link'
+}
 
 function process(text, perfect) {
     let normalized = ''

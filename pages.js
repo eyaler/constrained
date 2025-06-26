@@ -591,7 +591,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             button = div.appendChild(document.createElement('button'))
             button.ariaLabel = 'הסר את כל המסננים'
             button.id = 'kw_x'
-            button.innerHTML = 'X'
+            button.textContent = 'X'
             button.onclick = () => div.querySelectorAll('.on').forEach(e => e.click())
         }
         header.appendChild(div)

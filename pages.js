@@ -385,7 +385,7 @@ function export_all(lang, skip=true) {
 function is_shortcut(event, shortcut) {
     shortcut = shortcut.toLowerCase().split(/ ?[+-] ?(?!$)/)
     let shortcut_key = shortcut.pop()
-    if (shortcut_key = 'space')
+    if (shortcut_key == 'space')
         shortcut_key = ' '
     let event_key = event.key.toLowerCase()
     if (shortcut_key == '+' && event.code == 'Equal' && !'-_'.includes(event.key)

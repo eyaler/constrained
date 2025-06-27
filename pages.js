@@ -480,8 +480,8 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     // nav:
 
     let index_title = get_set_titles('/', lang).label
-    let is_mobile
-    if (is_mobile = matchMedia('(max-width: 480px), (max-height: 480px)').matches)
+    const is_mobile = matchMedia('(max-width: 480px), (max-height: 480px)').matches
+    if (is_mobile)
         index_title = index_title.split(' ').slice(0, lang ? 1 : 2).join(' ')
     const base = page2url('.', lang, page)
     const parent = new URL(base + '/..', location).href

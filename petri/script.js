@@ -45,11 +45,10 @@ reset_poem()
 function compare_lists(a, b) {
     if (a.length != b.length)
         return a.length - b.length
-    for (let i = 0; i < a.length; i++) {
-        const diff = a[i] - b[i]
-        if (diff)
+    let diff
+    for (let i = 0; i < a.length; i++)
+        if (diff = a[i] - b[i])
             return diff
-    }
     return 0
 }
 

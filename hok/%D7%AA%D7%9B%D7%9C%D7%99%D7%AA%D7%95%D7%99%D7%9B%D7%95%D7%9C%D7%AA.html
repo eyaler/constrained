@@ -1,23 +1,280 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+    <style>body {visibility: hidden;}</style>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
-    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
-    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
-    <noscript><style>body {visibility: visible}</style></noscript>
+    <script src="../pages.js"></script>
     <style>
         body {
-            align-items: center;
+            --article_width: 60ch;
+            margin-block: 2em;
+        }
+        
+        .epipangram {
+            background: var(--fg_verydim);
+            border-radius: 5em 5em 0 0;
+            font-size: 1.5rem;
+            height: 10em;
+            margin: initial;
+            padding-top: 4rem;
+            width: 10em;
+        }
+        
+        input[type="text"] {
+            background: inherit;
+            border: none;
+            border-bottom: 1px var(--fg_dim) solid;
+            color: inherit;
+            display: block;
+            font: inherit;
+            letter-spacing: inherit;
+            line-height: 1.3em;
+            margin-inline: auto;
+            margin-top: .3em;
+            outline-style: none !important;
+            text-align: center;    
+            width: 4.5em;
+        }
+
+        .narrow_poem {
+            font-family: var(--mono_font);
+        }
+                
+        #timer {
+            color: red;
+        }
+        
+        .tombs {
             display: flex;
+            gap: 2em;
             justify-content: center;
+            margin-block: 4em;
         }
     </style>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
-    <div>השער השביעי בבנייה - מוזמנים לשוב לכאן בעתיד (זו לא חידה - לא כל שורה רומזת רמז)</div>
+<body onload="if (!enforce_deadline()) document.body.style.visibility = 'visible'">
+    <article>
+    <p>
+        את עומדת לפני שער הכניסה להיכל השביעי והאחרון.
+        השער עשוי כולו טיטניום טהור, ובראשו קבועה כתובת אותיות מחושלות מאותה המתכת בת עשרים ושניים הפרוטונים:
+    </p>
+    <p class="subhuge" style="margin-block: 1em">
+        המוסד העליון למדע הלשון העברית – ועדת האילוצים
+    </p>
+    <p>
+        לפני השער ניצב שומר הסף האחרון וחוסם את המעבר.
+        דמותו הלוטה בצללים מאובנת כמו קמע נרקב של מערכת שיודעת רק חוק אחד: ציות.
+        שלווה עגומה של ציפייה משתררת סביבכם, כאילו העולם כולו עצר מלכת.
+        לפתע הוא פוסע צעד קטן לעברך. נשימתך נעתקת.
+        לפנייך עומד הרוזן־הערפד מר סופר מרחוב סומסום בכבודו ובעצמו.
+    </p>
+    <p>
+        "חיכיתי לך," הוא אומר. "עכשיו את ודאי חושבת שאת פיקחת מאוד, בגלל שהצלחת לפתור את כל החידות הקודמות בדרך לכאן."
+    </p>
+    <p>
+        "כיוון ש־ בפסוקית –" נפלט לך לפני שאת מצליחה לעצור את עצמך. אוי לא.
+    </p>
+    <p>
+        "הס! האקדמיה אינה מתערבת בענייני סגנון!"
+        מעולם לא ראית את מר סופר כועס כל כך. פרוותו הסגלגלה נעשתה ארגמן עמוק.
+        "שממה צולחת – חלוצה ממש," הוא מסנן מדגיש באופן קריפי כל הברה והברה.
+        "ובכן יקירתי, כפי שאת ודאי מודעת, על סדר היום של הוועדה ההחלטה על נוסח הקבע לכתובת המצבה של יושב ראש הוועדה הראשון, ייאכף רסנו."
+    </p>
+    <p>
+        "ייאכף רסנו," את ממלמלת חזרה בשביל לכבד. יכול להיות שזהו הדבר שמשך אותך לעשות את כל הדרך לכאן? "אולי איזה משהו קטן עם אילוצים יהיה הולם?"
+    </p>
+    <p>
+        "מוחות דגולים!" עיניו של מר סופר ננעלות על שלך. הן פעורות לרווחה, ונראה שהוא כמעט מחייך.
+        "למעשה, הצוואה שהשאיר הדוקטור מפרטת בדיוק את האילוצים המבוקשים, רק שעד כה אף אחד לא הצליח למצוא את הפתרון."
+        את מסוקרנת.
+        הוא שולף את הנייד, מפשפש בו קצת ומקריא:
+    </p>
+    <pre class="narrow_poem">
+על מצבתי רשמו נא:
+אפיטף עם שמי המלא
+והוא ביו־פלינדרום
+וגם פנגרמה מושלמת</pre>
+    <p>
+        "אה מה שנקרא שילוב אילוצים," את אומרת בחיוך.
+    </p>
+    <p>
+"וּ־" עיניו ניצתות בזיק של טירוף,            
+    </p>
+    <pre class="narrow_poem">
+ובצד השני רשמו נא:
+קריאה מהסוף להתחלה
+שהיא מנשר על יצירה
+בשם המקום בו ניפגש</pre>
+    <p>
+        הראייה שלך מטשטשת ואת תוהה אם בן שיחך יכול גם הוא לשמוע את הזמזום ההולך וגובר שמרטיט את גולגולתך מבפנים.
+        "עוד ניפגש בשדה האומנותי," את אומרת בעצב.
+        נדמה לך שמשהו התרכך קמעה בפניה של החבובה בת דמות הערפד.
+        "מותר ראשי תיבות?" את מנסה להקליל.
+    </p>
+    <p>
+        "למה לא? אם הם מוכרים ונהגים כמילה אחת, וזה בקונטקסט כמובן - נתיר זאת."
+    </p>
+    <p>
+        "אז רגע, תן לי לראות אם אני מבינה נכון.
+        רוצים לנסח טקסט לזכר המחבר של כל הסיפור הזה שאנחנו נמצאים בתוכו,
+        שמכיל את שמו, שם פרטי ומשפחה.
+        הטקסט צריך להיות ביו־פלינדרום,
+        כלומר אותו סדר אותיות מתקיים בקריאה מהסוף להתחלה כאשר מחליפים אל"ף ב־תי"ו, בי"ת ב־שי"ן וכך הלאה.
+        הטקסט צריך גם להיות פנגרמה מושלמת,
+        כלומר באורך עשרים ושתיים אותיות כשכל אות באלף־בית מופיעה בדיוק פעם אחת.
+        לא זו בלבד אלא שהטקסט הזה צריך להיות גם אנדרום.
+        כלומר שהוא יהיה קריא גם מסוף להתחלה עם חלוקת רווחים מתאימה,
+        ואותה קריאה הפוכה תהווה מניפסט בעד יצירה,
+        שמובא כביכול בשם פאקינג שדה?"
+    </p>
+    <p>
+        "נשמע שהבנת מצוין."
+    </p>
+    <p>
+        "כאילו אילוצים זה טוב אבל זה...
+        בלתי אפשרי."
+    </p>
+    <p>
+        "נשמע כמו משהו שמודל שפה היה אומר — אנחנו בודקים הרי כל גרסה חדשה שיוצאת, וזו התשובה שאנחנו מקבלים כבר שנים."
+    </p>
+    <p>
+        "טוב מן הידוע הוא שהבלתי אפשרי לוקח קצת זמן."
+    </p>
+    <p>
+        "בכל מקרה, רעייתו יעל אמרה שהיא זוכרת שהיו כמה פתרונות אפשריים מאוד דומים, וש'פשוט תשחקו קצת עם האותיות עד שתמצאו את הנוסח הכי מדויק.'
+        אני מציע שתתחילי לפתור, הוועדה תתכנס להחליט בעוד ארבע עשרה דקות."
+    </p>
+    <div id="timer" class="narrow_poem"><span id="min"></span>:<span id="sec"></span></div>
+    <div class="tombs">
+        <div class="epipangram">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+        </div>
+        <div class="epipangram">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+            <input type="text" autocomplete="off" maxlength="9" spellcheck="false">
+        </div>
+    </div>
+    <p id="p">&ZeroWidthSpace;</p>
+    </article>
+    <script>
+        const max_m = 14
+        let remaining = +(localStorage.getItem('timer') ?? max_m * 60)
+        let m = remaining / 60 | 0
+        let s = remaining % 60     
+
+        let deadline, solved
+        const inputs = document.querySelectorAll('input[type="text"]')
+        
+        let wordlist, words
+        
+        function update_timer() {
+            min.textContent = String(m).padStart(2, '0')
+            sec.textContent = String(s).padStart(2, '0')
+        }
+        update_timer()
+        
+        function enforce_deadline() {
+            if (remaining < 0) {
+                if (remaining > -Infinity)
+                    location.replace(page2url('/'))
+                remaining = -Infinity
+                return true
+            }
+        }
+        
+        function tick() {
+            deadline ??= performance.now() + remaining*1000
+            remaining = (deadline - performance.now()) / 1000 | 0
+            const new_m = remaining / 60 | 0
+            const new_s = remaining % 60            
+            if (new_m != m || new_s != s) {
+                if (enforce_deadline())
+                    return                    
+                m = new_m
+                s = new_s
+                update_timer()
+                localStorage.setItem('timer', remaining)
+            }
+            if (solved) {
+                timer.style.color = 'inherit'
+                inputs.forEach(e => e.readOnly = true)
+                const gem = words.map(w => [...norm(w)].reduce((t, l) => t + ({א:1,ב:2,ג:3,ד:4,ה:5,ו:6,ז:7,ח:8,ט:9,י:10,כ:20,ל:30,מ:40,נ:50,ס:60,ע:70,פ:80,צ:90,ק:100,ר:200,ש:300,ת:400}[l]), 0))
+                const gem2 = gem.reduce((r, _, i) => (i & 1 ? r.concat(gem[i - 1] + gem[i]) : r), [])
+                const url = (gem.filter(x => gem2.includes(x))[0] + '').replace(/(.)(.)$/, '$2$1')
+                const a = document.createElement('a')
+                a.href = url + '.html'
+                a.textContent = 'עמוד ' + url
+                p.innerHTML = `השער נפתח ואת עוברת דרכו. עברי ל${a.outerHTML}.`
+                a.focus()
+            } else
+                requestAnimationFrame(tick)
+        }
+        if (m == max_m)
+            new IntersectionObserver((e, o) => {if (e[0].isIntersecting) {o.unobserve(e[0].target); tick()}}).observe(timer)
+        else
+            tick()
+        
+        inputs.forEach((elem, i) => {
+            elem.addEventListener('keydown', e => {
+                if (e.key == 'Enter' || e.key == 'ArrowDown' || e.key == 'ArrowUp' || e.key == ' ' && elem.value.includes(' ') && elem.selectionStart == elem.value.length || e.key == 'Backspace' && !elem.selectionEnd) {
+                    e.preventDefault()
+                    let step
+                    if (e.key == 'Enter' || e.key == 'ArrowDown' || e.key == ' ')
+                        step = 1
+                    else if (e.key == 'ArrowUp' || e.key == 'Backspace')
+                        step = -1
+                    const line = inputs[(i+step+inputs.length) % inputs.length]
+                    line.focus()
+                    if (e.key == ' ')
+                        line.selectionEnd = 0
+                    else if (e.key == 'Backspace')
+                        line.selectionStart = line.value.length
+                }
+            })
+            elem.addEventListener('input', async () => {
+                if (!wordlist) 
+                    wordlist = (await (await fetch('words.txt')).text()).split(/\r?\n/)
+                const lines = [...inputs].map(e => e.value)
+                const a = lines.slice(0, 4).join(' ')
+                const b = lines.slice(4).join(' ')
+                words = (a + ' ' + b).replace(/[\s\p{Pd}]+/gu, ' ').replace(/[\p{M}\p{P}]/gu, '').split(' ') 
+                if (words.some(w => !wordlist.includes(w))) 
+                    return
+                const na = norm(a)
+                const nb = norm(b)
+                solved = na.length == 22 && new Set(na).size == 22 && bio(na) && [...na].reverse().join('') == nb && name(a, 'גרוּס', 'איל') && b.replace(/[\s\p{Pd}]+/gu, ' ').replace(/[\p{M}\p{P}]/gu, '').search(/(^| )[משהוכלב]*שד[הויכמנ]/) >= 0
+            })
+        })
+        
+        function bio(s) {
+            const abc = 'אבגדהוזחטיכלמנסעפצקרשת'
+            const comp = Object.fromEntries([...abc].map((c, i) => [c, abc[abc.length - 1 - i]]))
+            const n = s.length
+            for (let i = 0; i < n / 2 | 0; i++)
+                if (s[i] != comp[s[n - 1 - i]])
+                    return false
+            return true
+        }
+        
+        function name(s, w1, w2) {
+            w1 = w1.replace(/\p{M}/gu, '$&?')
+            w2 = w2.replace(/\p{M}/gu, '$&?')
+            return [[w1, w2], [w2, w1]].some(([wa, wb]) => RegExp(`(?<![^\\P{L}משהוכלב][משהוכלב]*)${wa} ${wb}(?!\\p{L})`, 'u').test(s))
+        }
+        
+        function norm(s) {
+            return s.replace(/[^א-ת]/g, '').replace(/ך/, 'כ').replace(/ם/, 'מ').replace(/ן/, 'נ').replace(/ף/, 'פ').replace(/ץ/, 'צ')
+        }
+    </script>
 </body>
 </html>

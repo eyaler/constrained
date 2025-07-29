@@ -7,8 +7,6 @@
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
-    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
-    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
         body {
@@ -42,7 +40,7 @@
     <div id="div">
         <p>הכבארור</p>
         <p>מקיטונו</p>
-        <input id="input" type="text" autocomplete="off" maxlength="7" placeholder="_______" spellcheck="false" size="7" oninput="if (value.length == 7) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.readonly = true; a.href = url; a.textContent = 'יאשר המשך שמה רשאי'; a.focus()}})}">
+        <input id="input" type="text" autocomplete="off" maxlength="7" placeholder="_______" spellcheck="false" size="7" oninput="if (value.length == 7) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.readOnly = true; a.href = url; a.textContent = 'יאשר המשך שמה רשאי'; a.focus()}})}">
         <span style="position: absolute; float: left">?</span>
     </div>
     <a id="a">&ZeroWidthSpace;</a>

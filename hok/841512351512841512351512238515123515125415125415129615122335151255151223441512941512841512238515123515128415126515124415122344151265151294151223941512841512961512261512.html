@@ -7,20 +7,18 @@
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
     <script src="p5/p5.min.js"></script>
-    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
-    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
-		body {
-			padding: 0;
-			overflow: clip;
-		}
+        body {
+            padding: 0;
+            overflow: clip;
+        }
 
         a {
             font-size: 4vmin;
             white-space: pre-line;
         }
-	</style>
+    </style>
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <script>
@@ -35,7 +33,7 @@
         const path = []
         let nodes = []
         let dragging
-        let dragStartNode = null
+        let dragStartNode
         let completed
         let currentColor
         let firstNode
@@ -43,7 +41,7 @@
         let anchor
         
         function setup() {
-          createCanvas(windowWidth, windowHeight)
+          createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
           textAlign(CENTER, CENTER)
           textFont('Alef')
           currentColor = 224
@@ -180,7 +178,7 @@
           return [{startX, startY, endX, endY, ux, uy}, d]
         }
         
-        function drawArrow(n1, n2, order=null) {
+        function drawArrow(n1, n2, order) {
           const [endpoints, dist] = getAdjustedEndpoints(n1, n2, order != null)
           if (order == null && !dist)
             return

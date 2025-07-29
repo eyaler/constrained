@@ -80,11 +80,6 @@ table {
     filter: invert() var(--tables_fg_filter);
 }
 
-.harden {
-    display: inline-block;
-    text-decoration: inherit;
-}
-
 .merge_first_col > tbody td:first-child {
     border-top: none;
 }

@@ -1,8 +1,3 @@
-function harden(s) {
-    return s.replace(/(.*) \/ (.*)/, '<span class="harden">$1 /</span> <span class="harden">$2</span>').replace(/[\p{L}\p{M}\p{N}\xa0]+[\u05be-][\p{L}\p{M}\p{N}\xa0\u05be-]+/gu, '<span class="harden">$&</span>')
-}
-
-
 const table_collator = Intl.Collator(document.documentElement.lang, {numeric: true})
 
 
@@ -45,7 +40,7 @@ class Table {
 
     sort_table(index, order) {
         const buttons = this.table.querySelectorAll('.sort button:not(.copy *)')
-        if (index == undefined)
+        if (index == null)
             buttons.forEach((k, i) => {
                 if (this.config[k.name]?.default)
                     index = i
@@ -117,7 +112,7 @@ class Table {
         }
         let j = 0
         keys.forEach((k, i) => {
-            const label = harden(k.split('_')[0])
+            const label = k.split('_')[0]
             const cell = tr.appendChild(document.createElement(label ? 'th' : 'td'))
             if (ths)
                 [...ths[i].attributes].forEach(a => cell.setAttribute(a.name, a.value))
@@ -138,7 +133,7 @@ class Table {
                 if (conf.first_highlight) {
                     if (!this.table.classList.contains('highlight'))
                         this.table.classList.add('col_highlight')
-                    if (this.table.dataset.firstColHighlight != undefined)
+                    if (this.table.dataset.firstColHighlight != null)
                         this.table.dataset.firstColHighlight = i + offset
                 }
                 const max_width = conf.max_width || conf.maxwidth || conf.maxWidth || conf['max-width'] || conf.max
@@ -220,7 +215,7 @@ class Table {
                             if (!is_data_header) {
                                 td.classList.add('number')
                                 decimal = conf.decimal
-                                if (decimal == undefined)
+                                if (decimal == null)
                                     if (typeof conf.as_pct == 'number')
                                         decimal = conf.as_pct
                                     else if (typeof conf.is_pct == 'number')
@@ -237,7 +232,7 @@ class Table {
                         href = (conf.href || '') + href + (conf.href_suffix || '')
                         Object.entries(conf.sub || {}).forEach(([pat, rep]) => v = v.replace(RegExp(pat, 'g'), rep))
                         v = (conf.prefix || '') + v + (conf.suffix || '')
-                        if (!is_data_header && (conf.href != undefined || conf.href_sub || conf.href_suffix != undefined))
+                        if (!is_data_header && (conf.href != null || conf.href_sub || conf.href_suffix != null))
                             v = `<a href="${href}">${v}</a>`
                         td.innerHTML = v
                     })

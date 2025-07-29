@@ -7,8 +7,6 @@
     <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../fonts/Alef-Monospace.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../style.css">
-    <meta property="og:description" content=".">  <!-- og:description is required for WhatsApp to show og:image -->
-    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
         body {
@@ -22,7 +20,7 @@
         #a {
             padding-bottom: .5em;
         }
-        
+
         #div {
             width: 30ch;
         }
@@ -55,7 +53,7 @@
         <p>כָּל מַמְלְכוֹת הָאָרֶץ נָתַן לִי יְהוָה אֱלֹהֵי הַשָּׁמַיִם</p>
         <p>וְהוּא פָקַד עָלַי לִבְנוֹת לוֹ בַיִת בִּירוּשָׁלִַם אֲשֶׁר</p>
         <p>בִּיהוּדָה מִי בָכֶם מִכָּל עַמּוֹ יְהוָה אֱלֹהָיוְ עִמּוֹ וְ</p>
-        <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (value.length == 3) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.readonly = true; input.classList.add('done'); a.href = url; a.textContent = 'יאשר רשאי'; a.focus()}})}">
+        <input id="input" type="text" autocomplete="off" maxlength="3" placeholder="___" spellcheck="false" size="3" oninput="if (value.length == 3) {url = encodeURI(encodeURI(value)) + '.html'; fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) {input.readOnly = true; input.classList.add('done'); a.href = url; a.textContent = 'יאשר רשאי'; a.focus()}})}">
     </div>
     <a id="a">&ZeroWidthSpace;</a>
 </body>

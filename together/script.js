@@ -146,7 +146,7 @@ function to_middle(s) {
     .replace('ץ', 'צ')
 }
 
-allowed_words = allowed_words.map(w => to_middle(w))
+allowed_words = allowed_words.map(to_middle)
 const initial_word = random_text(allowed_words.filter(w => w.length == 2))
 joker_char = initial_word.includes(joker_char) ? joker_char : initial_word[1]
 const char_ranks = [initial_word.replace(joker_char, ''), joker_char]
@@ -171,16 +171,16 @@ function change_word(event_or_word) {
   if (!allowed_words.includes(word)) allowed_words.push(word)
   allowed_insertions = {}
   allowed_words.forEach(w =>
-    w.split('').forEach((c, i) => {
+    [...w].forEach((c, i) => {
       if (word == w.slice(0, i) + w.slice(i + 1)) {
         if (!allowed_insertions[c]) allowed_insertions[c] = []
         allowed_insertions[c].push(i)
       }
     })
   )
-  const chars = word.split('').sort().join('')
+  const chars = [...word].sort().join('')
   anagrams = allowed_words.filter(
-    w => w != word && chars == w.split('').sort().join('')
+    w => w != word && chars == [...w].sort().join('')
   )
   const save_texts = {}
   const save_prev_texts = {}
@@ -188,8 +188,7 @@ function change_word(event_or_word) {
     if (e.dataset.text) save_texts[e.id] = e.dataset.text
     if (e.dataset.prev_text) save_prev_texts[e.id] = e.dataset.prev_text
   })
-  me.innerHTML = word
-    .split('')
+  me.innerHTML = [...word]
     .map(
       (c, i) =>
         `<div id="${c}" ${

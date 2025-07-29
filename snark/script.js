@@ -79,6 +79,7 @@ containers.forEach(elem => {
     svg.addEventListener('mouseover', e => {if (!svg.parentElement.classList.contains('keyboard')) get_play(e)})
     svg.addEventListener('click', click)
 })
+
 document.addEventListener('keydown', event => {
     if (event.altKey || event.getModifierState?.('AltGraph') || event.ctrlKey || event.metaKey || !event.key.match(/^[א-תa-zA-Z]$/) && event.key != 'Backspace' && event.key != 'CapsLock')
         return

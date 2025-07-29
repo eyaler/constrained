@@ -34,9 +34,9 @@ const lang = get_lang()
 const bc = new BroadcastChannel('bc')
 
 function reset_poem() {
-    if (typeof thepoem != 'undefined')
+    if (self.thepoem)
         thepoem.value = '\n'
-    if (typeof bc != 'undefined')
+    if (self.bc)
         bc.postMessage('')
 }
 
@@ -61,7 +61,7 @@ function sanitized_len(string, split=false) {
 
 const place_template = "\n   .-'''-.   \n \\ JD645CI / \n| NHB312AGM |\n / LF978EK \\ \n   `-...-`   \n"
 const place_lines = place_template.trim().split('\n')
-const place_width = Math.max(...place_lines.map(l => sanitized_len(l)))
+const place_width = Math.max(...place_lines.map(sanitized_len))
 const place_max_tokens = place_template.match(/[0-9A-Z]/g).length
 
 function center(label, width, align_start=false) {
@@ -166,9 +166,9 @@ function fire(grid, json, steps, max_tokens, result_counter, reset_counter, toke
     out.forEach(p => tokens[p] = (tokens[p] || 0) + 1)
     if (!comp) {
         const verse = poem_generator(json, trans, out[Math.random() * out.length | 0])
-        if (typeof thepoem != 'undefined')
+        if (self.thepoem)
             textarea_writeln(thepoem, verse)
-        if (typeof bc != 'undefined')
+        if (self.bc)
             bc.postMessage(verse)
     }
     setTimeout(step, halfstep_secs * 1000, grid, json, steps, max_tokens, result_counter, reset_counter, tokens)
@@ -212,8 +212,7 @@ function step(grid, json, steps=0, max_tokens={}, result_counter={}, reset_count
     if (grid.parentElement.id in json.transitions)
         comp = grid.parentElement.id
     const transitions = comp ? [comp] : Object.keys(json.transitions)
-    if (tokens == undefined)
-        tokens = comp ? Object.fromEntries(json.transitions[comp][0].map(p => [p, comp_marking])) : {...json.marking}
+    tokens ??= comp ? Object.fromEntries(json.transitions[comp][0].map(p => [p, comp_marking])) : {...json.marking}
     grid.querySelectorAll('[data-clicks]').forEach(place => {
         const clicks = place.dataset.clicks | 0
         place.removeAttribute('data-clicks')
@@ -345,9 +344,9 @@ function step(grid, json, steps=0, max_tokens={}, result_counter={}, reset_count
         step(grid, json, 0, max_tokens, result_counter, reset_counter)
     } else if (!enabled.length || comp && Object.values(tokens).some(n => n > place_max_tokens) || !comp && !json.require?.every(require => require.some(t => tokens[t]))) {
         if (!comp) {
-            if (typeof thepoem != 'undefined')
+            if (self.thepoem)
                 textarea_writeln(thepoem)
-            if (typeof bc != 'undefined')
+            if (self.bc)
                 bc.postMessage('\n')
             if (stats) {
                 const result = json.require?.map(side => side.some(p => tokens[p]) | 0)

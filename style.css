@@ -59,13 +59,14 @@
     --heading_font: var(--font);
     --mono_font: 'Alef Mono', 'Courier New', monospace;
 
-	--article_width: none;
+    --article_width: none;
     --font_size: 1.3rem;
     --h1_size: clamp(1.5em, 5rem, 10vw);
     --hor_scrollbar_offset: 16px;
     --larger_font: clamp(1.3em, 2rem, 2vw);
     --max_media_height: 85vh;
     --media_width: 85%;
+    --frag_dur: 7s;
 
     /* Following variables must use units that are not relative to elements (i.e. avoid %, em, ex) */
     --main_margin: max(2rem, 5vw);
@@ -621,13 +622,6 @@ h4 {
 
 h4:not(article *) {
     margin-bottom: 6rem;
-}
-
-.harden {
-    display: inline-block;
-    text-decoration: inherit;
-    text-decoration-color: inherit;  /* For Safari */
-    text-decoration-style: inherit;  /* For Safari */
 }
 
 header {

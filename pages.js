@@ -16,11 +16,11 @@ const pages = {
     "palpal": {title: "פלינדרומים על פלינדרומים", alt: "Palindromes on palindromes", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "self-referral", "visual"]},
     "raz/": {title: "פּוּלס רֵוֵורס לוּפּ", alt: "Pulse reverse loop", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "self-referral", "sound", "visual"]},
     "mate": {title: "מט מטמטם", alt: "Fool's mate", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "record", "self-referral"]},
-    "1e7/": {title: "תו כופה תו ותהפוכות", alt: "Writing lines", kw: ["combined forms", "hebrew cheatery", "live code", "palindrome", "poem", "record", "self-referral", "visual"], with: "noamdovev"},
+    "1e7/": {title: "תו כופה תו ותהפוכות", alt: "Writing lines", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "record", "self-referral", "visual"], with: "noamdovev"},
     "cheat": {title: "מִרמת העברית", alt: "Hebrew cheatery", kw: ["discourse", "hebrew cheatery", "palindrome", "self-referral"]},
     "bio": {title: "ביו־פלינדרומים", alt: "Bio-palindromes", kw: ["combined forms", "new constraint", "palindrome", "pangram", "record"]},
     
-    "medovev/": {title: "בודק פלינדרומים", alt: "Palindrome checker", kw: ["interactive", "live code", "palindrome"]},
+    "medovev/": {title: "בודק פלינדרומים", alt: "Palindrome checker", kw: ["interactive", "palindrome", "tool"]},
     "panpan": {title: "פנגרמות מושלמות על פנגרמות מושלמות", alt: "Perfect pangrams on perfect pangrams", kw: ["combined forms", "hebrew cheatery", "pangram", "self-referral"]},
     "undercover": {title: "פנגרמה מושלמת מסתערבת", alt: "Undercover perfect pangram", kw: ["discourse", "hebrew cheatery", "pangram"]},
     "pangrams": {title: "פנגרמות מושלמות מינימליות", alt: "Minimal perfect pangrams", kw: ["combinatorial", "combined forms", "hebrew cheatery", "new constraint", "pangram", "record", "software"]},
@@ -36,13 +36,13 @@ const pages = {
     
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
     "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing"},
-    "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "live code", "software"], with: "eranhadas"},
+    "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "software", "tool"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
-    "otomat/": {title: "אות־וֹמט תאי", alt: "OT-o-mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
+    "otomat/": {title: "אות־וֹמט תאי", alt: "OT‑o‑mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
     "xx17n": {title: "חרותת / xx17n", alt: "xx17n", kw: ["cipher", "poem", "software", "visual"]},
     "freq": {title: "שכיחות האותיות בספרות העברית", alt: "Letter frequencies in Hebrew literature", kw: ["data available", "software"]},
     "taz": {title: "תחום אוטונומי זמני", alt: "Temporary Autonomous Zone", kw: ["cipher", "new constraint", "poem", "software", "sound", "visual"]},
-    "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software"]},
+    "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software", "tool"]},
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
     "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["combinatorial", "hebrew cheatery", "new constraint"]},    
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self-referral", "software", "visual"]},
@@ -50,7 +50,7 @@ const pages = {
     
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
-    "otogram": {title: "אות־וֹגרמה", alt: "OT-o-gram: Letter-letter autogram", kw: ["combinatorial", "combined forms", "pangram", "record", "self-referral", "software"]},
+    "otogram": {title: "אות־וֹגרמה", alt: "OT‑o‑gram: Letter-letter autogram", kw: ["combinatorial", "combined forms", "pangram", "record", "self-referral", "software"]},
     "hayush": {title: "סדרות היוּש", alt: "Aronson sequences in Hebrew", kw: ["data available", "record", "self-referral", "software"]},
     "barosh/": {title: "בראש יתברא / יתד בקלשוני", alt: "BaRosh Yitbare / Yated BeKilshoni", kw: ["biblical", "combinatorial", "data available", "interactive", "live code", "record", "software", "visual"]},
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
@@ -118,6 +118,7 @@ const kw_labels = {
     "software": "תוכנה",
     "sound": "צלילים",
     "story": "סיפור",
+    "tool": "כלי",
     "translation": "תרגום",
     "visual": "חזותי",
 }
@@ -191,8 +192,8 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
 }
 
 
-function harden(s) {
-    return s.replace(/(.*) \/ (.*)/, '<span class="harden">$1 /</span> <span class="harden">$2</span>').replace(/[\p{L}\p{M}\p{N}\xa0]+[\u05be-][\p{L}\p{M}\p{N}\xa0\u05be-]+/gu, '<span class="harden">$&</span>')
+function soften(s) {
+    return s.split(' ').map((w, i) => i ? w : w.replace(/(?<=[\p{L}\p{M}\p{N}])\p{Pd}(?=[\p{L}\p{M}\p{N}])/gu, '$&\u200b')).join(' ')
 }
 
 
@@ -219,7 +220,7 @@ function make_link(url, label, cls, title, new_tab=false, force_new_tab_for_mail
         a.className = cls
     }
     if (typeof label == 'string')
-        a.innerHTML = harden(label)
+        a.innerHTML = soften(label)
     else
         a.appendChild(label)
     if (title)
@@ -293,7 +294,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
     const contents = get_page()
     const lang = get_lang()
     const all_keywords = get_all_keywords(lang)
-    const contents_authors = get_make_author(contents, lang)[0].map(harden).join()
+    const contents_authors = get_make_author(contents, lang)[0].join()
     const div = document.createElement('div')
     div.className = 'contents'
     div.classList.toggle('row_first', row_first)
@@ -319,11 +320,11 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
         })
 
         const p = document.createElement('p')
-        p.classList.add(...all_keywords.filter(kw => !pages[page].kw?.map(String).includes(kw)).map(kw => 'non_' + sanitize(kw)))
+        p.classList.add(...all_keywords.filter(kw => pages[page].kw?.map(String).includes(kw)).map(kw => '_' + sanitize(kw)))
         p.id = 'page_' + div.childElementCount
         p.appendChild(a)
 
-        let span = null
+        let span
         if (pages[page].wip) {
             span = p.appendChild(document.createElement('span'))
             const s = span.appendChild(document.createElement('span'))
@@ -333,8 +334,6 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
 
         if (show_author) {
             let [authors, alt_authors] = get_make_author(page, lang)
-            authors = authors.map(harden)
-            alt_authors = alt_authors.map(harden)
             if (authors.join() != contents_authors)
                 authors.forEach((author, i) => {
                     span ??= p.appendChild(document.createElement('span'))
@@ -524,20 +523,21 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const header = document.createElement('header')
     let button
     if (keywords.length) {
+        const css = document.head.querySelector('link[rel=stylesheet]:not([href^=data])').sheet
         const div = document.createElement('div')
         div.className = 'kw'
 
         function kw_handler() {
             const on = this.classList.toggle('on')
-            const css = document.head.querySelector('link[rel=stylesheet]:not([href^=data])').sheet
+            const prefix = '.contents > p:not(.'
             let found
             for (const i in css.cssRules)
-                if (found = css.cssRules[i].selectorText?.slice(1) == this.id.replace(/^kw_/, 'non_')) {
+                if (found = css.cssRules[i].selectorText?.slice(prefix.length, -1) == this.id.replace(/^kw/, '')) {
                     css.deleteRule(i)
                     break
                 }
             if (!found)
-                css.insertRule(`.${this.id.replace(/^kw_/, 'non_')} {color: var(--fg_verydim) !important}`)
+                css.insertRule(`${prefix}${this.id.replace(/^kw/, '')}) {color: var(--fg_verydim) !important}`)
             const buttons_on = div.querySelectorAll('.on')
             kw_x.style.visibility = buttons_on.length ? 'inherit' : 'hidden'
             if (buttons_on.length > 1)
@@ -552,7 +552,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
                 if (trans)
                     trans.hash = url_kw
                 set_next_prev_page(page, next, prev, lang, url_kw)
-                page_items.forEach(p => p.firstChild.hash = p.classList.contains('non_' + url_kw) ? '' : url_kw)
+                page_items.forEach(p => p.firstChild.hash = p.classList.contains('_' + url_kw) ? url_kw : '')
             }
             const fg_rgb = getComputedStyle(document.documentElement).color
             page_items.forEach(p => {const enabled = getComputedStyle(p).color == fg_rgb; p.querySelectorAll(':scope > a').forEach(a => {if (enabled) a.removeAttribute('aria-disabled'); else a.ariaDisabled = 'true'})})
@@ -578,9 +578,10 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 
             button.innerHTML = label
             button.title = `${alt}\nworks=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
-            if (page == '/')
+            if (page == '/') {
                 button.onclick = kw_handler
-            else {
+                css.insertRule(`body:has(.${button.id.replace(/^kw/, '')}:hover, .${button.id.replace(/^kw/, '')} > :focus-visible) #${button.id} {border-color: var(--on)}`)
+            } else {
                 button.className = 'always_on'
                 button.classList.toggle('persistent', !button_index && url_kw)
                 button.href = page2url('.', lang, page, button.id.slice(3))
@@ -606,9 +607,9 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         h1.appendChild(img)
         h1.title = en_title ?? titles.label
     } else {
-    	h1.innerHTML = harden(titles.label)
-    	if (titles.alt)
-        	h1.title = titles.alt
+        h1.textContent = soften(titles.label)
+        if (titles.alt)
+            h1.title = titles.alt
     }
     header.appendChild(h1)
     if (ui[lang].dir && ui[lang].dir != document.documentElement.dir)
@@ -751,8 +752,6 @@ function make_footer(copyright_url=default_copyright_url, copyright_label=defaul
 
 
 function textarea_writeln(textarea, line='', chars_for_reset=500000) {
-    if (typeof textarea == 'undefined')
-        return
     const selection_start = textarea.selectionStart
     const selection_end = textarea.selectionEnd
     const should_scroll = (textarea.scrollTop + 1 >= textarea.scrollHeight - textarea.clientHeight || textarea.clientHeight != textarea.dataset.height || textarea.clientWidth != textarea.dataset.width) && selection_start == selection_end

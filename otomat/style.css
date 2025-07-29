@@ -11,7 +11,7 @@
 }
 
 .fullscreen #grid {
-    --base_vw_font_size: .937vw;  /* Hand-tuned to minimize uneven gaps between lines at 1920x1080 due to fractional line-height. See e.g.: https://bugzilla.mozilla.org/show_bug.cgi?id=442139 */
+    --base_vw_font_size: .937vw;  /* Hand-tuned to minimize uneven gaps between lines at 1920x1080 due to fractional line-height. See e.g. https://bugzilla.mozilla.org/show_bug.cgi?id=442139 */
 }
 
 #grid:active {

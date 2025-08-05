@@ -2,7 +2,7 @@ const rate_factors = [1, 1, 1, .7, .7, .7, 1 / .7, 1 / .7, 1 / .7, 1]
 const delays = [0, 0, 0, .1, .15, .2, .25, .3, .35, .4]
 
 if (location.hash.slice(1).startsWith('full'))
-    toggle_fullscreen(videos);  // works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
+    toggle_fullscreen(videos);  // Works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
 
 let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
 

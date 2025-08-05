@@ -163,6 +163,7 @@ article {
 
 #reverse_button {
     font-size: initial;
+    white-space: pre;
 }
 
 nav:not([dir=ltr]) ~ #reverse_button {

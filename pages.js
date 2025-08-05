@@ -764,8 +764,10 @@ function textarea_writeln(textarea, line='', chars_for_reset=500000) {
         textarea.scrollTop = textarea.scrollHeight
         textarea.dataset.height = textarea.clientHeight
         textarea.dataset.width = textarea.clientWidth
-    } else if (selection_start != selection_end)
-        textarea.setSelectionRange(selection_start, selection_end)  // Needed to restore the selection after value change. Note: In Firefox this will scroll the selection into view
+    } else if (selection_start != selection_end) {  // Needed to restore the selection after value change. Note: In Firefox this will scroll the selection into view
+        textarea.selectionStart = selection_start
+        textarea.selectionEnd = selection_end
+    }
 }
 
 

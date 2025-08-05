@@ -11,7 +11,7 @@ if (hash == 'fast') {
     halfstep_secs = 3
     restart_secs = halfstep_secs * 3
 } else if (hash.startsWith('full'))
-    toggle_fullscreen(petri);  // works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
+    toggle_fullscreen(petri);  // Works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
 
 const auto_vertical = true
 const label_location = 'half'  // Can be: 'half' (half above and half below, favoring the below), 'above', or anything else to indicate below

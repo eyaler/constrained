@@ -18,7 +18,7 @@
     <textarea id="thepoem" autocomplete="off" dir="auto" readonly rows="32" spellcheck="false"></textarea>
     <script>
         if (location.hash.slice(1).startsWith('full'))
-            toggle_fullscreen(document.documentElement);  // works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
+            toggle_fullscreen(document.documentElement);  // Works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
 
         let prev_lang
         new BroadcastChannel('bc').onmessage = event => {

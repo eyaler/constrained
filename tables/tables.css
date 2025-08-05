@@ -46,7 +46,7 @@ table {
         background-color: var(--tables_bg);
     }
 
-    /* Note: skipping first columns highlight may be broken due to rowspan > 1 cells in first columns */
+    /* Note: Skipping first columns highlight may be broken due to rowspan > 1 cells in first columns */
     :is(.highlight, .col_highlight) :is(td, th):is(:not([colspan]), [colspan='1']):not(:is(.merge_first_col, .rank) :first-child, [data-first-col-highlight='1'] :first-child, [data-first-col-highlight='2'] :nth-child(-n+2)):hover::after {
         background: var(--tables_fg_verydim);
         content: '';

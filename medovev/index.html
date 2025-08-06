@@ -26,7 +26,7 @@
         </span>
         <span id="buttons" class="border">
             <button onclick="navigator.clipboard.writeText(editing.value)" title="Copy">העתק</button>
-            <button id="share" onclick="const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + editing.value); navigator.share?.({url: url}).catch(() => {}) ?? navigator.clipboard.writeText(url)" title="Share">שתף</button>
+            <button id="share" onclick="const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + editing.value); navigator.share?.({url: url, text: editing.value, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)" title="Share">שתף</button>
         </span>
     </div>
     <script>

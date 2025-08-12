@@ -626,10 +626,9 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 
 
     if (desc.length) {
-        const meta = document.createElement('meta')
-        meta.name = 'description'
+        const meta = document.head.appendChild(document.createElement('meta'))
         meta.content = desc.join(', ')
-        document.head.appendChild(meta)
+        meta.name = 'description'
     }
     if (page == '/')
         addEventListener('load', () => {

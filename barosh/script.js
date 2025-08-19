@@ -43,7 +43,7 @@ class Pasuk {
             this.elem.onmousemove = () => this.elem.classList.remove('wait_for_mouse')
             const trans = this.json.trans[this.spaces][0][index + 1]
             this.spaces = trans[Math.random() * trans.length | 0]
-            this.restart_id = setTimeout(() => this.restart(), restart_secs * 1000)
+            this.restart_id = setTimeout(this.restart, restart_secs * 1000)
         }
         const allowed = Object.keys(this.json.trans[this.spaces][0]).map(Number)
         this.fix_spaces(this.spaces, allowed)
@@ -58,7 +58,7 @@ class Pasuk {
         else {
             this.spaces = this.json.trans[this.spaces][1]
             this.fix_spaces(this.spaces)
-            setTimeout(() => this.restart(), trans_secs * 1000)
+            setTimeout(this.restart, trans_secs * 1000)
         }
     }
 }

@@ -17,6 +17,7 @@ let allowed_words = [
   'בשר',
   'גער',
   'גרע',
+  'גרף',
   'גרש',
   'גשר',
   'דרש',
@@ -59,6 +60,7 @@ let allowed_words = [
   'רעפ',
   'רעש',
   'רפש',
+  'רצע',
   'רצפ',
   'רקע',
   'רשע',
@@ -71,6 +73,7 @@ let allowed_words = [
   'שפר',
   'שקר',
   'שרב',
+  'שרג',
   'שרד',
   'שרפ',
   'שרצ',
@@ -85,7 +88,7 @@ let allowed_words = [
   'קרצפ',
   'שדרג',
   'שפצר',
-  'שרעפ'
+  'שרעפ',
 ]
 
 const post_join_remarks = [
@@ -134,16 +137,11 @@ conv = {
 }
 
 function random_text(texts, char) {
-  return texts[(Math.random() * texts.length) | 0]?.replaceAll('x', char)
+  return texts[Math.random() * texts.length | 0]?.replaceAll('x', char)
 }
 
 function to_middle(s) {
-  return s
-    .replace('ך', 'כ')
-    .replace('ם', 'מ')
-    .replace('ן', 'נ')
-    .replace('ף', 'פ')
-    .replace('ץ', 'צ')
+  return s.replace('ך', 'כ').replace('ם', 'מ').replace('ן', 'נ').replace('ף', 'פ').replace('ץ', 'צ')
 }
 
 allowed_words = allowed_words.map(to_middle)
@@ -165,50 +163,32 @@ let left_key = false,
   tutorial_stage = 0
 
 function change_word(event_or_word) {
-  const word = to_middle(
-    event_or_word?.currentTarget?.textContent || event_or_word || me.textContent
-  ).replace(/\s+/g, '')
-  if (!allowed_words.includes(word)) allowed_words.push(word)
+  const word = to_middle(event_or_word?.currentTarget?.textContent || event_or_word || me.textContent).replace(/\s+/g, '')
+  if (!allowed_words.includes(word))
+    allowed_words.push(word)
   allowed_insertions = {}
   allowed_words.forEach(w =>
     [...w].forEach((c, i) => {
       if (word == w.slice(0, i) + w.slice(i + 1)) {
-        if (!allowed_insertions[c]) allowed_insertions[c] = []
+        if (!allowed_insertions[c])
+          allowed_insertions[c] = []
         allowed_insertions[c].push(i)
       }
     })
   )
   const chars = [...word].sort().join('')
-  anagrams = allowed_words.filter(
-    w => w != word && chars == [...w].sort().join('')
-  )
+  anagrams = allowed_words.filter(w => w != word && chars == [...w].sort().join(''))
   const save_texts = {}
   const save_prev_texts = {}
   ;[...me.children].forEach(e => {
-    if (e.dataset.text) save_texts[e.id] = e.dataset.text
-    if (e.dataset.prev_text) save_prev_texts[e.id] = e.dataset.prev_text
+    if (e.dataset.text)
+      save_texts[e.id] = e.dataset.text
+    if (e.dataset.prev_text)
+      save_prev_texts[e.id] = e.dataset.prev_text
   })
-  me.innerHTML = [...word]
-    .map(
-      (c, i) =>
-        `<div id="${c}" ${
-          c in save_texts ? ' data-text="' + save_texts[c] + '"' : ''
-        }${
-          c in save_prev_texts
-            ? ' data-prev_text="' + save_prev_texts[c] + '"'
-            : ''
-        }><div><div>${
-          i == word.length - 1
-            ? c
-                .replace('כ', 'ך')
-                .replace('מ', 'ם')
-                .replace('נ', 'ן')
-                .replace('פ', 'ף')
-                .replace('צ', 'ץ')
-            : c
-        }</div></div></div>`
-    )
-    .join('')
+  me.innerHTML = [...word].map((c, i) => `<div id="${c}" ${c in save_texts ? ' data-text="${save_texts[c]}"' : ''}${
+    c in save_prev_texts ? ' data-prev_text="${save_prev_texts[c]}"' : ''}><div><div>${
+    i == word.length - 1 ? c.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ') : c}</div></div></div>`).join('')
 }
 
 change_word(initial_word)
@@ -216,17 +196,15 @@ me.addEventListener('input', change_word)
 
 locs = [[0, 0]]
 for (const c of new Set(allowed_words.join(''))) {
-  if (to_middle(me.textContent).includes(c)) continue
-  let nx,
-    ny,
-    good,
-    range = spawn_range
+  if (to_middle(me.textContent).includes(c))
+    continue
+  let nx, ny, good, range = spawn_range
   while (!good) {
-    nx = Math.random() * range * 2 - range
-    ny = Math.random() * range * 2 - range
+    nx = Math.random()*range*2 - range
+    ny = Math.random()*range*2 - range
     good = true
     for (const loc of locs)
-      if ((nx - loc[0]) ** 2 + (ny - loc[1]) ** 2 < min_spawn_radius ** 2) {
+      if ((nx-loc[0])**2 + (ny-loc[1])**2 < min_spawn_radius ** 2) {
         good = false
         range *= 1.05
         break
@@ -245,30 +223,34 @@ for (const c of new Set(allowed_words.join(''))) {
 document.addEventListener('keydown', e => {
   if (e.key.includes('Arrow') || e.key == 'Tab') {
     e.preventDefault()
-    if (e.key == 'ArrowLeft') left_key = true
-    else if (e.key == 'ArrowRight') right_key = true
-    else if (e.key == 'ArrowUp') up_key = true
-    else if (e.key == 'ArrowDown') down_key = true
-    else if (e.key == 'Tab') change_word(random_text(anagrams))
+    if (e.key == 'ArrowLeft')
+      left_key = true
+    else if (e.key == 'ArrowRight')
+      right_key = true
+    else if (e.key == 'ArrowUp')
+      up_key = true
+    else if (e.key == 'ArrowDown')
+      down_key = true
+    else if (e.key == 'Tab')
+      change_word(random_text(anagrams))
   }
 })
 
 document.addEventListener('keyup', e => {
   if (e.key.includes('Arrow'))
-    if (e.key == 'ArrowLeft') left_key = false
-    else if (e.key == 'ArrowRight') right_key = false
-    else if (e.key == 'ArrowUp') up_key = false
-    else if (e.key == 'ArrowDown') down_key = false
+    if (e.key == 'ArrowLeft')
+      left_key = false
+    else if (e.key == 'ArrowRight')
+      right_key = false
+    else if (e.key == 'ArrowUp')
+      up_key = false
+    else if (e.key == 'ArrowDown')
+      down_key = false
 })
 
-document.addEventListener(
-  'blur',
-  () => (left_key = right_key = up_key = down_key = false)
-)
+document.addEventListener('blur', () => (left_key = right_key = up_key = down_key = false))
 
-tab_button.addEventListener('click', () =>
-  document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'}))
-)
+tab_button.addEventListener('click', () => document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'})))
 
 function update() {
   const left = left_key || controls.querySelector('#left_button:active')
@@ -285,10 +267,14 @@ function update() {
   let step = walk_step
   if ((left || right) && (up || down) && !(up && down) && !(left && right))
     step /= Math.sqrt(2)
-  if (left) x += step
-  if (right) x -= step
-  if (up) y += step
-  if (down) y -= step
+  if (left)
+    x += step
+  if (right)
+    x -= step
+  if (up)
+    y += step
+  if (down)
+    y -= step
   main.style.setProperty('--x', x + 'px')
   main.style.setProperty('--y', y + 'px')
   main.querySelectorAll('.npc').forEach(e => {
@@ -296,18 +282,15 @@ function update() {
     const ny = (e.dataset.y | 0) + y
     e.style.setProperty('--x', nx + 'px')
     e.style.setProperty('--y', ny + 'px')
-    if (nx ** 2 + ny ** 2 < interaction_radius ** 2) {
-      if (
-        (!in_radius_with || in_radius_with == e) &&
-        e.dataset.prev_text in nogo_remarks &&
-        !e.dataset.text &&
-        e.id in allowed_insertions
-      )
+    if (nx**2 + ny**2 < interaction_radius ** 2) {
+      if ((!in_radius_with || in_radius_with == e) && e.dataset.prev_text in nogo_remarks && !e.dataset.text && e.id in allowed_insertions)
         talk(e, 'regret')
-      else if (!in_radius_with) talk(e)
+      else if (!in_radius_with)
+        talk(e)
     } else if (in_radius_with == e) {
       in_radius_with = null
-      if (timeout_with) clear(e)
+      if (timeout_with)
+        clear(e)
     }
   })
   transposed = false
@@ -322,7 +305,7 @@ function clear(e) {
     e.dataset.prev_text = e.dataset.text
     e.removeAttribute('data-text')
   }
-  [...me.children].forEach(m => {
+  ;[...me.children].forEach(m => {
     if (m.dataset.text) {
       m.dataset.prev_text = m.dataset.text
       m.removeAttribute('data-text')
@@ -331,75 +314,47 @@ function clear(e) {
 }
 
 function join_end(event) {
-  if (event.animationName != 'join') return
+  if (event.animationName != 'join')
+    return
   const e = event.currentTarget
   e.removeEventListener('animationend', join_end)
-  me.insertBefore(
-    e,
-    me.children[
-      allowed_insertions[e.id][
-        (Math.random() * allowed_insertions[e.id].length) | 0
-      ]
-    ]
-  )
+  me.insertBefore(e, me.children[allowed_insertions[e.id][Math.random() * allowed_insertions[e.id].length | 0]])
   change_word()
 }
 
 function talk(e, subject = 'encounter', subject_index, turn = 0) {
-  if (!e && timeout_with) return
-  if (e && !turn) in_radius_with = e
+  if (!e && timeout_with)
+    return
+  if (e && !turn)
+    in_radius_with = e
   clear(e)
   let turns
-  if (subject == 'regret') turns = [[-1, nogo_remarks[e.dataset.prev_text]]]
+  if (subject == 'regret')
+    turns = [[-1, nogo_remarks[e.dataset.prev_text]]]
   else {
-    subject_index ??= (Math.random() * conv[subject].length) | 0
+    subject_index ??= Math.random() * conv[subject].length | 0
     turns = conv[subject][subject_index]
-    if (subject == 'tutorial') tutorial_stage = subject_index + 1
+    if (subject == 'tutorial')
+      tutorial_stage = subject_index + 1
   }
   if (turn < turns.length)
-    (turns[turn][0] == -1
-      ? e
-      : document.getElementById(char_ranks[turns[turn][0] % char_ranks.length])
-    ).dataset.text = turns[turn][1]
-  else if (
-    (subject == 'encounter' || subject == 'regret') &&
-    (turn == turns.length || (turn == turns.length + 1 && !in_radius_with))
-  )
+    (turns[turn][0] == -1 ? e : document.getElementById(char_ranks[turns[turn][0] % char_ranks.length])).dataset.text = turns[turn][1]
+  else if ((subject == 'encounter' || subject == 'regret') && (turn == turns.length || (turn == turns.length + 1 && !in_radius_with)))
     if (turn == turns.length && e.id in allowed_insertions) {
       anagrams = []
       e.addEventListener('animationend', join_end)
       e.classList.replace('npc', 'join')
       in_radius_with = null
     } else if (turn == turns.length + 1 && !in_radius_with)
-      document.getElementById(e.id).dataset.text = random_text(
-        post_join_remarks,
-        e.id
-      )
+      document.getElementById(e.id).dataset.text = random_text(post_join_remarks, e.id)
     else e.dataset.text = random_text(Object.keys(nogo_remarks))
   else {
-    if (
-      subject == 'encounter' &&
-      tutorial_stage < conv.tutorial.length &&
-      (tutorial_stage != 1 || anagrams.length)
-    )
-      setTimeout(
-        talk,
-        tutorial_delay_secs * 1000,
-        null,
-        'tutorial',
-        tutorial_stage
-      )
+    if (subject == 'encounter' && tutorial_stage < conv.tutorial.length && (tutorial_stage != 1 || anagrams.length))
+      setTimeout(talk, tutorial_delay_secs * 1000, null, 'tutorial', tutorial_stage)
     return
   }
   timeout_with = e
-  timeout_id = setTimeout(
-    talk,
-    talk_delay_secs * 1000,
-    e,
-    subject,
-    subject_index,
-    turn + 1
-  )
+  timeout_id = setTimeout(talk, talk_delay_secs * 1000, e, subject, subject_index, turn + 1)
 }
 
 setTimeout(talk, tutorial_delay_secs * 1000, null, 'tutorial', 0)

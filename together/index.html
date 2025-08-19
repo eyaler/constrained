@@ -11,18 +11,20 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="document.body.style.visibility = 'visible'; me.focus()">
+<body onload="document.body.style.visibility = 'visible'">
     <script>make_header(true)</script>
-    <main id="main" oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
-        <div id="me" contenteditable="true" spellcheck="false"></div>
-        <div id="controls" class="border">
-          <button id="right_button" aria-keyshortcuts="ArrowRight">&rarr;</button>
-          <button id="up_button" aria-keyshortcuts="ArrowUp">&uarr;</button>
-          <button id="tab_button" aria-keyshortcuts="Tab">&#x21b9;</button>
-          <button id="down_button" aria-keyshortcuts="ArrowDown">&darr;</button>
-          <button id="left_button" aria-keyshortcuts="ArrowLeft">&larr;</button>
-        </div>
-    </main>
+    <div oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
+        <main id="main">
+            <div id="me" spellcheck="false"></div>
+            <div id="controls" class="border">
+                <button id="right_button" aria-keyshortcuts="ArrowRight">&rarr;</button>
+                <button id="up_button" aria-keyshortcuts="ArrowUp">&uarr;</button>
+                <button id="tab_button" aria-keyshortcuts="Tab">&#x21b9;</button>
+                <button id="down_button" aria-keyshortcuts="ArrowDown">&darr;</button>
+                <button id="left_button" aria-keyshortcuts="ArrowLeft">&larr;</button>
+             </div>
+         </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

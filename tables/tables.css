@@ -80,6 +80,19 @@ table {
     filter: invert() var(--tables_fg_filter);
 }
 
+.copy > button::after {
+    content: '\2714';
+    font-size: .8em;
+    opacity: 0;
+    position: absolute;
+    transition: opacity 5s ease-in;
+}
+
+.copy > button.copied::after {
+    opacity: 1;
+    transition: none;
+}
+
 .merge_first_col > tbody td:first-child {
     border-top: none;
 }

@@ -155,7 +155,11 @@ class Table {
             first_cell.classList.add('copy')
             const button = first_cell.appendChild(document.createElement('button'))
             button.title = 'Copy table to clipboard'
-            button.onclick = () => navigator.clipboard.writeText(this.table.outerHTML)
+            button.onclick = () => navigator.clipboard.writeText(this.table.outerHTML).then(() => {
+                button.classList.add('copied')
+                button.offsetWidth  // Restart transition. See: https://css-tricks.com/restart-css-animation/
+                button.classList.remove('copied')
+            })
         }
     }
 

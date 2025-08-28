@@ -18,6 +18,7 @@ function add_dir([dir, order], text) {
 }
 
 document.querySelectorAll('[data-cube]').forEach(heading => {
+    heading.innerHTML = make_link('#' + heading.id, heading.textContent).outerHTML
     const len = heading.dataset.cube.length
     const set_len = new Set(heading.dataset.cube).size
     if (len == 27 && set_len == 27) {

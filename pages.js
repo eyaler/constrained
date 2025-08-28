@@ -31,7 +31,7 @@ const pages = {
     "snark/": {title: "כרחש אבמ\"ח וכרחש אדו\"ש", alt: "ABMḤ snark and ADWŠ snark", kw: ["2d 3d", "combinatorial", "interactive", "new constraint", "pangram", "software", "sound", "visual"]},
     "wordle": {title: "תחפצו ניעקד אסכלה משרבט", alt: "Words for Wordle", kw: ["combinatorial", "pangram", "software"]},
     "eyal": {title: "אֱיָליטרציה", alt: "Eyalliteration", kw: ["2d 3d", "combined forms", "discourse", "poem", "self-referral", "visual"]},
-    "toki": {title: "הייקו / toki musi aku", alt: "Haiku / toki musi aku", kw: ["combined forms", "poem", "translation"]}, 
+    "toki": {title: "הייקו / toki musi aku", alt: "Haiku / toki musi aku", kw: ["combined forms", "poem", "translation"]},
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
     
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},

@@ -5,7 +5,9 @@ class Pasuk {
     constructor(elem) {
         this.elem = elem
         elem.appendChild(document.createElement('p')).className = 'pasuk'
-        const json = `data/${elem.previousElementSibling.id}.json`
+        const heading = elem.previousElementSibling
+        heading.innerHTML = make_link('#' + heading.id, heading.textContent).outerHTML
+        const json = `data/${heading.id}.json`
         const ref = elem.nextElementSibling
         ref.innerHTML = ref.innerHTML.slice(0, -1) + `, ${make_link(json, 'JSON').outerHTML})`
         fetch(json)

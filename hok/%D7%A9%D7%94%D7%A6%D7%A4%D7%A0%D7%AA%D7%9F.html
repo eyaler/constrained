@@ -54,7 +54,7 @@
             doMouseOver()
             let topZ = 0
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
-            candidate = boxes.reduce((s, box) => s += box.value, '')
+            const candidate = boxes.reduce((s, box) => s += box.value, '')
             let needFocus = false
             if (isOrdered) {
                 if (!a) {
@@ -154,7 +154,7 @@
         function touchEnded() {
             mouseReleased()
         }
-    
+        
         function windowResized() {
             resizeCanvas(windowWidth, windowHeight)
         }

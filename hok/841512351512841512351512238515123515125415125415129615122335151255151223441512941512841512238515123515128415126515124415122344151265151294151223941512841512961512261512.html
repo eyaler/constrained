@@ -32,13 +32,7 @@
         const edges = []
         const path = []
         let nodes = []
-        let dragging
-        let dragStartNode
-        let completed
-        let currentColor
-        let firstNode
-        let direction
-        let anchor
+        let dragging, dragStartNode, completed, currentColor, firstNode, direction, anchor
         
         function setup() {
           createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
@@ -145,7 +139,7 @@
                       anchor = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
                       anchor.mouseClicked(e => {
                         e.preventDefault()
-                        localStorage.removeItem('timer')
+                        localStorage.removeItem('hok_timer')
                         location.replace(anchor.elt.href)
                       })
                     } else

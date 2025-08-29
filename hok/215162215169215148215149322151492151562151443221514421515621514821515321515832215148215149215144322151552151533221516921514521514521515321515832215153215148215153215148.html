@@ -17,7 +17,11 @@
             justify-content: safe center;
         }
 
-        #p {
+        body > * {
+            min-height: 0;
+        }
+
+        #p.show {
             background: inherit;
             isolation: isolate;
             padding-inline: .2em;
@@ -25,8 +29,8 @@
 
         #myBoard {
             direction: ltr;  /* See: https://github.com/oakmac/chessboard2/issues/58 */
-            max-height: var(--max_media_height);
-            max-width: var(--media_width);
+            max-width: min(var(--media_width), var(--max_media_height));
+            padding-block: 1em;
             width: 600px;
         }
 
@@ -119,7 +123,7 @@
             turn = 'w'
             if (move_num == example.length) {
                 p.textContent = 'בתוך זמר בשחמט מחשב רמז כותב'
-                console.log(game.pgn().split(' ').filter((n,i)=>!((i-1)%3|0)).join('').replace(/\d/g,'').replaceAll('a','א').replaceAll('b','ב').replaceAll('c','ג').replaceAll('d','ד').replaceAll('e','ה').replaceAll('f','ו').replaceAll('g','ז').replaceAll('h','ח').replaceAll('B','ר').replaceAll('R','צ').replaceAll('N','פ').replaceAll('K','מ').replaceAll('Q','מה'))
+                p.classList.add('show')
                 return
             }
 

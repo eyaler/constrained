@@ -37,7 +37,7 @@
             margin-inline: auto;
             margin-top: .3em;
             outline-style: none !important;
-            text-align: center;    
+            text-align: center;
             width: 4.5em;
         }
 
@@ -103,7 +103,7 @@
         "אה מה שנקרא שילוב אילוצים," את אומרת בחיוך.
     </p>
     <p>
-"וּ־" עיניו ניצתות בזיק של טירוף,            
+        "וּ־" עיניו ניצתות בזיק של טירוף,
     </p>
     <pre class="narrow_poem">
 ובצד השני רשמו נא:
@@ -170,8 +170,8 @@
         const max_m = 14
         let remaining = +(localStorage.hok_timer ?? max_m * 60)
         let m = remaining / 60 | 0
-        let s = remaining % 60     
-
+        let s = remaining % 60
+        
         let deadline, solved
         const inputs = document.querySelectorAll('input[type=text]')
         
@@ -196,10 +196,10 @@
             deadline ??= performance.now() + remaining*1000
             remaining = (deadline - performance.now()) / 1000 | 0
             const new_m = remaining / 60 | 0
-            const new_s = remaining % 60            
+            const new_s = remaining % 60
             if (new_m != m || new_s != s) {
                 if (enforce_deadline())
-                    return                    
+                    return
                 m = new_m
                 s = new_s
                 update_timer()

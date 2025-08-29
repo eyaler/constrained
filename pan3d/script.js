@@ -32,7 +32,7 @@ document.querySelectorAll('[data-cube]').forEach(heading => {
         )
         ;[...heading.dataset.cube].forEach((c, i) => {
             const div = cube.appendChild(document.createElement('div'))
-            div.className = `char x${i%3} y${(i/3|0)%3} z${i/9|0}`
+            div.className = `char x${i % 3} y${(i/3 | 0) % 3} z${i / 9 | 0}`
             div.appendChild(document.createElement('span')).textContent = c
         })
         heading.after(scene)

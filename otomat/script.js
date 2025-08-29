@@ -16,7 +16,7 @@ const max_temp = +temp_slider.max || 100;
 const initial_rate = rate_slider.valueAsNumber;
 const initial_temp = temp_slider.valueAsNumber;
 
-let size;
+let size, w, h, ind_grid, frozen, old_text, lang, reset, regexp, freeze, glitch;
 let prev_time = 0;
 let hard_prev_time = -hard_restart_secs * 1000;
 
@@ -98,7 +98,7 @@ function update() {
         let char_grid = ind_grid.map(x => chars[lang][x]);
         const temp = Math.min(Math.ceil(large / freeze), max_temp - freeze);
         frozen = frozen.map(x => Math.max(x - 2*temp, 0));
-        [frozen, old_text[1], _] = transpose(freeze_words(transpose(freeze_words([frozen, char_grid, 0]))));
+        [frozen, old_text[1]] = transpose(freeze_words(transpose(freeze_words([frozen, char_grid, 0]))));
         old_text[0] = char_grid;
         if (lang)
             frozen.forEach((x, k) => {

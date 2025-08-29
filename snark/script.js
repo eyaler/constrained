@@ -49,7 +49,7 @@ function get_play(event, sticky) {
         path.reverse().push(num)
         const notes_array = notes[svg.id].split(' ')
         const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), path.map(i => notes_array[i]), delay_sec).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
-	    seq.loop = false
+        seq.loop = false
 
         function mute() {
             seq.mute = true;
@@ -57,8 +57,8 @@ function get_play(event, sticky) {
             circle.removeEventListener('mouseleave', mute)
         }
 
-	    circle.addEventListener('click', mute)
-	    circle.addEventListener('mouseleave', mute)  // Will also fire when clicking outside for touch interaction
+        circle.addEventListener('click', mute)
+        circle.addEventListener('mouseleave', mute)  // Will also fire when clicking outside for touch interaction
         Tone.Transport.start()
     }
     if (sticky)
@@ -83,7 +83,7 @@ containers.forEach(elem => {
 document.addEventListener('keydown', event => {
     if (event.altKey || event.getModifierState?.('AltGraph') || event.ctrlKey || event.metaKey || !event.key.match(/^[א-תa-zA-Z]$/) && event.key != 'Backspace' && event.key != 'CapsLock')
         return
-    const current = containers[1].classList.contains('fullscreen') | 0
+    const current = +containers[1].classList.contains('fullscreen')
     containers[current].classList.remove('keyboard')
     const svgs = document.querySelectorAll('svg')
     if (event.key == 'CapsLock') {

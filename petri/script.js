@@ -214,9 +214,8 @@ function step(grid, json, steps=0, max_tokens={}, result_counter={}, reset_count
     const transitions = comp ? [comp] : Object.keys(json.transitions)
     tokens ??= comp ? Object.fromEntries(json.transitions[comp][0].map(p => [p, comp_marking])) : {...json.marking}
     grid.querySelectorAll('[data-clicks]').forEach(place => {
-        const clicks = place.dataset.clicks | 0
+        tokens[place.dataset.id] = (tokens[place.dataset.id] || 0) + (place.dataset.clicks | 0)
         place.removeAttribute('data-clicks')
-        tokens[place.dataset.id] = (tokens[place.dataset.id] || 0) + clicks
     })
 
     const enabled = transitions.filter(t => is_enabled(json.transitions[t][0], tokens))
@@ -349,7 +348,7 @@ function step(grid, json, steps=0, max_tokens={}, result_counter={}, reset_count
             if (self.bc)
                 bc.postMessage('\n')
             if (stats) {
-                const result = json.require?.map(side => side.some(p => tokens[p]) | 0)
+                const result = json.require?.map(side => +side.some(p => tokens[p]))
                 result_counter[result] = (result_counter[result] || []).concat(steps).sort((a, b) => a - b)
                 const all_steps = Object.values(result_counter).flat()
                 const sides = result?.map((_, i) => Object.entries(result_counter).filter(x => x[0].split(',')[i] == 1).map(x => x[1]).flat().length)
@@ -412,7 +411,7 @@ fetch(json_file).then(response => response.json()).then(json => {
                 if (json.labels[label]?.includes('|')) {
                     const forms = json.labels[label].split('|')
                     json.full_labels[label] = forms[0]
-                    json.labels[label] = forms[pre.classList.contains('vertical') | 0]
+                    json.labels[label] = forms[+pre.classList.contains('vertical')]
                 }
             } else {
                 pre.className = 'place'

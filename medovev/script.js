@@ -34,7 +34,7 @@ function check_inner(text) {
     for (let i = 0; right + i < n; i++)
         if (text[left - i] != text[right + i])
             return [right + i, left - i]
-}    
+}
 
 function check_outer(text) {
     const n = text.length

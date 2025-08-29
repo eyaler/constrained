@@ -4,7 +4,7 @@ const delays = [0, 0, 0, .1, .15, .2, .25, .3, .35, .4]
 if (location.hash.slice(1).startsWith('full'))
     toggle_fullscreen(videos);  // Works only in Firefox, after setting: full-screen-api.allow-trusted-requests-only = false
 
-let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id
+let audioContext, pannerA, pannerB, gainA, gainB, i, start_time, timeout_id, updated
 
 videos.addEventListener('click', () => {
     if (!audioContext) {

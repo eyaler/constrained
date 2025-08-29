@@ -101,7 +101,7 @@ const nogo_remarks = {
   'יש לי חבר': 'בעצם חבר זה לא קיר'
 }
 
-conv = {
+const conv = {
   tutorial: [
     [
       [0, 'היי אתה'],
@@ -194,7 +194,7 @@ function change_word(event_or_word) {
 change_word(initial_word)
 me.addEventListener('input', change_word)
 
-locs = [[0, 0]]
+const locs = [[0, 0]]
 for (const c of new Set(allowed_words.join(''))) {
   if (to_middle(me.textContent).includes(c))
     continue
@@ -278,8 +278,8 @@ function update() {
   main.style.setProperty('--x', x + 'px')
   main.style.setProperty('--y', y + 'px')
   main.querySelectorAll('.npc').forEach(e => {
-    const nx = (e.dataset.x | 0) + x
-    const ny = (e.dataset.y | 0) + y
+    const nx = +e.dataset.x + x
+    const ny = +e.dataset.y + y
     e.style.setProperty('--x', nx + 'px')
     e.style.setProperty('--y', ny + 'px')
     if (nx**2 + ny**2 < interaction_radius ** 2) {
@@ -293,7 +293,6 @@ function update() {
         clear(e)
     }
   })
-  transposed = false
   requestAnimationFrame(update)
 }
 update()

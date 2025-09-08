@@ -18,7 +18,7 @@
 }
 
 @font-face {
-    font-family: Arial;  /* MacOS, iOS */
+    font-family: Arial;  /* macOS, iOS */
     size-adjust: 160%;
     src: local(Arial);
     unicode-range: U+2709;  /* Envelope */
@@ -574,7 +574,7 @@ svg image,  /* For Firefox Android */
 }
 
 .images.fullscreen {
-    --max_media_height: 100%;
+    --max_media_height: 100vh;
 }
 
 img.fullscreen {
@@ -882,7 +882,7 @@ nav[dir=ltr] ~ * .preface_he {
 
 @keyframes psycler {  /* From: https://zzzen.com/psycler/ */
     0% { filter: hue-rotate(5deg) saturate(2) invert(0) }
-    50% { filter: hue-rotate(160deg) saturate(8) invert(0.25) }
+    50% { filter: hue-rotate(160deg) saturate(8) invert(.25) }
     100% { filter: hue-rotate(350deg) saturate(2) invert(0) }
 }
 

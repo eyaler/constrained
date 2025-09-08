@@ -55,7 +55,7 @@ function check_bio(text) {
 }
 
 function update(text) {
-    text = new DOMParser().parseFromString(text.replaceAll('<', '\uff1c'), 'text/html').documentElement.textContent.replaceAll('<', '\uff1c')
+    text = text.match(/^\s*/)[0] + new DOMParser().parseFromString(text.replaceAll('<', '\uff1c'), 'text/html').body.textContent.replaceAll('<', '\uff1c')
     editing.value = text.replaceAll('\uff1c', '<')
 
     if (text[text.length - 1] == '\n')
@@ -104,7 +104,7 @@ function update(text) {
     pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match('[א-ת]') ? 'פנגרמה מושלמת (עברית)' : ''
 }
 
-function sync_scroll(elem) {
-    highlighting.scrollTop = elem.scrollTop
-    highlighting.scrollLeft = elem.scrollLeft
-}
+editing.addEventListener('scroll', () => {
+    highlighting.scrollTop = editing.scrollTop
+    highlighting.scrollLeft = editing.scrollLeft
+}, {passive: true})

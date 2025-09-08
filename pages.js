@@ -754,7 +754,7 @@ function textarea_writeln(textarea, line='', chars_for_reset=500000) {
     const selection_start = textarea.selectionStart
     const selection_end = textarea.selectionEnd
     const should_scroll = (textarea.scrollTop + 1 >= textarea.scrollHeight - textarea.clientHeight || textarea.clientHeight != textarea.dataset.height || textarea.clientWidth != textarea.dataset.width) && selection_start == selection_end
-    if (!line && textarea.value.length > chars_for_reset) {
+    if (!line && textarea.textLength > chars_for_reset) {
         should_scroll = true
         textarea.value = textarea.value.match(/(^|\n)\n/) ? textarea.value.split(/(^|\n)(?=\n)/).pop() : ''
     }
@@ -824,7 +824,7 @@ function toggle_fullscreen(event_or_elem, landscape=true, target_screen, elem) {
                     wake_lock?.release().then(() => wake_lock = null)
             })
         }
-        elem.requestFullscreen({navigationUI: 'hide', screen: target_screen}).catch(e => console.warn(e.message))
+        elem.requestFullscreen({navigationUI: 'hide', screen: target_screen || undefined}).catch(e => console.warn(e.message))
     } else
         document.exitFullscreen()
     return was_not_fullscreen_before

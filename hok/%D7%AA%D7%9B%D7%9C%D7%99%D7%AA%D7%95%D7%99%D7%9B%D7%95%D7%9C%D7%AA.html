@@ -178,8 +178,8 @@
         let wordlist, words = []
         
         function update_timer() {
-            min.textContent = String(m).padStart(2, '0')
-            sec.textContent = String(s).padStart(2, '0')
+            min.textContent = m.toString().padStart(2, '0')
+            sec.textContent = s.toString().padStart(2, '0')
         }
         update_timer()
         
@@ -210,7 +210,7 @@
                 inputs.forEach(e => e.readOnly = true)
                 const gem = words.map(w => [...norm(w)].reduce((t, l) => t + ({א:1,ב:2,ג:3,ד:4,ה:5,ו:6,ז:7,ח:8,ט:9,י:10,כ:20,ל:30,מ:40,נ:50,ס:60,ע:70,פ:80,צ:90,ק:100,ר:200,ש:300,ת:400}[l]), 0))
                 const gem2 = gem.reduce((r, _, i) => (i & 1 ? r.concat(gem[i - 1] + gem[i]) : r), [])
-                const url = (gem.filter(x => gem2.includes(x))[0] + '').replace(/(.)(.)$/, '$2$1')
+                const url = gem.find(x => gem2.includes(x)).toString().replace(/(.)(.)$/, '$2$1')
                 const a = make_link(url + '.html', 'עמוד ' + url)
                 p.innerHTML = `השער נפתח ואת עוברת דרכו. עברי ל${a.outerHTML}.`
                 a.focus()

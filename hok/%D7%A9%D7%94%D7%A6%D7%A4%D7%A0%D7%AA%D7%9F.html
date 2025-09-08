@@ -22,10 +22,10 @@
         let values = ' ואשביעך ביהוה אלהי השמים ואלהי '
         const answer = 'ڥڬڗژ#ژڟړ#ړڟڗڜڡ#ڗژړ#ڞڜ#ڬڔڔڜڡ#ڜڗڜڗ'
         
-        const marginFrac = 0.5
-        const minOverlap = 0.15
-        const animationRate = 0.05
-        const tol = 0.05
+        const marginFrac = .5
+        const minOverlap = .15
+        const animationRate = .05
+        const tol = .05
         
         let boxWidth
         let boxes
@@ -43,7 +43,7 @@
             for (let i = 0; i < values.length; i++) {
                 boxes.push({value: values[i], z: 0})
                 boxes[i].x = boxes[i].lastX = 1 - boxWidth*(1.5+i*(1+marginFrac))
-                boxes[i].y = boxes[i].lastY = 0.5
+                boxes[i].y = boxes[i].lastY = .5
             }
             textAlign(CENTER, CENTER)
             textFont('Alef')
@@ -83,7 +83,7 @@
             noStroke()
             rect((box.x-boxWidth/2) * width, box.y*height - boxWidth/2*width , boxWidth * width, boxWidth * width, 3)
             fill(0)
-            textSize(boxWidth * width * 0.8)
+            textSize(boxWidth * width * .8)
             let value = box.value
             if (i != dragIndex && ((i == boxes.length - 1) || boxes[i + 1].value == ' '))
                 value = value.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ').replace('ץ', 'צ')

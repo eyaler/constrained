@@ -11,8 +11,8 @@ svg {
     -webkit-tap-highlight-color: transparent;
     text-rendering: geometricPrecision;  /* Needed to not break Safari zoom */
     -webkit-touch-callout: none;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     width: min(700px, 85vmin);
 }
 

@@ -105,8 +105,8 @@ body {
     padding-inline: var(--main_margin);
     padding-bottom: 8px;
     table-layout: fixed;
-    text-size-adjust: none;
     -webkit-text-size-adjust: none;
+    text-size-adjust: none;
     visibility: hidden;
     width: 100%;
 }
@@ -539,8 +539,8 @@ footer, .fullscreen, .kw, nav,
 svg image,  /* For Firefox Android */
 :is([oncontextmenu*=toggle_fullscreen], [ondblclick*=toggle_fullscreen]):not(body)  /* Note this will miss elements where the handler was added programmatically, as well as different elements passed to the handler */
 {
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .formula {

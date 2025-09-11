@@ -76,8 +76,8 @@
     margin-block: 10rem;
     margin-inline: auto;
     perspective: 1000px;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     width: fit-content;
 }
 

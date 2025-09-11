@@ -32,8 +32,8 @@
     margin-block: 4rem;
     margin-inline: var(--anti_margin);
     text-align: center;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .pasuk > button {

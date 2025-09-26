@@ -1,3 +1,5 @@
+'use strict'
+
 const table_collator = Intl.Collator(document.documentElement.lang, {numeric: true})
 
 

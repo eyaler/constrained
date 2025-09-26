@@ -15,8 +15,8 @@ reverse_button.onclick = () => {
     document.body.addEventListener('mousemove', show_hide_cursor)
     setTimeout(() => psychedelic.style.visibility = 'visible', 15000)
     setTimeout(() => h1.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 21000)
-    setTimeout(() => h1.textContent = lang ? 'White rabbit' : 'הארנב הלבן', 23000)
-    ;[[28000, 180], [54000, 190], [78000, 210], [102000, 180]].forEach(([t, dt]) => setTimeout(reverse, t, dt))
+    setTimeout(() => h1.textContent = lang ? 'White rabbit' : 'הארנב הלבן', 24000)
+    ;[[27500, 190], [54000, 190], [78000, 210], [102000, 300]].forEach(([t, dt]) => setTimeout(reverse, t, dt))
     audio.play()
 }
     

@@ -15,8 +15,11 @@
         }
 
         header {
+            box-sizing: border-box;
+            padding-inline: 1em;
             position: absolute;
             text-align: center;
+            text-wrap: balance;
             width: 100%;
         }
 
@@ -29,7 +32,7 @@
     <header>
         <h1>טַרֶפֶת אותיות</h1>
         <h2>יעל צברי ואיל יהוה גרוּס</h2>
-        <h3>הוראות: סדרו את הריבועים כך שיווצר ביטוי חדש בן שתי מילים</h3>
+        <h3><u>הוראות:</u> סדרו את הריבועים כך שיווצר ביטוי חדש בן שתי מילים</h3>
     </header>
     <script>
         'use strict'
@@ -103,7 +106,6 @@
 רפואת חירום,רוחות רפאים
 `
 
-        screen.orientation.lock('landscape').catch(e => console.warn(e.message))  // Works only in Chrome Android. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1744125
         anagrams = anagrams.trim().split('\n').filter(anagram => anagram.split(',')[0].trim().length == anagram.split(',')[1].trim().length)
         const index = location.search.slice(1) % anagrams.length
         let [values, answer] = anagrams[index].split(',')

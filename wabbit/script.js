@@ -28,9 +28,9 @@ reverse_button.onclick = () => {
     setTimeout(reverse, part_times_ms[0][0], 0)
     audio.play()
 }
-    
+
 let index = 0, reverse_index = 0
-    
+
 function reverse(part) {
     if (!index)
         backward.classList.remove('hide')

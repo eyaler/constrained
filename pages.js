@@ -19,7 +19,7 @@ const pages = {
     "1e7/": {title: "תו כופה תו ותהפוכות", alt: "Writing lines", kw: ["combined forms", "hebrew cheatery", "palindrome", "poem", "record", "self-referral", "visual"], with: "noamdovev"},
     "cheat": {title: "מִרמת העברית", alt: "Hebrew cheatery", kw: ["discourse", "hebrew cheatery", "palindrome", "self-referral"]},
     "bio": {title: "ביו־פלינדרומים", alt: "Bio-palindromes", kw: ["combined forms", "new constraint", "palindrome", "pangram", "record"]},
-    
+
     "medovev/": {title: "בודק פלינדרומים", alt: "Palindrome checker", kw: ["interactive", "palindrome", "tool"]},
     "panpan": {title: "פנגרמות מושלמות על פנגרמות מושלמות", alt: "Perfect pangrams on perfect pangrams", kw: ["combined forms", "hebrew cheatery", "pangram", "self-referral"]},
     "undercover": {title: "פנגרמה מושלמת מסתערבת", alt: "Undercover perfect pangram", kw: ["discourse", "hebrew cheatery", "pangram"]},
@@ -33,7 +33,7 @@ const pages = {
     "eyal": {title: "אֱיָליטרציה", alt: "Eyalliteration", kw: ["2d 3d", "combined forms", "discourse", "poem", "self-referral", "visual"]},
     "toki": {title: "הייקו / toki musi aku", alt: "Haiku / toki musi aku", kw: ["combined forms", "poem", "translation"]},
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
-    
+
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
     "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "self-referral", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing"},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["interactive", "software", "tool"], with: "eranhadas"},
@@ -47,7 +47,7 @@ const pages = {
     "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["combinatorial", "hebrew cheatery", "new constraint"]},
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self-referral", "software", "visual"]},
     "harh/": {title: "הַרְח", alt: "Harḥ", kw: ["poem"]},
-    
+
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
     "otogram": {title: "אות־וֹגרמה", alt: "OT‑o‑gram: Letter-letter autogram", kw: ["combinatorial", "combined forms", "pangram", "record", "self-referral", "software"]},

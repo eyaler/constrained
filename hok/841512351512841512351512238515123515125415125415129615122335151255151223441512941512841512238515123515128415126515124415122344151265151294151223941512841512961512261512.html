@@ -23,8 +23,8 @@
 <body onload="document.body.style.visibility = 'visible'">
     <script>
         const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replaceAll(' ', ', ')})`
-                        
-        const letters = ['ת', 'כ', 'ל', 'י', 'ו']
+
+        const letters = 'תכליו'
         const nodeRadius = 30
         const arrowSize = 10
 
@@ -33,7 +33,7 @@
         const path = []
         let nodes = []
         let dragging, dragStartNode, completed, currentColor, firstNode, direction, anchor
-        
+
         function setup() {
           createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
           textAlign(CENTER, CENTER)
@@ -43,7 +43,7 @@
           direction = Math.random() > .5
           setupNodes()
         }
-        
+
         function setupNodes() {
           nodes = []
           const centerX = width / 2
@@ -59,7 +59,7 @@
             nodes.push({x: x, y: y, letter: letters[c], index: i})
           }
         }
-        
+
         function draw() {
           background(0)
           strokeWeight(2)
@@ -96,7 +96,7 @@
           if (anchor)
             anchor.center()
         }
-        
+
         function mousePressed() {
           if (completed)
             return
@@ -112,12 +112,12 @@
             }
           }
         }
-        
+
         function cancel() {
           dragging = false
           dragStartNode = null
         }
-        
+
         function mouseReleased() {
           if (completed)
             return
@@ -151,14 +151,14 @@
           }
           cancel()
         }
-        
+
         function getNodeUnderMouse() {
           for (const n of nodes)
             if (dist(mouseX, mouseY, n.x, n.y) < nodeRadius)
               return n
           return null
         }
-        
+
         function getAdjustedEndpoints(n1, n2, fix_n2) {
           const dx = n2.x - n1.x
           const dy = n2.y - n1.y
@@ -171,7 +171,7 @@
           const endY = n2.y - uy * nodeRadius * fix_n2
           return [{startX, startY, endX, endY, ux, uy}, d]
         }
-        
+
         function drawArrow(n1, n2, order) {
           const [endpoints, dist] = getAdjustedEndpoints(n1, n2, order != null)
           if (order == null && !dist)
@@ -201,10 +201,10 @@
             text(order, mx + offsetX, my + offsetY)
           }
         }
-        
+
         document.addEventListener('pointercancel', cancel)
         addEventListener('blur', cancel)
-        
+
         // https://github.com/processing/p5.js/issues/7195
         function touchStarted() {
           mousePressed()
@@ -212,7 +212,7 @@
         function touchEnded() {
           mouseReleased()
         }
-        
+
         function windowResized() {
           resizeCanvas(windowWidth, windowHeight)
           setupNodes()

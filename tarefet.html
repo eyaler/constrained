@@ -2,25 +2,109 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="../style.css">
-    <script src="p5/p5.min.js"></script>
-    <noscript><style>body {visibility: visible}</style></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
     <style>
         body {
+            font-family: Alef, sans-serif;
+            margin: 0;
             overflow: clip;
-            padding: 0;
+        }
+
+        header {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
+
+        a:focus-visible {
+            outline: transparent;
         }
     </style>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
+<body>
+    <header>
+        <h1>טַרֶפֶת אותיות</h1>
+        <h2>יעל צברי ואיל יהוה גרוּס</h2>
+        <h3>הוראות: סדרו את הריבועים כך שיווצר ביטוי חדש בן שתי מילים</h3>
+    </header>
     <script>
-        const fg = `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--fg_rgb').replaceAll(' ', ', ')})`
+        anagrams = `אדם דגול,דגל אדום
+אוהדת ביתר,תיבת הדואר
+אוצר לאומי,מוציא לאור
+אי ספיקה,אייס קפה
+דליפת האמוניה,אליפות המדינה
+בחירות האמצע,אמצעי תחבורה
+אתי חפירה,חיה פראית
+חבטתי בו,בוטחת בי
+בחדר המנוחה,בחורה נחמדה
+בחיל הים,הילחם בי
+רובה צייד,ביד היוצר
+נע במהירות,בימת הנוער
+בלתי עביר,בעלי ברית
+מודה לבורא,במלוא הדרו
+במענה הקולי,הבנק העולמי
+בצל ירוק,בקר צלוי
+בר יוחאי,חי ובריא
+בתזמון מושלם,תשלום במזומן
+חג מולד,דג מלוח
+נומי ילדה,דמי ניהול
+האוויר הקר,האור הירוק
+שכה אהבת,האש כבתה
+שאמשיך הלאה,האשך השמאלי
+הבין לאומית,הבלתי יאומן
+הבלתי פוסקת,תפסיק לבהות
+לעליית הגג,הגעתי לגיל
+החדיש ביותר,חדר הישיבות
+החזיקו ידיים,זיהום חיידקי
+השחור והלבן,החלון השבור
+הישאר רגוע,רגעי האושר
+הלכו לפח,לוח הכפל
+השיער הארוך,העורך הראשי
+העמוס ביותר,מוות בעריסה
+העפתי מבט,מפי הטבעת
+העתיד הרחוק,ועדת החקירה
+ודרום אמריקה,מדרום קוריאה
+ולהתחיל מחדש,מתחילה לחשוד
+חברי כנופיות,כנופיית רחוב
+חברת בנייה,נתיב בריחה
+לחדר מיון,חדרי מלון
+חוסר משמעת,חסר משמעות
+קרח יבש,חי בשקר
+חיוורי פנים,פינוי חירום
+חיל השלום,חילול השם
+לוי יצחק,חצי קילו
+ידוע מראש,עמוד ראשי
+ירה בעצמו,רבי עוצמה
+ישו הנוצרי,שינוי צורה
+לכביש המהיר,כלבי השמירה
+מאב לבן,לב מאבן
+להתנקם בי,להקת בנים
+מאגיה שחורה,שגיאה חמורה
+משוך לאחור,מחושך לאור
+נוהג במכונית,מכונית גנובה
+מת ונקבר,מנות קרב
+מנקה חלונות,נחנקה למוות
+עונת המסיק,מסע הקניות
+מרוצי סוסים,סוס מירוצים
+נורה בחזה,רחב הזונה
+רגש אנושי,נושא רגיש
+עשר דקות,עדות שקר
+רך ועדין,עורך דין
+עצי אורן,רועי צאן
+פצע ירי,עצי פרי
+קבעתי תור,עקרות בית
+קומה חמישית,שיחה מקומית
+רפואת חירום,רוחות רפאים`
 
-        let values = ' ואשביעך ביהוה אלהי השמים ואלהי '
-        const answer = 'ڥڬڗژ#ژڟړ#ړڟڗڜڡ#ڗژړ#ڞڜ#ڬڔڔڜڡ#ڜڗڜڗ'
+        screen.orientation.lock('landscape').catch(e => console.warn(e.message))  // Works only in Chrome Android. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1744125
+        const index = +location.search.slice(1)
+        let [values, answer] = anagrams.split('\n')[index].split(',')
+        values = [...values.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
+        answer = answer.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 
         const marginFrac = .5
         const minOverlap = .15
@@ -29,7 +113,6 @@
 
         const boxWidth = 1 / ((values.length+2)+(values.length-1)*marginFrac)
         const boxes = []
-        values = [...values.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
         for (let i = 0; i < values.length; i++) {
             boxes.push({value: values[i], z: 0})
             boxes[i].x = boxes[i].lastX = 1 - boxWidth*(1.5+i*(1+marginFrac))
@@ -46,7 +129,7 @@
         }
 
         function draw() {
-            background(0)
+            background(255)
             doMouseOver()
             let topZ = 0
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
@@ -54,7 +137,7 @@
             if (isOrdered) {
                 let needFocus = false
                 if (!a) {
-                    a = createA((new TextEncoder).encode(candidate).join(''), 'יאשר המשך לילך שמה רשאי')
+                    a = createA(`${location.pathname}?${index+1}`, 'לאתגר הבא')
                     needFocus = true
                 }
                 a.position(0, height * .85)
@@ -62,19 +145,19 @@
                 if (needFocus)
                     a.elt.focus()
             } else
-                isOrdered = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
+                isOrdered = !topZ && candidate == answer
         }
 
         function drawBox(box) {
             const i = boxes.indexOf(box)
             if (i == dragIndex)
-                fill(255, 224)
+                fill(38, 185, 241, 224)
             else {
                 box.x += (box.lastX-box.x) * animationRate
                 box.y += (box.lastY-box.y) * animationRate
                 if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxWidth * tol)
                     box.z = 0
-                fill(isOrdered ? fg : 224)
+                fill(isOrdered ? '#64ff64' : 192)
             }
             noStroke()
             rect((box.x-boxWidth/2) * width, box.y*height - boxWidth/2*width , boxWidth * width, boxWidth * width, 3)

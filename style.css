@@ -54,7 +54,7 @@
     --letter_spacing: .03em;
     --line_height: normal;
     --row_gap: 1em;
-    
+
     --font: Alef, Arial, sans-serif;
     --heading_font: var(--font);
     --mono_font: 'Alef Mono', 'Courier New', monospace;

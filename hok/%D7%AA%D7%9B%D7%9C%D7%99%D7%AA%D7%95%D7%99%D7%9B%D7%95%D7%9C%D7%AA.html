@@ -14,7 +14,7 @@
             --article_width: 60ch;
             margin-block: 2em;
         }
-        
+
         .epipangram {
             background: var(--fg_verydim);
             border-radius: 5em 5em 0 0;
@@ -24,7 +24,7 @@
             padding-top: 4rem;
             width: 10em;
         }
-        
+
         input[type="text"] {
             background: inherit;
             border: none;
@@ -44,11 +44,11 @@
         .narrow_poem {
             font-family: var(--mono_font);
         }
-                
+
         #timer {
             color: red;
         }
-        
+
         .tombs {
             display: flex;
             gap: 2em;
@@ -177,18 +177,18 @@
         let remaining = +(localStorage.hok_timer ?? max_m * 60)
         let m = remaining / 60 | 0
         let s = remaining % 60
-        
+
         let deadline, solved
         const inputs = document.querySelectorAll('input[type=text]')
-        
+
         let wordlist, words = []
-        
+
         function update_timer() {
             min.textContent = m.toString().padStart(2, '0')
             sec.textContent = s.toString().padStart(2, '0')
         }
         update_timer()
-        
+
         function enforce_deadline() {
             if (remaining < 0) {
                 if (remaining > -Infinity)
@@ -197,7 +197,7 @@
                 return true
             }
         }
-        
+
         function tick() {
             deadline ??= performance.now() + remaining*1000
             remaining = (deadline - performance.now()) / 1000 | 0
@@ -227,7 +227,7 @@
             new IntersectionObserver((e, o) => {if (e[0].isIntersecting) {o.unobserve(e[0].target); tick()}}).observe(timer)
         else
             tick()
-        
+
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', e => {
                 if (e.key == 'Enter' || e.key == 'ArrowDown' || e.key == 'ArrowUp' || e.key == ' ' && elem.value.includes(' ') && elem.selectionStart == elem.value.length || e.key == 'Backspace' && !elem.selectionEnd) {
@@ -259,7 +259,7 @@
                 solved = na.length == 22 && new Set(na).size == 22 && bio(na) && [...na].reverse().join('') == nb && name(a, 'גרוּס', 'איל') && b.replace(/[\s\p{Pd}]+/gu, ' ').replace(/[\p{M}\p{P}]/gu, '').search(/(^| )[משהוכלב]*שד[הויכמנ]/) >= 0
             })
         })
-        
+
         function bio(s) {
             const abc = 'אבגדהוזחטיכלמנסעפצקרשת'
             const comp = Object.fromEntries([...abc].map((c, i) => [c, abc[abc.length - 1 - i]]))
@@ -269,13 +269,13 @@
                     return false
             return true
         }
-        
+
         function name(s, w1, w2) {
             w1 = w1.replace(/\p{M}/gu, '$&?')
             w2 = w2.replace(/\p{M}/gu, '$&?')
             return [[w1, w2], [w2, w1]].some(([wa, wb]) => RegExp(`(?<![^\\P{L}משהוכלב][משהוכלב]*)${wa} ${wb}(?!\\p{L})`, 'u').test(s))
         }
-        
+
         function norm(s) {
             return s.replace(/[^א-ת]/g, '').replace(/ך/, 'כ').replace(/ם/, 'מ').replace(/ן/, 'נ').replace(/ף/, 'פ').replace(/ץ/, 'צ')
         }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
     <style>
         body {
@@ -32,7 +32,9 @@
         <h3>הוראות: סדרו את הריבועים כך שיווצר ביטוי חדש בן שתי מילים</h3>
     </header>
     <script>
-        anagrams = `אדם דגול,דגל אדום
+        'use strict'
+        let anagrams = `
+אדם דגול,דגל אדום
 אוהדת ביתר,תיבת הדואר
 אוצר לאומי,מוציא לאור
 אי ספיקה,אייס קפה
@@ -98,13 +100,15 @@
 פצע ירי,עצי פרי
 קבעתי תור,עקרות בית
 קומה חמישית,שיחה מקומית
-רפואת חירום,רוחות רפאים`
+רפואת חירום,רוחות רפאים
+`
 
         screen.orientation.lock('landscape').catch(e => console.warn(e.message))  // Works only in Chrome Android. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1744125
-        const index = +location.search.slice(1)
-        let [values, answer] = anagrams.split('\n')[index].split(',')
-        values = [...values.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
-        answer = answer.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
+        anagrams = anagrams.trim().split('\n').filter(anagram => anagram.split(',')[0].trim().length == anagram.split(',')[1].trim().length)
+        const index = location.search.slice(1) % anagrams.length
+        let [values, answer] = anagrams[index].split(',')
+        values = [...values.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
+        answer = answer.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 
         const marginFrac = .5
         const minOverlap = .15

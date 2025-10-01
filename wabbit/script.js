@@ -7,22 +7,31 @@ const spans = backward.querySelectorAll('span > span')
 const lang = get_lang()
 if (lang)
     [reverse_button.innerHTML, reverse_button.title] = [reverse_button.title, reverse_button.innerHTML]
+
+const anim_dur_ms = 500
+const part_times_ms = [[27500, 187.5], [54000, 190], [78000, 202.5], [102000, 280]]
+let start_time
+
+function scroll_into_view(e) {
+    (e.currentTarget || e).scrollIntoView({behavior: 'smooth', block: 'nearest'})
+}
+
 reverse_button.onclick = () => {
     reverse_button.style.visibility = 'hidden'
-    const anim_dur_ms = 500
     backward.style.setProperty('--anim_dur', anim_dur_ms + 'ms')
     document.body.classList.add('hide_cursor')
     document.body.addEventListener('mousemove', show_hide_cursor)
-    setTimeout(() => psychedelic.style.visibility = 'visible', 15000)
-    setTimeout(() => h1.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 21000)
+    setTimeout(() => blobs.style.visibility = 'visible', 15000)
+    setTimeout(scroll_into_view, 21000, h1)
     setTimeout(() => h1.textContent = lang ? 'White rabbit' : 'הארנב הלבן', 24000)
-    ;[[27500, 190], [54000, 190], [78000, 210], [102000, 300]].forEach(([t, dt]) => setTimeout(reverse, t, dt))
+    start_time = performance.now()
+    setTimeout(reverse, part_times_ms[0][0], 0)
     audio.play()
 }
     
 let index = 0, reverse_index = 0
     
-function reverse(dt) {
+function reverse(part) {
     if (!index)
         backward.classList.remove('hide')
     const span = spans[index]
@@ -37,8 +46,16 @@ function reverse(dt) {
         span.classList.add('move')
     } else
         span.classList.add('reveal')
-    span.addEventListener('animationend', () => span.scrollIntoView({behavior: 'smooth', block: 'nearest'}))
+    span.addEventListener('animationend', scroll_into_view)
     index++
-    if (span.textContent && index < spans.length)
-        setTimeout(reverse, dt, dt)
+    let t
+    if (index < spans.length) {
+        if (span.textContent)
+            t = part_times_ms[part][1]
+        else {
+            part++
+            t = part_times_ms[part][0] - performance.now() + start_time
+        }
+        setTimeout(reverse, t, part)
+    }
 }

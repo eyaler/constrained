@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=block" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
     <style>
         body {
@@ -142,7 +142,6 @@
 
         function draw() {
             background(255)
-            doMouseOver()
             let topZ = 0
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
@@ -202,7 +201,7 @@
                 }
         }
 
-        function doMouseOver() {
+        function mouseDragged() {
             if (dragIndex == null)
                 return
             boxes[dragIndex].x = mouseX/width + dragOffsetX
@@ -235,12 +234,14 @@
             dragIndex = null
         }
 
-        document.addEventListener('pointercancel', mouseReleased)
         addEventListener('blur', mouseReleased)
 
         // https://github.com/processing/p5.js/issues/7195
         function touchStarted() {
             mousePressed()
+        }
+        function touchMoved() {
+            mouseDragged()
         }
         function touchEnded() {
             mouseReleased()

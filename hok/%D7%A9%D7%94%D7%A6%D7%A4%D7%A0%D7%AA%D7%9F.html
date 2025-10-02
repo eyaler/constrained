@@ -51,7 +51,6 @@
 
         function draw() {
             background(0)
-            doMouseOver()
             let topZ = 0
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
@@ -110,7 +109,7 @@
                 }
         }
 
-        function doMouseOver() {
+        function mouseDragged() {
             if (dragIndex == null)
                 return
             boxes[dragIndex].x = mouseX/width + dragOffsetX
@@ -142,12 +141,14 @@
             dragIndex = null
         }
 
-        document.addEventListener('pointercancel', mouseReleased)
         addEventListener('blur', mouseReleased)
 
         // https://github.com/processing/p5.js/issues/7195
         function touchStarted() {
             mousePressed()
+        }
+        function touchMoved() {
+            mouseDragged()
         }
         function touchEnded() {
             mouseReleased()

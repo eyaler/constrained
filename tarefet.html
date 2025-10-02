@@ -133,6 +133,7 @@
 
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
+            cursor('grab')
             frameRate(200)
             textAlign(CENTER, CENTER)
             textFont('Alef')
@@ -190,6 +191,7 @@
             const mY = mouseY / height
             for (let i = 0; i < boxes.length; i++)
                 if (abs(mX - boxes[i].x) < boxWidth / 2 && abs(mY - boxes[i].y) < boxWidth / 2) {
+                    cursor('grabbing')
                     dragIndex = i
                     dragOffsetX = boxes[i].x - mX
                     dragOffsetY = boxes[i].y - mY
@@ -227,6 +229,7 @@
         }
 
         function mouseReleased() {
+            cursor('grab')
             dragIndex = null
         }
 

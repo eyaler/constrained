@@ -11,6 +11,7 @@
         body {
             font-family: Alef, sans-serif;
             margin: 0;
+            overflow: clip;
         }
 
         a:focus-visible {
@@ -118,7 +119,7 @@
 
         const marginFrac = .5
         const minOverlap = .15
-        const animationRate = .02
+        const animationRate = .05
         const tol = .05
 
         const boxWidth = 1 / ((values.length+2)+(values.length-1)*marginFrac)
@@ -134,7 +135,7 @@
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
             cursor('grab')
-            frameRate(200)
+            frameRate(480)
             textAlign(CENTER, CENTER)
             textFont('Alef')
         }
@@ -161,8 +162,9 @@
             if (i == dragIndex)
                 fill(38, 185, 241, 224)
             else {
-                box.x += (box.lastX-box.x) * animationRate
-                box.y += (box.lastY-box.y) * animationRate
+                const rate = animationRate * 60 / frameRate()
+                box.x += (box.lastX-box.x) * rate
+                box.y += (box.lastY-box.y) * rate
                 if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxWidth * tol)
                     box.z = 0
                 fill(isOrdered ? '#64ff64' : 192)

@@ -10,8 +10,11 @@
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
         body {
-            overflow: clip;
             padding: 0;
+        }
+
+        canvas {
+            display: block;
         }
     </style>
 </head>
@@ -52,15 +55,12 @@
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (isOrdered) {
-                let needFocus = false
                 if (!a) {
                     a = createA((new TextEncoder).encode(candidate).join(''), 'יאשר המשך לילך שמה רשאי')
-                    needFocus = true
+                    a.elt.focus()
                 }
                 a.position(0, height * .85)
                 a.center('horizontal')
-                if (needFocus)
-                    a.elt.focus()
             } else
                 isOrdered = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
         }

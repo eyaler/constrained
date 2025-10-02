@@ -11,7 +11,14 @@
         body {
             font-family: Alef, sans-serif;
             margin: 0;
-            overflow: clip;
+        }
+
+        a:focus-visible {
+            outline: transparent;
+        }
+
+        canvas {
+            display: block;
         }
 
         header {
@@ -21,10 +28,6 @@
             text-align: center;
             text-wrap: balance;
             width: 100%;
-        }
-
-        a:focus-visible {
-            outline: transparent;
         }
     </style>
 </head>
@@ -36,6 +39,7 @@
     </header>
     <script>
         'use strict'
+
         let anagrams = `
 אדם דגול,דגל אדום
 אוהדת ביתר,תיבת הדואר
@@ -107,7 +111,7 @@
 `
 
         anagrams = anagrams.trim().split('\n').filter(anagram => anagram.split(',')[0].trim().length == anagram.split(',')[1].trim().length)
-        const index = location.search.slice(1) % anagrams.length
+        const index = (location.search.slice(1) | 0) % anagrams.length
         let [values, answer] = anagrams[index].split(',')
         values = [...values.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
         answer = answer.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
@@ -141,15 +145,12 @@
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (isOrdered) {
-                let needFocus = false
                 if (!a) {
                     a = createA(`${location.pathname}?${index+1}`, 'לאתגר הבא')
-                    needFocus = true
+                    a.elt.focus()
                 }
                 a.position(0, height * .85)
                 a.center('horizontal')
-                if (needFocus)
-                    a.elt.focus()
             } else
                 isOrdered = !topZ && candidate == answer
         }

@@ -10,13 +10,16 @@
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
         body {
-            overflow: clip;
             padding: 0;
         }
 
         a {
             font-size: 4vmin;
             white-space: pre-line;
+        }
+
+        canvas {
+            display: block;
         }
     </style>
 </head>
@@ -137,11 +140,8 @@
                       completed = true
                       currentColor = fg
                       anchor = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
-                      anchor.mouseClicked(e => {
-                        e.preventDefault()
-                        localStorage.removeItem('hok_timer')
-                        location.replace(anchor.elt.href)
-                      })
+                      anchor.mouseClicked(e => localStorage.removeItem('hok_timer'))
+                      anchor.elt.focus()
                     } else
                       location.reload()
                   })

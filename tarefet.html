@@ -18,6 +18,11 @@
             outline: transparent;
         }
 
+        button, span {
+            font-family: inherit;
+            font-size: 1.2em;
+        }
+
         canvas {
             display: block;
         }
@@ -167,7 +172,7 @@
             textAlign(CENTER, CENTER)
             textFont('Alef')
             clue = createButton('תן רמז')
-            clue.mousePressed(getClue)
+            clue.mouseClicked(getClue)
         }
 
         function draw() {

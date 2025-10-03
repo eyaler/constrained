@@ -80,7 +80,7 @@ containers.forEach(elem => {
     svg.addEventListener('click', click)
 })
 
-document.addEventListener('keydown', event => {
+addEventListener('keydown', event => {
     if (event.altKey || event.getModifierState?.('AltGraph') || event.ctrlKey || event.metaKey || !event.key.match(/^[א-תa-zA-Z]$/) && event.key != 'Backspace' && event.key != 'CapsLock')
         return
     const current = +containers[1].classList.contains('fullscreen')

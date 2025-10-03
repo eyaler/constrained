@@ -399,7 +399,7 @@ function is_shortcut(event, shortcut) {
 function add_shortcut(elem, shortcut) {
     if (shortcut) {
         elem.ariaKeyShortcuts = shortcut.replaceAll(' ', '')
-        document.addEventListener('keydown', e => {if (is_shortcut(e, shortcut)) elem.click()})
+        addEventListener('keydown', e => {if (is_shortcut(e, shortcut)) elem.click()})
     }
 }
 
@@ -787,7 +787,7 @@ function show_hide_cursor(event_or_elem) {
 }
 
 
-document.addEventListener('keydown', e => {if (e.key == '~') document.body.classList.toggle('psycler')})
+addEventListener('keydown', e => {if (e.key == '~') document.body.classList.toggle('psycler')})
 
 
 // FULLSCREEN

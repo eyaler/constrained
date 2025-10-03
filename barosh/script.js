@@ -18,7 +18,7 @@ class Pasuk {
                 elem.firstChild.innerHTML = [...json.text].map(c => `<span>${c}</span>`).join('<button aria-label="קרע"></button>')
                 elem.querySelectorAll('button').forEach((e, i) => {e.classList.add('no_active'); e.onclick = () => this.resplit(i); e.onanimationstart = () => e.previousSibling.classList.add('before'); e.addEventListener('animationcancel', () => e.previousSibling.classList.remove('before')); e.onanimationend = () => {e.previousSibling.classList.remove('before'); e.click()}})  // Chrome does not support onanimationcancel. See: https://issues.chromium.org/issues/41404325
                 this.restart(true)
-                document.addEventListener('keydown', e => {if (is_shortcut(e, 'Backspace')) this.restart()})
+                addEventListener('keydown', e => {if (is_shortcut(e, 'Backspace')) this.restart()})
                 elem.oncontextmenu = e => {if (toggle_fullscreen(e)) this.restart(true)}
             })
     }

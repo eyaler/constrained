@@ -28,7 +28,7 @@ const leaderline_comp_bottom = 90
 const comp_marking = 5
 
 let global_reset_counter = 0
-document.addEventListener('keydown', e => global_reset_counter += is_shortcut(e, 'Backspace'))
+addEventListener('keydown', e => global_reset_counter += is_shortcut(e, 'Backspace'))
 
 const lang = get_lang()
 const bc = new BroadcastChannel('bc')

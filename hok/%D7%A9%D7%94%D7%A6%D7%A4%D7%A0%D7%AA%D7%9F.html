@@ -56,7 +56,7 @@
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (isOrdered) {
                 if (!a) {
-                    a = createA((new TextEncoder).encode(candidate).join(''), 'יאשר המשך לילך שמה רשאי')
+                    a = createA((new TextEncoder).encode(candidate).join('') + '.html', 'יאשר המשך לילך שמה רשאי')
                     a.elt.focus()
                 }
                 a.position(0, height * .85)

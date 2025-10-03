@@ -142,6 +142,7 @@
                       currentColor = fg
                       anchor = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
                       anchor.mouseClicked(e => localStorage.removeItem('hok_timer'))
+                      anchor.center()
                       anchor.elt.focus()
                     } else
                       location.reload()

@@ -186,8 +186,8 @@ function change_word(event_or_word) {
     if (e.dataset.prev_text)
       save_prev_texts[e.id] = e.dataset.prev_text
   })
-  me.innerHTML = [...word].map((c, i) => `<div id="${c}" ${c in save_texts ? ' data-text="${save_texts[c]}"' : ''}${
-    c in save_prev_texts ? ' data-prev_text="${save_prev_texts[c]}"' : ''}><div><div>${
+  me.innerHTML = [...word].map((c, i) => `<div id="${c}"${c in save_texts ? ` data-text="${save_texts[c]}"` : ''}${
+    c in save_prev_texts ? ` data-prev_text="${save_prev_texts[c]}"` : ''}><div><div>${
     i == word.length - 1 ? c.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ') : c}</div></div></div>`).join('')
 }
 
@@ -220,7 +220,7 @@ for (const c of new Set(allowed_words.join(''))) {
   div.innerHTML = `<div><div>${c}</div></div>`
 }
 
-document.addEventListener('keydown', e => {
+addEventListener('keydown', e => {
   if (e.key.includes('Arrow') || e.key == 'Tab') {
     e.preventDefault()
     if (e.key == 'ArrowLeft')
@@ -236,7 +236,7 @@ document.addEventListener('keydown', e => {
   }
 })
 
-document.addEventListener('keyup', e => {
+addEventListener('keyup', e => {
   if (e.key.includes('Arrow'))
     if (e.key == 'ArrowLeft')
       left_key = false
@@ -248,9 +248,9 @@ document.addEventListener('keyup', e => {
       down_key = false
 })
 
-document.addEventListener('blur', () => (left_key = right_key = up_key = down_key = false))
+addEventListener('blur', () => (left_key = right_key = up_key = down_key = false))
 
-tab_button.addEventListener('click', () => document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'})))
+tab_button.addEventListener('click', () => dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'})))
 
 function update() {
   const left = left_key || controls.querySelector('#left_button:active')

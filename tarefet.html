@@ -127,7 +127,10 @@
 `
 
         anagrams = anagrams.trim().split('\n').filter(anagram => anagram.split(',')[0].trim().length == anagram.split(',')[1].trim().length)
-        const index = (location.search.slice(1) | 0) % anagrams.length
+        const match = location.search.slice(1).match(/^\d+$/)?.[0]
+        const index = match ?? localStorage['tarefet'] | 0
+        localStorage['tarefet'] = index
+
         let [values, answer] = anagrams[index].split(',')
         values = [...values.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')]
         answer = answer.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
@@ -150,7 +153,12 @@
             boxes[i].y = boxes[i].lastY = .5
         }
 
-        let dragIndex, dragOffsetX, dragOffsetY, isOrdered, a
+        let dragIndex, dragOffsetX, dragOffsetY, isOrdered, clue, a
+
+        function getClue() {
+            clue.remove()
+            clue = createSpan(`רמז: ${answer.split(' ')[0].length} אותיות, ${answer.split(' ')[1].length} אותיות`)
+        }
 
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
@@ -158,6 +166,8 @@
             frameRate(480)
             textAlign(CENTER, CENTER)
             textFont('Alef')
+            clue = createButton('תן רמז')
+            clue.mousePressed(getClue)
         }
 
         function draw() {
@@ -166,14 +176,20 @@
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (isOrdered) {
+                clue.hide()
                 if (!a) {
                     a = createA(`${location.pathname}?${index+1}`, 'לאתגר הבא')
                     a.elt.focus()
                 }
                 a.position(0, height * .85)
                 a.center('horizontal')
-            } else
+            } else {
                 isOrdered = !topZ && candidate == answer
+                if (clue) {
+                    clue.position(0, height * .85)
+                    clue.center('horizontal')
+                }
+            }
         }
 
         function drawBox(box) {

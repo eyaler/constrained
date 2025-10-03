@@ -34,10 +34,15 @@
         @media (max-height: 600px) {
             h1, h2 {
                 display: inline;
+                margin-bottom: 0;
             }
 
             h2 {
                 margin-inline-start: 3em;
+            }
+
+            h3 {
+                margin-top: 0;
             }
         }
     </style>
@@ -135,7 +140,7 @@
         const boxWidth = 1 / ((values.length+2)+(values.length-1)*marginFrac)
 
         function boxHeight() {
-            return max(boxWidth, 120 / width)
+            return max(boxWidth, 100 / width)
         }
 
         const boxes = []
@@ -263,7 +268,7 @@
         }
 
         function windowResized() {
-            resizeCanvas(windowWidth, windowHeight)
+            resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Using client for Chrome Android. See: https://github.com/processing/p5.js/issues/8121
         }
     </script>
 </body>

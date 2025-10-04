@@ -34,21 +34,20 @@ const keymap = {a: 'א',
 
 const duration_sec = .125
 const style = getComputedStyle(document.body)
-const delay_sec = style.getPropertyValue('--active_delay_sec').slice(0, -1)
+const delay_secs = style.getPropertyValue('--delay_secs').slice(0, -1)
+const transition_secs = style.getPropertyValue('--transition_secs').slice(0, -1)
 const reverb = new Tone.Reverb({decay: 15, wet: .6})
-const synth = new Tone.Synth({oscillator: {type: 'sine'}, envelope: {attack: style.getPropertyValue('--active_transition_sec').slice(0, -1)}}).chain(reverb, Tone.Destination)
+const synth = new Tone.Synth({oscillator: {type: 'sine'}, envelope: {attack: transition_secs}}).chain(reverb, Tone.Destination)
 
-function get_play(event, sticky) {
+function get_play(event, sticky=true) {
     const circle = event.target
     const svg = event.currentTarget
+    svg.classList.remove('active')
+    requestAnimationFrame(() => svg.classList.add('active'))
     let cls = ''
     if (navigator.userActivation.hasBeenActive && circle.tagName.toLowerCase() == 'circle') {
-        cls = [...circle.parentElement.classList].find(c => c.match(/^m\d+$/))
-        const num = cls.slice(1)
-        const path = [...svg.querySelectorAll(`.n${num}`)].map(node => [...node.classList].find(c => c.match(/^m\d+$/)).slice(1))
-        path.reverse().push(num)
-        const notes_array = notes[svg.id].split(' ')
-        const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), path.map(i => notes_array[i]), delay_sec).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
+        cls = circle.dataset.class
+        const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), circle.dataset.path_notes.split(','), delay_secs).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
         seq.loop = false
 
         function mute() {
@@ -59,43 +58,54 @@ function get_play(event, sticky) {
 
         circle.addEventListener('click', mute)
         circle.addEventListener('mouseleave', mute)  // Will also fire when clicking outside for touch interaction
-        Tone.Transport.start()
+        Tone.getTransport().start()
     }
     if (sticky)
         svg.dataset.selected = cls
 }
 
-function click(event) {
-    get_play(event, true)
+function remove_keyboard(e) {
+    (e.currentTarget || e).classList.remove('keyboard')
 }
 
 const containers = document.querySelectorAll('.snark')
+const circles = new Map()
 
 containers.forEach(elem => {
     elem.oncontextmenu = e => toggle_fullscreen(e, false)
-    elem.addEventListener('mousedown', () => elem.classList.remove('keyboard'))
-    elem.addEventListener('mousemove', () => elem.classList.remove('keyboard'))
+    elem.addEventListener('mousedown', remove_keyboard)
+    elem.addEventListener('mousemove', remove_keyboard)
     const svg = elem.querySelector('svg')
-    svg.addEventListener('mouseover', e => {if (!svg.parentElement.classList.contains('keyboard')) get_play(e)})
-    svg.addEventListener('click', click)
+    svg.addEventListener('mouseover', e => {if (!svg.parentElement.classList.contains('keyboard')) get_play(e, false)})
+    svg.addEventListener('click', get_play)
+    const notes_array = notes[svg.id].split(' ')
+    circles.set(svg, {})
+    svg.querySelectorAll('circle').forEach(circle => {
+        circles.get(svg)[circle.nextElementSibling.textContent] = circle
+        cls = circle.dataset.class = [...circle.parentElement.classList].find(c => c.match(/^m\d+$/))
+        const num = cls.slice(1)
+        const path = [...svg.querySelectorAll(`.n${num}`)].map(node => [...node.classList].find(c => c.match(/^m\d+$/)).slice(1))
+        path.reverse().push(num)
+        circle.dataset.path_notes = path.map(i => notes_array[i]).join()
+    })
 })
 
 addEventListener('keydown', event => {
-    if (event.altKey || event.getModifierState?.('AltGraph') || event.ctrlKey || event.metaKey || !event.key.match(/^[א-תa-zA-Z]$/) && event.key != 'Backspace' && event.key != 'CapsLock')
+    if (event.altKey || event.getModifierState?.('AltGraph') || event.ctrlKey || event.metaKey || !event.key.match(/^[א-תa-zA-Z]$/) && event.key != 'Backspace' && (event.key != 'Tab' || event.shiftKey))
         return
+    event.preventDefault()
     const current = +containers[1].classList.contains('fullscreen')
-    containers[current].classList.remove('keyboard')
-    const svgs = document.querySelectorAll('svg')
-    if (event.key == 'CapsLock') {
+    if (event.key == 'Backspace')
+        remove_keyboard(containers[current])
+    else if (event.key == 'Tab') {
+        const svgs = document.querySelectorAll('svg')
         svgs.forEach(e => e.dataset.selected = '')
         containers.forEach((e, i) => e.appendChild(svgs[1 - i]))
-        return
-    }
-    if (event.key != 'Backspace')
-        setTimeout(() => {
-            svgs[current].style.setProperty('--delay', 0)
+    } else {
+        const circle = circles.get(containers[current].querySelector('svg'))[keymap[event.key.toLowerCase()] || event.key]
+        if (circle) {
             containers[current].classList.add('keyboard')
-            const key = keymap[event.key.toLowerCase()] || event.key
-            ;[...svgs[current].querySelectorAll('circle')].find(c => c.nextElementSibling.textContent == key).dispatchEvent(new MouseEvent('click', {bubbles: true}))
-        }, 1)
+            circle.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+        }
+    }
 })

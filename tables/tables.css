@@ -168,13 +168,12 @@ tr {
     height: 100%;  /* Needed in Firefox for buttons in table cells */
 }
 
-tr.inview:target {
-    background-color: var(--tables_fg_verydim);
-    transition: none;
+@keyframes target {
+    0% {background-color: var(--tables_fg_verydim)}
 }
 
 tr:target {
-    transition: background-color var(--tables_frag_dur);
+    animation: var(--tables_frag_dur) target paused;
 }
 
 @media (forced-colors: active) {

@@ -25,9 +25,8 @@ class Table {
                     id = location.hash.slice(1).toLowerCase()
                 if (id) {
                     const tr = document.getElementById(id)  // Do not use querySelector() as id may not be a valid CSS identifier
-                    tr.classList.add('inview')
                     location.hash = id  // Scroll into view
-                    setTimeout(() => tr.classList.remove('inview'), 1)
+                    tr.style.webkitAnimationPlayState = 'running'
                 }
             })
     }

@@ -39,45 +39,49 @@ const transition_secs = style.getPropertyValue('--transition_secs').slice(0, -1)
 const reverb = new Tone.Reverb({decay: 15, wet: .6})
 const synth = new Tone.Synth({oscillator: {type: 'sine'}, envelope: {attack: transition_secs}}).chain(reverb, Tone.Destination)
 
-function get_play(event, sticky=true) {
+let reverb_ready
+reverb.ready.then(reverb_ready = true)
+
+function get_play(event, sticky) {
     const circle = event.target
     const svg = event.currentTarget
-    svg.classList.remove('active')
-    requestAnimationFrame(() => svg.classList.add('active'))
-    let cls = ''
-    if (navigator.userActivation.hasBeenActive && circle.tagName.toLowerCase() == 'circle') {
-        cls = circle.dataset.class
+    if (circle.tagName.toLowerCase() != 'circle' || sticky && event.isTrusted && svg.classList.contains('keyboard'))
+        return
+    svg.classList.add('blink')
+    requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.remove('blink')))
+    if (sticky)
+        svg.dataset.selected = circle.dataset.class
+    else
+        delete svg.dataset.selected
+
+    if (navigator.userActivation.hasBeenActive && reverb_ready) {
+        console.log(circle.dataset.path_notes)
         const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), circle.dataset.path_notes.split(','), delay_secs).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
         seq.loop = false
 
-        function mute() {
-            seq.mute = true;
-            circle.removeEventListener('click', mute)
-            circle.removeEventListener('mouseleave', mute)
+        function cancel(event) {
+            seq.stop()
+            seq.dispose()
+            circle.removeEventListener('pointerdown', cancel)
+            circle.removeEventListener('mouseleave', cancel)
         }
 
-        circle.addEventListener('click', mute)
-        circle.addEventListener('mouseleave', mute)  // Will also fire when clicking outside for touch interaction
+        circle.addEventListener('pointerdown', cancel)
+        circle.addEventListener('mouseleave', cancel)  // Will also fire when clicking outside for touch interaction
         Tone.getTransport().start()
     }
-    if (sticky)
-        svg.dataset.selected = cls
-}
-
-function remove_keyboard(e) {
-    (e.currentTarget || e).classList.remove('keyboard')
 }
 
 const containers = document.querySelectorAll('.snark')
+const touch = matchMedia('(hover: none)').matches
 const circles = new Map()
 
 containers.forEach(elem => {
     elem.oncontextmenu = e => toggle_fullscreen(e, false)
-    elem.addEventListener('mousedown', remove_keyboard)
-    elem.addEventListener('mousemove', remove_keyboard)
-    const svg = elem.querySelector('svg')
-    svg.addEventListener('mouseover', e => {if (!svg.parentElement.classList.contains('keyboard')) get_play(e, false)})
-    svg.addEventListener('click', get_play)
+    const svg = elem.firstElementChild
+    svg.addEventListener('mouseover', get_play)
+    svg.addEventListener('pointerdown', e => get_play(e, svg.classList.contains('keyboard') || touch))
+    svg.addEventListener('mousemove', e => svg.classList.remove('keyboard'))
     const notes_array = notes[svg.id].split(' ')
     circles.set(svg, {})
     svg.querySelectorAll('circle').forEach(circle => {
@@ -95,17 +99,18 @@ addEventListener('keydown', event => {
         return
     event.preventDefault()
     const current = +containers[1].classList.contains('fullscreen')
+    const svg = containers[current].firstElementChild
     if (event.key == 'Backspace')
-        remove_keyboard(containers[current])
+        delete svg.dataset.selected
     else if (event.key == 'Tab') {
         const svgs = document.querySelectorAll('svg')
-        svgs.forEach(e => e.dataset.selected = '')
+        svgs.forEach(e => delete e.dataset.selected)
         containers.forEach((e, i) => e.appendChild(svgs[1 - i]))
     } else {
-        const circle = circles.get(containers[current].querySelector('svg'))[keymap[event.key.toLowerCase()] || event.key]
+        const circle = circles.get(svg)[keymap[event.key.toLowerCase()] || event.key]
         if (circle) {
-            containers[current].classList.add('keyboard')
-            circle.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+            svg.classList.add('keyboard')
+            circle.dispatchEvent(new MouseEvent('pointerdown', {bubbles: true}))
         }
-    }
+      }
 })

@@ -18,11 +18,6 @@ svg {
     --thick: .8;
 }
 
-svg:not(.active) {
-    --delay_secs: 0s;
-    --transition_secs: 0s;
-}
-
 #ABMH {
     --fg: #64ff64;
 }
@@ -32,28 +27,29 @@ svg:not(.active) {
 }
 
 @media (hover: hover) {
-    svg.active:not(.keyboard > *):has(.m21 circle:hover) :is(.m21, .n21),
-    svg.active:not(.keyboard > *):has(.m20 circle:hover) :is(.m20, .n20),
-    svg.active:not(.keyboard > *):has(.m19 circle:hover) :is(.m19, .n19),
-    svg.active:not(.keyboard > *):has(.m18 circle:hover) :is(.m18, .n18),
-    svg.active:not(.keyboard > *):has(.m17 circle:hover) :is(.m17, .n17),
-    svg.active:not(.keyboard > *):has(.m16 circle:hover) :is(.m16, .n16),
-    svg.active:not(.keyboard > *):has(.m15 circle:hover) :is(.m15, .n15),
-    svg.active:not(.keyboard > *):has(.m14 circle:hover) :is(.m14, .n14),
-    svg.active:not(.keyboard > *):has(.m13 circle:hover) :is(.m13, .n13),
-    svg.active:not(.keyboard > *):has(.m12 circle:hover) :is(.m12, .n12),
-    svg.active:not(.keyboard > *):has(.m11 circle:hover) :is(.m11, .n11),
-    svg.active:not(.keyboard > *):has(.m10 circle:hover) :is(.m10, .n10),
-    svg.active:not(.keyboard > *):has(.m9 circle:hover) :is(.m9, .n9),
-    svg.active:not(.keyboard > *):has(.m8 circle:hover) :is(.m8, .n8),
-    svg.active:not(.keyboard > *):has(.m7 circle:hover) :is(.m7, .n7),
-    svg.active:not(.keyboard > *):has(.m6 circle:hover) :is(.m6, .n6),
-    svg.active:not(.keyboard > *):has(.m5 circle:hover) :is(.m5, .n5),
-    svg.active:not(.keyboard > *):has(.m4 circle:hover) :is(.m4, .n4),
-    svg.active:not(.keyboard > *):has(.m3 circle:hover) :is(.m3, .n3),
-    svg.active:not(.keyboard > *):has(.m2 circle:hover) :is(.m2, .n2),
-    svg.active:not(.keyboard > *):has(.m1 circle:hover) :is(.m1, .n1),
-    svg.active:not(.keyboard > *):has(.m0 circle:hover) :is(.m0, .n0) {
+    svg:not(.blink):not([data-selected]) :is(
+        svg:has(.m21 circle:hover) :is(.m21, .n21),
+        svg:has(.m20 circle:hover) :is(.m20, .n20),
+        svg:has(.m19 circle:hover) :is(.m19, .n19),
+        svg:has(.m18 circle:hover) :is(.m18, .n18),
+        svg:has(.m17 circle:hover) :is(.m17, .n17),
+        svg:has(.m16 circle:hover) :is(.m16, .n16),
+        svg:has(.m15 circle:hover) :is(.m15, .n15),
+        svg:has(.m14 circle:hover) :is(.m14, .n14),
+        svg:has(.m13 circle:hover) :is(.m13, .n13),
+        svg:has(.m12 circle:hover) :is(.m12, .n12),
+        svg:has(.m11 circle:hover) :is(.m11, .n11),
+        svg:has(.m10 circle:hover) :is(.m10, .n10),
+        svg:has(.m9 circle:hover) :is(.m9, .n9),
+        svg:has(.m8 circle:hover) :is(.m8, .n8),
+        svg:has(.m7 circle:hover) :is(.m7, .n7),
+        svg:has(.m6 circle:hover) :is(.m6, .n6),
+        svg:has(.m5 circle:hover) :is(.m5, .n5),
+        svg:has(.m4 circle:hover) :is(.m4, .n4),
+        svg:has(.m3 circle:hover) :is(.m3, .n3),
+        svg:has(.m2 circle:hover) :is(.m2, .n2),
+        svg:has(.m1 circle:hover) :is(.m1, .n1),
+        svg:has(.m0 circle:hover) :is(.m0, .n0)) {
         filter: drop-shadow(0 0 1px var(--fg));
         fill: var(--fg_highlight);
         stroke-width: var(--thick);
@@ -61,7 +57,7 @@ svg:not(.active) {
 }
 
 @media (hover: none) {
-    .active :is(
+    svg:not(.blink) :is(
         [data-selected=m21] :is(.m21, .n21),
         [data-selected=m20] :is(.m20, .n20),
         [data-selected=m19] :is(.m19, .n19),
@@ -90,7 +86,7 @@ svg:not(.active) {
     }
 }
 
-.keyboard .active :is(
+svg:not(.blink) :is(
     [data-selected=m21] :is(.m21, .n21),
     [data-selected=m20] :is(.m20, .n20),
     [data-selected=m19] :is(.m19, .n19),
@@ -116,6 +112,11 @@ svg:not(.active) {
         filter: drop-shadow(0 0 1px var(--fg));
         fill: var(--fg_highlight);
         stroke-width: var(--thick);
+}
+
+.blink {
+    --delay_secs: 0s;
+    --transition_secs: 0s;
 }
 
 .keyboard {

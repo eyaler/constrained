@@ -155,7 +155,7 @@
         }
 
         function windowResized() {
-            resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Using client for Chrome Android. See: https://github.com/processing/p5.js/issues/8121
+            resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Needed for orientation change on Chrome Android. See: https://github.com/processing/p5.js/issues/8121
         }
     </script>
 </body>

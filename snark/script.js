@@ -40,7 +40,7 @@ const reverb = new Tone.Reverb({decay: 15, wet: .6})
 const synth = new Tone.Synth({oscillator: {type: 'sine'}, envelope: {attack: transition_secs}}).chain(reverb, Tone.Destination)
 
 let reverb_ready
-reverb.ready.then(reverb_ready = true)
+reverb.ready.then(() => reverb_ready = true)
 
 function get_play(event, sticky) {
     const circle = event.target

@@ -44,7 +44,7 @@ reverb.ready.then(() => reverb_ready = true)
 
 function get_play(event, sticky) {
     const circle = event.target
-    const svg = event.currentTarget
+    const svg = circle.parentElement?.parentElement
     if (circle.tagName.toLowerCase() != 'circle' || sticky && event.isTrusted && svg.classList.contains('keyboard'))
         return
     svg.classList.add('blink')
@@ -55,7 +55,6 @@ function get_play(event, sticky) {
         delete svg.dataset.selected
 
     if (navigator.userActivation.hasBeenActive && reverb_ready) {
-        console.log(circle.dataset.path_notes)
         const seq = new Tone.Sequence((time, note) => synth.triggerAttackRelease(note, duration_sec, time), circle.dataset.path_notes.split(','), delay_secs).start('+.05')  // Reduce pops noise and avoid skipping first note. See: https://github.com/Tonejs/Tone.js/wiki/Performance#scheduling-in-advance and https://github.com/Tonejs/Tone.js/issues/403#issuecomment-447663104
         seq.loop = false
 
@@ -76,12 +75,18 @@ const containers = document.querySelectorAll('.snark')
 const touch = matchMedia('(hover: none)').matches
 const circles = new Map()
 
+if (touch)
+    addEventListener('pointerup', e => get_play(e, true), {once: true})
+
 containers.forEach(elem => {
     elem.oncontextmenu = e => toggle_fullscreen(e, false)
     const svg = elem.firstElementChild
-    svg.addEventListener('mouseover', get_play)
-    svg.addEventListener('pointerdown', e => get_play(e, svg.classList.contains('keyboard') || touch))
-    svg.addEventListener('mousemove', e => svg.classList.remove('keyboard'))
+
+    svg.addEventListener('pointerdown', e => get_play(e, svg.classList.contains('keyboard') || touch && navigator.userActivation.hasBeenActive))
+    if (!touch) {
+        svg.addEventListener('mouseover', get_play)
+        svg.addEventListener('mousemove', e => svg.classList.remove('keyboard'))
+    }
     const notes_array = notes[svg.id].split(' ')
     circles.set(svg, {})
     svg.querySelectorAll('circle').forEach(circle => {

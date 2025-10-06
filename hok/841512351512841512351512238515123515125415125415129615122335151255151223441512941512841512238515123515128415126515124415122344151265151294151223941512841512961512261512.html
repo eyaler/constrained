@@ -211,11 +211,12 @@
           mousePressed()
         }
         function touchEnded() {
-          mouseReleased()
+          if (!touches.length)
+            mouseReleased()
         }
 
         function windowResized() {
-						resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Needed for orientation change on Chrome Android. See: https://github.com/processing/p5.js/issues/8121
+          resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Needed for orientation change on Chrome Android. See: https://github.com/processing/p5.js/issues/8121
           setupNodes()
         }
     </script>

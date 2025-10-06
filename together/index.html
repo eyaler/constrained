@@ -16,7 +16,7 @@
     <div oncontextmenu="toggle_fullscreen(event)" onmousemove="show_hide_cursor(this)">
         <main id="main">
             <div id="me" spellcheck="false"></div>
-            <div id="controls" class="border">
+            <div id="controls" class="border" oncontextmenu="event.preventDefault(); event.stopPropagation()">
                 <button id="right_button" aria-keyshortcuts="ArrowRight">&rarr;</button>
                 <button id="up_button" aria-keyshortcuts="ArrowUp">&uarr;</button>
                 <button id="tab_button" aria-keyshortcuts="Tab">&#x21b9;</button>

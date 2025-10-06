@@ -151,7 +151,8 @@
             mouseDragged()
         }
         function touchEnded() {
-            mouseReleased()
+            if (!touches.length)
+                mouseReleased()
         }
 
         function windowResized() {

@@ -168,27 +168,27 @@
             }, 500)
         }
 
-        function onMouseenterSquare(evt, domEvt) {
-            if (evt.piece?.startsWith('b'))
+        function onMouseenterSquare(event) {
+            if (event.piece?.startsWith('b'))
                 myBoard.style.cursor = 'var(--cursor)'
         }
 
-        function onMouseleaveSquare(evt, domEvt) {
+        function onMouseleaveSquare() {
             myBoard.style.cursor = 'auto'
         }
 
-        function onDragStart(dragStartEvt) {
-            if (turn == 'w' || dragStartEvt.piece.startsWith('w'))
+        function onDragStart(event) {
+            if (turn == 'w' || event.piece.startsWith('w'))
                 return false
-            myBoard.querySelector(`[data-square-coord=${dragStartEvt.square}]`).style.opacity = .999  // See: https://github.com/oakmac/chessboard2/issues/52#issuecomment-2501926197
+            myBoard.querySelector(`[data-square-coord=${event.square}]`).style.opacity = .999  // See: https://github.com/oakmac/chessboard2/issues/52#issuecomment-2501926197
         }
 
-        function onDrop(dropEvt) {
+        function onDrop(event) {
             let move
             try {
                 move = game.move({
-                    from: dropEvt.source,
-                    to: dropEvt.target,
+                    from: event.source,
+                    to: event.target,
                     promotion: 'q'
                 })
                 if (move_num < example.length && !(move.san in allowed)) {
@@ -197,7 +197,7 @@
                 }
             } catch {}
 
-            const square = myBoard.querySelector(`[data-square-coord=${dropEvt.source}]`)
+            const square = myBoard.querySelector(`[data-square-coord=${event.source}]`)
             if (move) {
                 board.position(game.fen(), false)
                 setTimeout(() => square.style.opacity = 1, 500)

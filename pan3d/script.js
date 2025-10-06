@@ -23,7 +23,7 @@ document.querySelectorAll('[data-cube]').forEach(heading => {
     const set_len = new Set(heading.dataset.cube).size
     if (len == 27 && set_len == 27) {
         const scene = document.createElement('div')
-        scene.oncontextmenu = toggle_fullscreen
+        scene.oncontextmenu = e => toggle_fullscreen(e, false)
         scene.setAttribute('aria-labelledby', heading.id)
         scene.setAttribute('aria-describedby', heading.id + '_text')
         const cube = scene.appendChild(document.createElement('div'))

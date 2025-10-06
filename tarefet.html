@@ -20,7 +20,7 @@
 
         button, span {
             font-family: inherit;
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
 
         canvas {
@@ -157,7 +157,7 @@
             boxes[i].y = boxes[i].lastY = .5
         }
 
-        let dragIndex, dragOffsetX, dragOffsetY, isOrdered, clue1, clue2, a
+        let dragIndex, dragOffsetX, dragOffsetY, isOrdered, clue1, clue2, clue3, a
 
         function getClue1() {
             clue1.remove()
@@ -169,6 +169,13 @@
         function getClue2() {
             clue2.remove()
             clue2 = createSpan(`<b>רמז 2:</b> מתחיל ב־${answer[0]}, מתחיל ב־${answer.split(' ')[1][0]}`)
+            clue3 = createButton('רמז 3')
+            clue3.mouseClicked(getClue3)
+        }
+
+        function getClue3() {
+            clue3.remove()
+            clue3 = createSpan(`<b>רמז 3:</b> מסתיים ב־${answer.split(' ')[0].slice(-1)}, מסתיים ב־${answer.slice(-1)}`)
         }
 
         function setup() {
@@ -189,6 +196,7 @@
             if (isOrdered) {
                 clue1.hide()
                 clue2?.hide()
+                clue3?.hide()
                 if (!a) {
                     index++
                     localStorage['tarefet'] = index
@@ -200,12 +208,16 @@
             } else {
                 isOrdered = !topZ && candidate == answer
                 if (clue1) {
-                    clue1.position(0, height * .75)
+                    clue1.position(0, height * .7)
                     clue1.center('horizontal')
                 }
                 if (clue2) {
-                    clue2.position(0, height * .85)
+                    clue2.position(0, height * .8)
                     clue2.center('horizontal')
+                }
+                if (clue3) {
+                    clue3.position(0, height * .9)
+                    clue3.center('horizontal')
                 }
             }
         }
@@ -298,7 +310,8 @@
             mouseDragged()
         }
         function touchEnded() {
-            mouseReleased()
+            if (!touches.length)
+                mouseReleased()
         }
 
         function windowResized() {

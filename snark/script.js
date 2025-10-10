@@ -76,10 +76,18 @@ const touch = matchMedia('(hover: none)').matches
 const circles = new Map()
 
 if (touch)
-    addEventListener('pointerup', e => get_play(e, true), {once: true})
+    addEventListener('pointerup', event => {
+        if (!navigator.userActivation.hasBeenActive)
+            get_play(e, true)
+    }, {once: true})
 
 containers.forEach(elem => {
-    elem.oncontextmenu = e => toggle_fullscreen(e, false)
+    elem.oncontextmenu = event => {
+        if (event.target.tagName.toLowerCase() == 'circle')
+            event.preventDefault()
+        else
+            toggle_fullscreen(event, false)
+    }
     const svg = elem.firstElementChild
 
     svg.addEventListener('pointerdown', e => get_play(e, svg.classList.contains('keyboard') || touch && navigator.userActivation.hasBeenActive))

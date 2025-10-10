@@ -1,6 +1,6 @@
 // Based on:
 // https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
-// https://phuoc.ng/collection/mirror-a-text-area/
+// https://web.archive.org/web/20250122201357/https://phuoc.ng/collection/mirror-a-text-area/build-a-simple-code-editor/
 
 new ResizeObserver(() => container.style.height = editing.offsetHeight + 'px').observe(editing)
 

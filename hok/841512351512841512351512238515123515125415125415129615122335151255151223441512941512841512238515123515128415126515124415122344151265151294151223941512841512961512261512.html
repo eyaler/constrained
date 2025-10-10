@@ -36,7 +36,7 @@
         const edges = []
         const path = []
         let nodes = []
-        let dragging, dragStartNode, completed, currentColor, firstNode, direction, anchor
+        let dragging, dragStartNode, solved, currentColor, firstNode, direction, anchor
 
         function setup() {
           createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
@@ -79,13 +79,13 @@
           let hoveredNode = getNodeUnderMouse()
           let activeIndex = path.length ? path[path.length - 1] : null
           noFill()
-          if (!completed && path.length) {
+          if (!solved && path.length) {
             const activeNode = nodes[activeIndex]
             stroke(255)
             strokeWeight(4)
             ellipse(activeNode.x, activeNode.y, nodeRadius * 2 + 12, nodeRadius * 2 + 12)
           }
-          if (hoveredNode != null && !completed) {
+          if (hoveredNode != null && !solved) {
             stroke(fg)
             strokeWeight(4)
             ellipse(hoveredNode.x, hoveredNode.y, nodeRadius * 2 + 5, nodeRadius * 2 + 5)
@@ -102,7 +102,7 @@
         }
 
         function mousePressed() {
-          if (completed)
+          if (solved || mouseButton && mouseButton != 'left')  // https://github.com/processing/p5.js/issues/7397
             return
           if (path.length) {
             dragging = true
@@ -123,7 +123,7 @@
         }
 
         function mouseReleased() {
-          if (completed)
+          if (solved)
             return
           if (dragging && dragStartNode != null) {
             const releasedNode = getNodeUnderMouse()
@@ -138,7 +138,7 @@
                   const url = encodeURI(encodeURI(candidate)) + '.html'
                   fetch(url, {method: 'HEAD'}).then(response => {
                     if (response.ok) {
-                      completed = true
+                      solved = true
                       currentColor = fg
                       anchor = createA(url, candidate.slice(0, 5) + '\n' + candidate.slice(5))
                       anchor.mouseClicked(e => localStorage.removeItem('hok_timer'))

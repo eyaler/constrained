@@ -75,6 +75,7 @@
             onMouseleaveSquare,
         }
         const board = Chessboard2('myBoard', boardConfig)
+        myBoard.oncontextmenu = e => e.preventDefault()  // See: https://github.com/oakmac/chessboard2/issues/65
 
         const example = 'e3f3cea3hfBed3NfKfRaQedNeba'.match(/[KQRBN]?[a-h]\d?/g)
         let move_num = 0

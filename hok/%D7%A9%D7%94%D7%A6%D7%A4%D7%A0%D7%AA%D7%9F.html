@@ -40,7 +40,7 @@
             boxes[i].y = boxes[i].lastY = .5
         }
 
-        let dragIndex, dragOffsetX, dragOffsetY, isOrdered, a
+        let dragIndex, dragOffsetX, dragOffsetY, solved, a
 
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
@@ -54,7 +54,7 @@
             let topZ = 0
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
-            if (isOrdered) {
+            if (solved) {
                 if (!a) {
                     a = createA((new TextEncoder).encode(candidate).join('') + '.html', 'יאשר המשך לילך שמה רשאי')
                     a.elt.focus()
@@ -62,7 +62,7 @@
                 a.position(0, height * .85)
                 a.center('horizontal')
             } else
-                isOrdered = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
+                solved = !topZ && ((new TextDecoder).decode((new TextEncoder).encode(candidate).map(x => x + 3)) == answer)
         }
 
         function drawBox(box) {
@@ -75,7 +75,7 @@
                 box.y += (box.lastY-box.y) * rate
                 if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxWidth * tol)
                     box.z = 0
-                fill(isOrdered ? fg : 224)
+                fill(solved ? fg : 224)
             }
             noStroke()
             rect((box.x-boxWidth/2) * width, box.y*height - boxWidth/2*width , boxWidth * width, boxWidth * width, 3)
@@ -95,7 +95,7 @@
         }
 
         function mousePressed() {
-            if (isOrdered || mouseButton && mouseButton != 'left')  // https://github.com/processing/p5.js/issues/7397
+            if (solved || mouseButton && mouseButton != 'left')  // https://github.com/processing/p5.js/issues/7397
                 return
             const mX = mouseX / width
             const mY = mouseY / height

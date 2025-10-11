@@ -133,15 +133,12 @@
         answer = answer.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 
         const marginFrac = .5
+        const minHeightPixels = 100
         const minOverlap = .15
         const animationRate = .05
         const tol = .05
 
         const boxWidth = 1 / ((values.length+2)+(values.length-1)*marginFrac)
-
-        function boxHeight() {
-            return max(boxWidth, 100 / width)
-        }
 
         const boxes = []
         for (let i = 0; i < values.length; i++) {
@@ -150,7 +147,7 @@
             boxes[i].y = boxes[i].lastY = .5
         }
 
-        let dragIndex, dragOffsetX, dragOffsetY, solved, clue1, clue2, clue3, a
+        let boxHeight, dragIndex, dragOffsetX, dragOffsetY, solved, clue1, clue2, clue3, a
 
         function getClue1() {
             clue1.remove()
@@ -171,10 +168,15 @@
             clue3 = createSpan(`<b>רמז 3:</b> מסתיים ב־${answer.split(' ')[0].slice(-1)}, מסתיים ב־${answer.slice(-1)}`)
         }
 
+        function getBoxHeight() {
+            return max(boxWidth * width / height, minHeightPixels / height)
+        }
+
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
             cursor('grab')
             frameRate(480)
+            boxHeight = getBoxHeight()
             textAlign(CENTER, CENTER)
             textFont('Alef')
             clue1 = createButton('רמז 1')
@@ -183,7 +185,7 @@
 
         function draw() {
             background(255)
-            let topZ = 0
+            let topZ
             boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (solved) {
@@ -220,15 +222,15 @@
             if (i == dragIndex)
                 fill(38, 185, 241, 224)
             else {
-                const rate = animationRate * 60 / frameRate()
+                const rate = min(animationRate * 60 / frameRate(), 1)
                 box.x += (box.lastX-box.x) * rate
                 box.y += (box.lastY-box.y) * rate
-                if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxHeight() * tol)
+                if (abs(box.x - box.lastX) < boxWidth * tol && abs(box.y - box.lastY) < boxHeight * tol)
                     box.z = 0
                 fill(solved ? '#64ff64' : 192)
             }
             noStroke()
-            rect((box.x-boxWidth/2) * width, box.y*height - boxHeight()/2*width , boxWidth * width, boxHeight() * width, 3)
+            rect((box.x-boxWidth/2) * width, box.y*height - boxHeight/2*height, boxWidth * width, boxHeight * height, 3)
             fill(0)
             textSize(boxWidth * width * .8)
             let value = box.value
@@ -240,7 +242,7 @@
 
         function getOverlap(box1, box2) {
             let overlapX = max(0, (min(box1.x, box2.x)-max(box1.x, box2.x))/boxWidth + 1)
-            let overlapY = max(0, (min(box1.y, box2.y)-max(box1.y, box2.y))/boxHeight() + 1)
+            let overlapY = max(0, (min(box1.y, box2.y)-max(box1.y, box2.y))/boxHeight + 1)
             return overlapX * overlapY
         }
 
@@ -250,11 +252,11 @@
             const mX = mouseX / width
             const mY = mouseY / height
             for (let i = 0; i < boxes.length; i++)
-                if (abs(mX - boxes[i].x) < boxWidth / 2 && abs(mY - boxes[i].y) < boxHeight() / 2) {
+                if (abs(mX - boxes[i].x) < boxWidth / 2 && abs(mY - boxes[i].y) < boxHeight / 2) {
                     cursor('grabbing')
                     dragIndex = i
-                    dragOffsetX = boxes[i].x - mX
-                    dragOffsetY = boxes[i].y - mY
+                    dragOffsetX = (boxes[i].x-mX) / boxWidth
+                    dragOffsetY = (boxes[i].y-mY) / boxHeight
                     boxes[i].z = max(boxes.map(box => box.z)) + 1
                     break
                 }
@@ -263,8 +265,8 @@
         function mouseDragged() {
             if (dragIndex == null)
                 return
-            boxes[dragIndex].x = mouseX/width + dragOffsetX
-            boxes[dragIndex].y = mouseY/height + dragOffsetY
+            boxes[dragIndex].x = mouseX/width + dragOffsetX*boxWidth
+            boxes[dragIndex].y = mouseY/height + dragOffsetY*boxHeight
             let targetIndex
             let bestOverlap = minOverlap
             for (let i = 0; i < boxes.length; i++)
@@ -309,6 +311,7 @@
 
         function windowResized() {
             resizeCanvas(document.documentElement.clientWidth, document.documentElement.clientHeight)  // Needed for orientation change on Chrome Android. See: https://github.com/processing/p5.js/issues/8121
+            boxHeight = getBoxHeight()
         }
     </script>
 </body>

@@ -123,7 +123,7 @@ addEventListener('keydown', event => {
         const circle = circles.get(svg)[keymap[event.key.toLowerCase()] || event.key]
         if (circle) {
             svg.classList.add('keyboard')
-            circle.dispatchEvent(new MouseEvent('pointerdown', {bubbles: true}))
+            circle.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true}))
         }
       }
 })

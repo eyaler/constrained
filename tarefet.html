@@ -25,6 +25,7 @@
         }
 
         canvas {
+            cursor: grab;
             display: block;
         }
 
@@ -35,6 +36,10 @@
             text-align: center;
             text-wrap: balance;
             width: 100%;
+        }
+
+        .grabbing * {
+            cursor: grabbing;
         }
 
         @media (max-height: 600px) {
@@ -176,7 +181,6 @@
 
         function setup() {
             createCanvas(windowWidth, windowHeight).elt.addEventListener('dragstart', e => e.preventDefault())
-            cursor('grab')
             frameRate(480)
             boxHeight = getBoxHeight()
             textAlign(CENTER, CENTER)
@@ -255,7 +259,7 @@
             const mY = mouseY / height
             for (let i = 0; i < boxes.length; i++)
                 if (abs(mX - boxes[i].x) < boxWidth / 2 && abs(mY - boxes[i].y) < boxHeight / 2) {
-                    cursor('grabbing')
+                    document.body.classList.add('grabbing')
                     dragIndex = i
                     dragOffsetX = (boxes[i].x-mX) / boxWidth
                     dragOffsetY = (boxes[i].y-mY) / boxHeight
@@ -293,7 +297,7 @@
         }
 
         function mouseReleased() {
-            cursor('grab')
+            document.body.classList.remove('grabbing')
             dragIndex = null
         }
 

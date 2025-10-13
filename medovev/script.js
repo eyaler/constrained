@@ -107,4 +107,4 @@ function update(text) {
 editing.addEventListener('scroll', () => {
     highlighting.scrollTop = editing.scrollTop
     highlighting.scrollLeft = editing.scrollLeft
-}, {passive: true})
+})

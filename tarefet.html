@@ -240,7 +240,7 @@
             fill(0)
             textSize(boxWidth * width * .8)
             let value = box.value
-            if (i != dragIndex && ((i == boxes.length - 1) || boxes[i + 1].value == ' '))
+            if (i != dragIndex && ((i == boxes.length - 1) || i && boxes[i + 1].value == ' '))
                 value = value.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ')
             text(value, box.x * width, box.y * height)
             return box

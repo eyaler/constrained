@@ -18,7 +18,7 @@
             outline: transparent;
         }
 
-        button, span {
+        button, p, span {
             font-family: inherit;
             font-size: 1.2em;
             padding-block: 0;
@@ -48,12 +48,8 @@
                 margin-bottom: 0;
             }
 
-            h1 {
-                margin-inline-end: 1em;
-            }
-
-            h3 {
-                margin-top: 0;
+            h2::before {
+                content: '\2002/\2002';
             }
         }
     </style>
@@ -62,7 +58,7 @@
     <header>
         <h1>טַרֶפֶת אותיות</h1>
         <h2>יעל צברי ואיל יהוה גרוּס</h2>
-        <h3><u>הוראות:</u> סדרו את המלבנים מחדש כך שייווצר צירוף שגור בן שתי מילים</h3>
+        <p><b>הוראות:</b> סדרו מחדש את המלבנים כך שייווצר צירוף שגור בן שתי מילים</p>
     </header>
     <script>
         'use strict'

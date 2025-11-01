@@ -399,7 +399,12 @@ function is_shortcut(event, shortcut) {
 function add_shortcut(elem, shortcut) {
     if (shortcut) {
         elem.ariaKeyShortcuts = shortcut.replaceAll(' ', '')
-        addEventListener('keydown', e => {if (is_shortcut(e, shortcut)) elem.click()})
+        addEventListener('keydown', event => {
+            if (is_shortcut(event, shortcut)) {
+                event.preventDefault()
+                elem.click()
+            }
+        })
     }
 }
 
@@ -817,7 +822,7 @@ function toggle_fullscreen(event_or_elem, landscape=true, target_screen, elem) {
             elem.addEventListener('fullscreenchange', () => {
                 if (elem.classList.toggle('fullscreen')) {
                     if (landscape)
-                        screen.orientation.lock('landscape').catch(e => console.warn(e.message))  // Works only in Chrome Android. See: https://bugzilla.mozilla.org/show_bug.cgi?id=1744125
+                        screen.orientation.lock('landscape').catch(e => console.warn(e.message))
                     request_wake_lock()
                     document.addEventListener('visibilitychange', visibility_change_handler)
                 } else

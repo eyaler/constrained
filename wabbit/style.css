@@ -141,15 +141,12 @@ article {
 }
 
 #blobs {
-    height: 100%;
-    left: 0;
+    inset: 0;
     mix-blend-mode: screen;
     overflow: clip;
     pointer-events: none;
     position: absolute;
-    top: 0;
     visibility: hidden;
-    width: 100%;
     z-index: 100;
 }
 

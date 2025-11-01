@@ -51,7 +51,7 @@ class Table {
         const rows = Array.from(this.table.tBodies[0].rows)
         const col = buttons[index].dataset.col
         const is_number = rows[0].cells[col].classList.contains('number') || rows[0].cells[col].dataset.sort == parseFloat(rows[0].cells[col].dataset.sort).toString()
-        order ??= buttons[index].value * -1 || config_key.natural || config_key.index || !is_number || -1
+        order ??= -buttons[index].value || config_key.natural || config_key.index || !is_number || -1
         buttons.forEach((e, i) => {
             const config_other = {...this.config._all_columns, ...this.config[e.name]}
             e.value = (i == index || config_key.index * (config_other.index || config_other.implied)) * order || 0

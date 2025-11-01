@@ -14,6 +14,16 @@
             margin-block: 2em;
         }
 
+        #canvas {
+            border-radius: inherit;
+            clip-path: border-box;
+            direction: rtl;
+            height: 100%;
+            inset: 0;
+            position: absolute;
+            width: 100%;
+        }
+
         #thescroll {
             border-color: var(--fg_dim);
             border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
@@ -23,6 +33,7 @@
             margin-inline: auto;
             max-width: 600px;
             padding-inline: 2em;
+            position: relative;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -61,15 +72,16 @@
 שיצרת במו ידייך. זכרי, המתיני
 עד תפלוט הזיקית את אישה,
 ואז שאי את ידייך ואמרי:
-</div>
+        </div>
 <pre class="narrow_poem">
 צופן שא
 פשר שא
 שא שא
 דימאג"ה
 </pre>
+        <canvas id="canvas"></canvas>
     </div>
-    <p>
+    <p id="epilog">
         את משננת את המילים חרש־חרש.
         לפתע מתלהטים דפי הספר בידייך,
         וכשנעלם הזוהר את רואה שגם המילים הכתובות בספר נעלמו מעל הדפים.
@@ -78,5 +90,49 @@
     <p class="subhuge" style="margin-block: 1em">מסעך תם ונשלם</p>
     <p>עברי ל<a href="#me/" onclick="open_internal_link(this, true)">עמוד הבא</a> כדי לראות מה עוד נמצא בתיבת המחבר.</p>
     </article>
+    <script>
+        canvas.width = thescroll.offsetWidth / 4
+        canvas.height = thescroll.offsetHeight / 4
+        const ctx = canvas.getContext('2d')
+
+        const rgb = [
+            [0, 0, 0],
+            [0, 64, 0],
+            [0, 128, 0],
+            [50, 192, 50],
+            [50, 192, 50],
+            [100, 255, 100],
+            [200, 255, 200],
+            [0, 0, 0],
+        ]
+
+        const imageData = ctx.createImageData(canvas.width, canvas.height)
+        const data = imageData.data
+        const len = data.length / 4
+        const indices = new Uint8Array(len).fill(0).fill(rgb.length - 1, len - canvas.width, len)
+        let factor = 2
+
+        function makeFire() {
+            const start_time = performance.now()
+            for (let y = 1; y < canvas.height; y++)
+                for (let x = 0; x < canvas.width; x++) {
+                    const rand = Math.round(Math.random() * 2) - 1
+                    const i = y * canvas.width + x
+                    const index = indices[i] - (Math.random() * (factor + (indices[i] == rgb.length - 1) * .2) | 0)
+                    if (x - rand >= 0 && x - rand < canvas.width && index >= 0) {
+                        const shift = canvas.width + rand
+                        const j = (i - shift) * 4
+                        ;[data[j], data[j + 1], data[j + 2]] = rgb[index]
+                        data[j + 3] = index ? 255 : 0
+                        indices[i - shift] = index
+                    }
+                }
+            ctx.putImageData(imageData, 0, 0)
+            factor *= .999
+            setTimeout(makeFire, Math.max(0, 50 + start_time - performance.now()))
+        }
+
+        new IntersectionObserver((e, o) => {if (e[0].intersectionRatio == 1) {o.unobserve(e[0].target); setTimeout(makeFire, 3000)}}, {threshold: 1}).observe(epilog)
+    </script>
 </body>
 </html>

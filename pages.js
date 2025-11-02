@@ -673,13 +673,13 @@ function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_fo
 
         let alt_name
         if (names) {
-        	name = names[lang] || names[''] || Object.values(names)[0] || name
+            name = names[lang] || names[''] || Object.values(names)[0] || name
             alt_name = Object.entries(names).find(([k, v]) => k != lang && v)?.[1]
             if (translators.includes(key) || collaborators.includes(key)) {
                 const alt_langs = Object.keys(ui).filter(k => k != lang)
                 if (alt_langs.length) {
                     if (translators.includes(key))
-                    	alt_name += ' ' + ui[alt_langs[0]].translator
+                        alt_name += ' ' + ui[alt_langs[0]].translator
                     if (!have_with && collaborators.includes(key))
                         alt_name = ui[alt_langs[0]].with + ' ' + alt_name
                 }
@@ -768,7 +768,7 @@ function textarea_writeln(textarea, line='', chars_for_reset=500000) {
         textarea.scrollTop = textarea.scrollHeight
         textarea.dataset.height = textarea.clientHeight
         textarea.dataset.width = textarea.clientWidth
-    } else if (selection_start != selection_end) {  // Needed to restore the selection after value change. Note: In Firefox this will scroll the selection into view
+    } else if (selection_start != selection_end) {  // Needed for restoring the selection after value change. Note: In Firefox this will scroll the selection into view
         textarea.selectionStart = selection_start
         textarea.selectionEnd = selection_end
     }

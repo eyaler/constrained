@@ -91,9 +91,9 @@
     <p>עברי ל<a href="#me/" onclick="open_internal_link(this, true)">עמוד הבא</a> כדי לראות מה עוד נמצא בתיבת המחבר.</p>
     </article>
     <script>
-        canvas.width = thescroll.offsetWidth / 4
-        canvas.height = thescroll.offsetHeight / 4
-        const ctx = canvas.getContext('2d')
+        const scale = 4
+        const w = canvas.width = thescroll.offsetWidth / scale | 0
+        const h = canvas.height = thescroll.offsetHeight / scale | 0
 
         const rgb = [
             [0, 0, 0],
@@ -106,33 +106,32 @@
             [0, 0, 0],
         ]
 
-        const imageData = ctx.createImageData(canvas.width, canvas.height)
+        const len = w * h
+        const indices = new Uint8Array(len).fill(rgb.length - 1, len - w, len)
+
+        const ctx = canvas.getContext('2d')
+        const imageData = ctx.createImageData(w, h)
         const data = imageData.data
-        const len = data.length / 4
-        const indices = new Uint8Array(len).fill(0).fill(rgb.length - 1, len - canvas.width, len)
+
         let factor = 2
 
-        function makeFire() {
+        function make_fire() {
             const start_time = performance.now()
-            for (let y = 1; y < canvas.height; y++)
-                for (let x = 0; x < canvas.width; x++) {
-                    const rand = Math.round(Math.random() * 2) - 1
-                    const i = y * canvas.width + x
-                    const index = indices[i] - (Math.random() * (factor + (indices[i] == rgb.length - 1) * .2) | 0)
-                    if (x - rand >= 0 && x - rand < canvas.width && index >= 0) {
-                        const shift = canvas.width + rand
-                        const j = (i - shift) * 4
-                        ;[data[j], data[j + 1], data[j + 2]] = rgb[index]
-                        data[j + 3] = index ? 255 : 0
-                        indices[i - shift] = index
-                    }
+            for (let i = w; i < len; i++) {
+                const index = indices[i] - (Math.random()*(factor+(indices[i] == rgb.length - 1)*.2)|0)
+                if (index >= 0) {
+                    const k = i * 4
+                    ;[data[k], data[k + 1], data[k + 2]] = rgb[index]
+                    data[k + 3] = index ? 255 : 0
+                    indices[i - w - Math.round(Math.random() * 2) + 1] = index
                 }
+            }
             ctx.putImageData(imageData, 0, 0)
             factor *= .999
-            setTimeout(makeFire, Math.max(0, 50 + start_time - performance.now()))
+            setTimeout(make_fire, Math.max(0, 50 + start_time - performance.now()))
         }
 
-        new IntersectionObserver((e, o) => {if (e[0].intersectionRatio == 1) {o.unobserve(e[0].target); setTimeout(makeFire, 3000)}}, {threshold: 1}).observe(epilog)
+        new IntersectionObserver((e, o) => {if (e[0].intersectionRatio == 1) {o.unobserve(e[0].target); setTimeout(make_fire, 3000)}}, {threshold: 1}).observe(epilog)
     </script>
 </body>
 </html>

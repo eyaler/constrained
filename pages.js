@@ -338,7 +338,7 @@ function make_contents(show_snippet=default_show_snippet, show_author=default_sh
                 authors.forEach((author, i) => {
                     span ??= p.appendChild(document.createElement('span'))
                     const s = span.appendChild(document.createElement('span'))
-                    s.innerHTML = author
+                    s.textContent = author
                     if (alt_authors[i] != author)
                         s.title = alt_authors[i]
                 })
@@ -495,7 +495,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     let span, back, keywords, trans
     if (page == '/') {
         const bdi = document.createElement('bdi')
-        bdi.innerHTML = parent_title
+        bdi.textContent = parent_title
         add_nav_element(nav, parent_title ? '..' : '', bdi, 'back', diff, shortcuts.back)
         keywords = all_keywords
     } else {
@@ -581,7 +581,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
                     alt = ''
             }
 
-            button.innerHTML = label
+            button.textContent = label
             button.title = `${alt}\nworks=${all_keywords_stats[kw].count}\ninfo=${(all_keywords_stats[kw].info * 100).toFixed(1)}%`.trim()
             if (page == '/') {
                 button.onclick = kw_handler
@@ -612,7 +612,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         h1.appendChild(img)
         h1.title = en_title ?? titles.label
     } else {
-        h1.textContent = soften(titles.label)
+        h1.innerHTML = soften(titles.label)
         if (titles.alt)
             h1.title = titles.alt
     }

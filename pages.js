@@ -612,7 +612,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         h1.appendChild(img)
         h1.title = en_title ?? titles.label
     } else {
-        h1.innerHTML = soften(titles.label)
+        h1.textContent = soften(titles.label)
         if (titles.alt)
             h1.title = titles.alt
     }

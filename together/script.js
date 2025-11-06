@@ -180,11 +180,11 @@ function change_word(event_or_word) {
   anagrams = allowed_words.filter(w => w != word && chars == [...w].sort().join(''))
   const save_texts = {}
   const save_prev_texts = {}
-  ;[...me.children].forEach(e => {
-    if (e.dataset.text)
-      save_texts[e.id] = e.dataset.text
-    if (e.dataset.prev_text)
-      save_prev_texts[e.id] = e.dataset.prev_text
+  ;[...me.children].forEach(elem => {
+    if (elem.dataset.text)
+      save_texts[elem.id] = elem.dataset.text
+    if (elem.dataset.prev_text)
+      save_prev_texts[elem.id] = elem.dataset.prev_text
   })
   me.innerHTML = [...word].map((c, i) => `<div id="${c}"${c in save_texts ? ` data-text="${save_texts[c]}"` : ''}${
     c in save_prev_texts ? ` data-prev_text="${save_prev_texts[c]}"` : ''}><div><div>${
@@ -220,31 +220,31 @@ for (const c of new Set(allowed_words.join(''))) {
   div.innerHTML = `<div><div>${c}</div></div>`
 }
 
-addEventListener('keydown', e => {
-  if (e.key.includes('Arrow') || e.key == 'Tab') {
-    e.preventDefault()
-    if (e.key == 'ArrowLeft')
+addEventListener('keydown', event => {
+  if (event.key.includes('Arrow') || event.key == 'Tab') {
+    event.preventDefault()
+    if (event.key == 'ArrowLeft')
       left_key = true
-    else if (e.key == 'ArrowRight')
+    else if (event.key == 'ArrowRight')
       right_key = true
-    else if (e.key == 'ArrowUp')
+    else if (event.key == 'ArrowUp')
       up_key = true
-    else if (e.key == 'ArrowDown')
+    else if (event.key == 'ArrowDown')
       down_key = true
-    else if (e.key == 'Tab')
+    else if (event.key == 'Tab')
       change_word(random_text(anagrams))
   }
 })
 
-addEventListener('keyup', e => {
-  if (e.key.includes('Arrow'))
-    if (e.key == 'ArrowLeft')
+addEventListener('keyup', event => {
+  if (event.key.includes('Arrow'))
+    if (event.key == 'ArrowLeft')
       left_key = false
-    else if (e.key == 'ArrowRight')
+    else if (event.key == 'ArrowRight')
       right_key = false
-    else if (e.key == 'ArrowUp')
+    else if (event.key == 'ArrowUp')
       up_key = false
-    else if (e.key == 'ArrowDown')
+    else if (event.key == 'ArrowDown')
       down_key = false
 })
 
@@ -277,32 +277,32 @@ function update() {
     y -= step
   main.style.setProperty('--x', x + 'px')
   main.style.setProperty('--y', y + 'px')
-  main.querySelectorAll('.npc').forEach(e => {
-    const nx = +e.dataset.x + x
-    const ny = +e.dataset.y + y
-    e.style.setProperty('--x', nx + 'px')
-    e.style.setProperty('--y', ny + 'px')
+  main.querySelectorAll('.npc').forEach(elem => {
+    const nx = +elem.dataset.x + x
+    const ny = +elem.dataset.y + y
+    elem.style.setProperty('--x', nx + 'px')
+    elem.style.setProperty('--y', ny + 'px')
     if (nx**2 + ny**2 < interaction_radius ** 2) {
-      if ((!in_radius_with || in_radius_with == e) && e.dataset.prev_text in nogo_remarks && !e.dataset.text && e.id in allowed_insertions)
-        talk(e, 'regret')
+      if ((!in_radius_with || in_radius_with == elem) && elem.dataset.prev_text in nogo_remarks && !elem.dataset.text && elem.id in allowed_insertions)
+        talk(elem, 'regret')
       else if (!in_radius_with)
-        talk(e)
-    } else if (in_radius_with == e) {
+        talk(elem)
+    } else if (in_radius_with == elem) {
       in_radius_with = null
       if (timeout_with)
-        clear(e)
+        clear(elem)
     }
   })
   requestAnimationFrame(update)
 }
 update()
 
-function clear(e) {
+function clear(elem) {
   timeout_with = null
   clearTimeout(timeout_id)
-  if (e?.dataset.text) {
-    e.dataset.prev_text = e.dataset.text
-    e.removeAttribute('data-text')
+  if (elem?.dataset.text) {
+    elem.dataset.prev_text = elem.dataset.text
+    elem.removeAttribute('data-text')
   }
   ;[...me.children].forEach(m => {
     if (m.dataset.text) {
@@ -315,21 +315,21 @@ function clear(e) {
 function join_end(event) {
   if (event.animationName != 'join')
     return
-  const e = event.currentTarget
-  e.removeEventListener('animationend', join_end)
-  me.insertBefore(e, me.children[allowed_insertions[e.id][Math.random() * allowed_insertions[e.id].length | 0]])
+  const elem = event.currentTarget
+  elem.removeEventListener('animationend', join_end)
+  me.insertBefore(elem, me.children[allowed_insertions[elem.id][Math.random() * allowed_insertions[elem.id].length | 0]])
   change_word()
 }
 
-function talk(e, subject = 'encounter', subject_index, turn = 0) {
-  if (!e && timeout_with)
+function talk(elem, subject = 'encounter', subject_index, turn = 0) {
+  if (!elem && timeout_with)
     return
-  if (e && !turn)
-    in_radius_with = e
-  clear(e)
+  if (elem && !turn)
+    in_radius_with = elem
+  clear(elem)
   let turns
   if (subject == 'regret')
-    turns = [[-1, nogo_remarks[e.dataset.prev_text]]]
+    turns = [[-1, nogo_remarks[elem.dataset.prev_text]]]
   else {
     subject_index ??= Math.random() * conv[subject].length | 0
     turns = conv[subject][subject_index]
@@ -337,23 +337,23 @@ function talk(e, subject = 'encounter', subject_index, turn = 0) {
       tutorial_stage = subject_index + 1
   }
   if (turn < turns.length)
-    (turns[turn][0] == -1 ? e : document.getElementById(char_ranks[turns[turn][0] % char_ranks.length])).dataset.text = turns[turn][1]
+    (turns[turn][0] == -1 ? elem : document.getElementById(char_ranks[turns[turn][0] % char_ranks.length])).dataset.text = turns[turn][1]
   else if ((subject == 'encounter' || subject == 'regret') && (turn == turns.length || (turn == turns.length + 1 && !in_radius_with)))
-    if (turn == turns.length && e.id in allowed_insertions) {
+    if (turn == turns.length && elem.id in allowed_insertions) {
       anagrams = []
-      e.addEventListener('animationend', join_end)
-      e.classList.replace('npc', 'join')
+      elem.addEventListener('animationend', join_end)
+      elem.classList.replace('npc', 'join')
       in_radius_with = null
     } else if (turn == turns.length + 1 && !in_radius_with)
-      document.getElementById(e.id).dataset.text = random_text(post_join_remarks, e.id)
-    else e.dataset.text = random_text(Object.keys(nogo_remarks))
+      document.getElementById(elem.id).dataset.text = random_text(post_join_remarks, elem.id)
+    else elem.dataset.text = random_text(Object.keys(nogo_remarks))
   else {
     if (subject == 'encounter' && tutorial_stage < conv.tutorial.length && (tutorial_stage != 1 || anagrams.length))
       setTimeout(talk, tutorial_delay_secs * 1000, null, 'tutorial', tutorial_stage)
     return
   }
-  timeout_with = e
-  timeout_id = setTimeout(talk, talk_delay_secs * 1000, e, subject, subject_index, turn + 1)
+  timeout_with = elem
+  timeout_id = setTimeout(talk, talk_delay_secs * 1000, elem, subject, subject_index, turn + 1)
 }
 
 setTimeout(talk, tutorial_delay_secs * 1000, null, 'tutorial', 0)

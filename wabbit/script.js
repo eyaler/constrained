@@ -12,8 +12,8 @@ const anim_dur_ms = 500
 const part_times_ms = [[27500, 187.5], [54000, 190], [78000, 202.5], [102000, 280]]
 let start_time
 
-function scroll_into_view(e) {
-    (e.currentTarget || e).scrollIntoView({behavior: 'smooth', block: 'nearest'})
+function scroll_into_view(event_or_elem) {
+    (event_or_elem.currentTarget || event_or_elem).scrollIntoView({behavior: 'smooth', block: 'nearest'})
 }
 
 reverse_button.onclick = () => {

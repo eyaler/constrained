@@ -36,11 +36,11 @@ function update() {
 }
 
 function restart() {
-    [a, b].forEach(e => {
-        e.pause()
-        e.currentTime = 0
-        e.className = ''
-        e.playbackRate = 1
+    [a, b].forEach(vid => {
+        vid.pause()
+        vid.currentTime = 0
+        vid.className = ''
+        vid.playbackRate = 1
     })
     a.loop = false
     a.muted = true

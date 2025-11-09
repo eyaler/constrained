@@ -86,7 +86,7 @@ containers.forEach(elem => {
         if (event.target.tagName.toLowerCase() == 'circle')
             event.preventDefault()
         else
-            toggle_fullscreen(event, false)
+            toggle_fullscreen(event)
     }
     const svg = elem.firstElementChild
 

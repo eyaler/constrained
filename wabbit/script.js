@@ -9,7 +9,7 @@ if (lang)
     [reverse_button.innerHTML, reverse_button.title] = [reverse_button.title, reverse_button.innerHTML]
 
 const anim_dur_ms = 500
-const part_times_ms = [[27500, 187.5], [54000, 190], [78000, 202.5], [102000, 280]]
+const part_times_ms = [[27500, 187.5], [54000, 190], [78000, 183.5], [102000, 280]]
 let start_time
 
 function scroll_into_view(event_or_elem) {

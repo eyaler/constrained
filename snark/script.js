@@ -76,9 +76,9 @@ const touch = matchMedia('(hover: none)').matches
 const circles = new Map()
 
 if (touch)
-    addEventListener('pointerup', event => {
-        if (!navigator.userActivation.hasBeenActive)
-            get_play(e, true)
+    addEventListener('touchend', event => {
+        if (navigator.userActivation.isActive)
+            get_play(event, true)
     }, {once: true})
 
 containers.forEach(elem => {

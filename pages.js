@@ -2,6 +2,8 @@
 // Please attribute by linking to a version of this file [e.g. as done in make_footer()], containing these comments
 
 
+const canonical_origin = ''
+
 const pages = {
     "/": {title: "כתיבה אילוצית עברית", alt: "Constrained Hebrew writing", author: "eyalgruss", skip: true},
     "me/": {title: "על אודותיי", alt: "About me", author: "eyalgruss", skip: true},
@@ -101,6 +103,7 @@ const kw_labels = {
     "2d 3d": "רב־ממדי",
     "biblical": "תורני",
     "cipher": "צופן",
+    "collection": "אסופה",
     "combinatorial": "קומבינטורי",
     "combined forms": "שילוב אילוצים",
     "data available": "נתונים להורדה",
@@ -193,7 +196,7 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
 
 
 function soften(s) {
-    return s.split(' ').map((w, i) => i ? w : w.replace(/(?<=[\p{L}\p{M}\p{N}])\p{Pd}(?=[\p{L}\p{M}\p{N}])/gu, '$&\u200b')).join(' ')
+    return s.split(' ').map((w, i) => i ? w : w.replace(/(?<=[\p{L}\p{M}\p{N}]\p{Pd})(?=[\p{L}\p{M}\p{N}])/gu, '\u200b')).join(' ')
 }
 
 
@@ -479,6 +482,11 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const [all_keywords, all_keywords_stats] = get_all_keywords(lang, reverse_issues_kw, page)
     const titles = get_set_titles(page, lang)
     document.title = titles.label
+    if (canonical_origin) {
+        const link = document.head.appendChild(document.createElement('link'))
+        link.rel = 'canonical'
+        link.href = new URL(page, canonical_origin)
+    }
 
 
     // nav:

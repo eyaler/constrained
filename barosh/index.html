@@ -41,15 +41,15 @@
     <p dir="ltr">(from <a href="#psuko/#psalms_137:5" onclick="open_internal_link(this)">Psalms 137:5</a>-<a href="#psuko/#psalms_137:6" onclick="open_internal_link(this)">6</a>)</p>
     <br>
     <ul data-title="האלגוריתם:">
-        <li>בהינתן פסוק ו<a href="https://github.com/eyaler/hebrew_wordlists">אוצר מילים</a>, אפשר למצוא את כל החלוקות מחדש האפשריות של הפסוק לרצף מילים.</li>
+        <li>בהינתן פסוק ו<a href="https://github.com/eyaler/hebrew_wordlists">אוצר מילים</a>, נמצא את כל החלוקות מחדש האפשריות של הפסוק לסדרה של מילים.</li>
         <li>נגדיר את פעולת ה<b>קריעה</b> (או ה<b>קריאה</b>) כהכנסת רווח חדש אחד בין שתי אותיות צמודות, כאשר קיימת חלוקה אחרת בה נמצא רווח בין שתי אותיות אלו.</li>
         <li>חלוקה מאופיינת לפי מקומות הרווחים בה.</li>
         <li>נגדיר את המרחק בין שתי חלוקות כגודל ההפרש הסימטרי בין קבוצות מקומות הרווחים.</li>
-        <li>נגדיר חלוקות שכנות לחלוקה מסוימת תחת קריעה מסוימת, כחלוקות המקיימות הקריעה, שלהן המרחק המינימלי מהחלוקה המקורית, משמע השינוי המינימלי האפשרי במקומות הרווחים.</li>
-        <li>במקרה שקיימת יותר מחלוקה שכנה אחת, נבחר את החלוקה החדשה באקראי מתוך החלוקות השכנות.</li>
+        <li>נגדיר "חלוקות המקיימות את הקריעה" כחלוקות השכנות לחלוקה מסוימת תחת קריעה מסוימת, עם המרחק המינימלי מאותה החלוקה, משמע השינוי המינימלי הדרוש במקומות הרווחים.</li>
         <li>מתכון זה משרה גרף מכוון בין החלוקות, ואנו מתעניינים במקרים בהם הגרף קשיר היטב, משמע שניתן להגיע לכל חלוקה מכל חלוקה אחרת.</li>
+        <li>בזמן השיטוט בגרף, אם קיימת יותר מחלוקה אחת המקיימת את הקריעה, נבחר אחת מהן באקראי.</li>
     </ul>
-    <p>
+    <p>ד
        במסגרת פיתוח היצירה חושבו <a href="#psuko/" onclick="open_internal_link(this)">הפסוקים הפופולריים בתנ"ך</a>,
         ועבודות אלו הוצגו כפוסטר בכנס מדעי הרוח הדיגיטליים היהודיים
          <a href="https://dhjewish.org/event/value-digital-dhjewish-conference-and-hackathon">The Value of the Digital</a>
@@ -69,13 +69,13 @@
         That which Nachmanides proposed proverbially, can be realized today exhaustively - word by word. That which Abulafia proposed "as if", is presented here before you, not just "as if" - <b>You are the creator of words, and you concur their meaning.</b>
     </p>
     <ul dir="ltr" data-title="The algorithm:">
-        <li>Given a verse and a <a href="https://github.com/eyaler/hebrew_wordlists">vocabulary</a>, one can find all possible repartitions of the verse into a sequence of words.</li>
+        <li>Given a verse and a <a href="https://github.com/eyaler/hebrew_wordlists">vocabulary</a>, we find all possible repartitions of the verse into a sequence of words.</li>
         <li>We define the operation of <b>parting</b> (in Hebrew: <b>kri'a</b>, which is also a homophone of <b>reading</b>) as the insertion of one new space between two adjacent letters, when there exists another partition in which there is a space between these two letters.
         <li>A partition is characterized by the positions of spaces in it.</li>
         <li>We define the distance between two partitions as the size of the symmetric difference between the sets of positions of spaces.</li>
-        <li>We define partitions that are neighbors to a certain partition under a certain parting, as partitions that maintain the parting, having the minimal distance from the original partition, i.e. the minimal change possible in the positions of spaces.</li>
-        <li>When there is more than one neighboring partition, we choose the new partition randomly from the neighboring partitions.</li>
+        <li>We define "partitions that satisfy the parting" as the neighboring partitions to a specific partition under a specific parting, having the minimal distance from that partition, i.e. the minimally required change in the positions of spaces.</li>
         <li>This recipe induces a directed graph over the partitions, and we are interested in cases where the graph is strongly connected, i.e. any partition is reachable from any other partition.</li>
+        <li>While traversing the graph, if there is more than one partition satisfying the parting, we choose one of them at random.</li>
     </ul>
     <p dir="ltr">
        As part of the development of this work, the <a href="#psuko/?en" onclick="open_internal_link(this)">most popular Bible verses</a> were calculated,

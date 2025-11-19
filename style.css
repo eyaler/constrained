@@ -627,7 +627,6 @@ article.collection h3 a {
     margin-inline-end: 1em;
 }
 
-
 article.collection h3 span {
     display: inline-block;
 }
@@ -1137,7 +1136,7 @@ textarea {
     width: var(--media_width);
 }
 
-.textblock {
+.textblock:not(.collection *) {
     margin-top: 6rem;
 }
 

@@ -131,7 +131,7 @@ const social = {
     "web": {"label": "&#x1f3e0;&#xfe0e;"},
     "twitter": {"url": "x.com", "label": "&#x1f426;"},
     "facebook": {"url": "www.facebook.com", "label": "&#x24d5;"},
-    "instagram": {"url": "instagram.com", "label": "&#x1f4f7;&#xfe0e;"},
+    "instagram": {"url": "www.instagram.com", "label": "&#x1f4f7;&#xfe0e;"},
     "github": {"url": "github.com", "label": "&#x1f431;"},
     "sponsors": {"url": "github.com/sponsors", "label": "&hearts;"},
     "paypal": {"url": "www.paypal.com/donate/?hosted_button_id=", "label": "&#x1f4b8;"},

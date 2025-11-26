@@ -866,7 +866,7 @@ nav .trans {
 }
 
 .no_fullscreen .fullscreen_button{
-    display: none;
+    visibility: hidden;
 }
 
 .nowrap {

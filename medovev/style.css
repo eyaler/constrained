@@ -88,7 +88,7 @@
     white-space: pre-wrap;
 }
 
-#counts > span {
+#counts > output {
     font-family: var(--mono_font);
 }
 
@@ -115,10 +115,10 @@
     margin-inline-start: auto;
 }
 
-#statuses span:empty {
+#statuses output:empty {
     display: none;
 }
 
-#statuses span:not(:empty) {
+#statuses output:not(:empty) {
     padding-inline: .3em;
 }

@@ -83,7 +83,7 @@
         <span>ניקוד</span>
     </label>
     <div class="table">
-    <table class="row_highlight rank" data-config="data/psuko_config.json" data-url="data/psuko_top.json" aria-labelledby="h1">
+    <table class="row_highlight rank" data-config="data/psuko_config" data-url="data/psuko_top" aria-labelledby="h1">
         <thead>
             <tr>
                 <td rowspan="2"></td>
@@ -113,8 +113,9 @@
             })
         }
 
-        Table().then(update_nikud)
-        data_trans.href = data.href = document.querySelector('table').dataset.url
+        let table
+        ;(table = Table()).then(update_nikud)
+        data_trans.href = data.href = table.url
         data_all_trans.href = data_all.href
     </script>
 </body>

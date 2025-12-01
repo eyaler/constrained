@@ -7,8 +7,12 @@ class Table {
     constructor(config, url, table, data_header_rows) {
         this.table = table || [...document.querySelectorAll('table')].pop() || [...document.querySelectorAll('.table')].pop()?.appendChild(document.createElement('table')) || document.body.appendChild(document.createElement('table'))
         this.table.style.visibility = 'hidden'
-        this.url = url ?? this.table.dataset.url ?? this.table.querySelector('[data-url]')?.dataset.url
-        config = config ?? this.table.dataset.config ?? this.table.querySelector('[data-config]')?.dataset.config
+        this.url = url ?? this.table.dataset.url ?? this.table.querySelector('[data-url]')?.dataset.url ?? (this.table.parentElement.classList.contains('table') && this.table.parentElement.dataset.url)
+        if (this.url && !this.url.endsWith('.json'))
+            this.url += '.json'
+        config = config ?? this.table.dataset.config ?? this.table.querySelector('[data-config]')?.dataset.config ?? (this.table.parentElement.classList.contains('table') && this.table.parentElement.dataset.config)
+        if (config && !config.endsWith('.json'))
+            config += '.json'
         this.promise = this.get_config(config)
             .then(config => {
                 this.config = config

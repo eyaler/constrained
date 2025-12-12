@@ -1,0 +1,22 @@
+{
+  "Length_2020": {
+    "decimal": 3,
+    "default": true,
+    "natural": 1
+  },
+  "Perplexity_2020": {
+    "decimal": 1
+  },
+  "Inefficiency_2020": {
+    "decimal": 3
+  },
+  "Length_Parallel": {
+    "decimal": 3
+  },
+  "Perplexity_Parallel": {
+    "decimal": 1
+  },
+  "Inefficiency_Parallel": {
+    "decimal": 3
+  }
+}

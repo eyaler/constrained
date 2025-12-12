@@ -18,7 +18,8 @@ table {
     --tables_icon_dur: var(--icon_dur, .3s);
     --tables_frag_dur: var(--frag_dur, 7s);
 
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;  /* Workaround for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=688556#c51 */
     font-size: initial;
     font-variant-numeric: lining-nums tabular-nums;
     height: fit-content;
@@ -99,6 +100,10 @@ table {
 
 .merge_first_col > tbody td:first-child:not(tr:last-child *) {
     border-bottom: none;
+}
+
+.number {
+    text-align: right;
 }
 
 .rank tbody {

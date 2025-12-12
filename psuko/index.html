@@ -60,7 +60,7 @@
         <li>Sefaria - we took the internal links (related texts) that are not translations and are not links from the Bible itself. References to ranges of up to three verses within the same chapter were broken down into individual verses. The graph is undirected (to get a directed graph, the nodes of each of the edges could have been sorted by their dating).</li>
         <li>PageRank - calculated after the above filterings, over a graph that also includes the edges not linking to Bible verses. We present the normalized score after dividing by the smallest score of all the nodes in the graph.</li>
         <li>PageSheetRank - as calculated by Sefaria.</li>
-        <li>We only show verses that were among the 600 most popular in any of the above indicators, doing a separate calculation for the Torah and for Nevi'im-Ketuvim (about 12% of all verses in the Bible; a file of all verses is also available).</li>
+        <li>We only show verses that were among the 600 most popular in any of the above indices, doing a separate calculation for the Torah and for Nevi'im-Ketuvim (about 12% of all verses in the Bible; a file of all verses is also available).</li>
         <li>For Sefaria, we also considered the links from web pages, but they do not seem to be a good indicator of popularity.</li>
         <li>In my opinion, the number of links from articles in Wikisource gives the most relevant popularity ordering for the secular public in Israel. See <a href="#chart">comparison of famous verses ranks</a>.</li>
     </ul>
@@ -108,7 +108,7 @@
             document.querySelectorAll('.nikud').forEach(event => {
                 text = event.dataset.sort
                 if (!nikud.checked)
-                    text = text.replace(/[\u05be]/g, ' ').replace(/[\u0591-\u05c7\u034f\u200c\u200d]/g, '')
+                    text = text.replace(/[\u05be]/g, ' ').replace(/[\u0591-\u05c9\u034f\u200c\u200d]/g, '')
                 event.innerHTML = text
             })
         }

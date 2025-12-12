@@ -69,7 +69,7 @@ class Table {
             compare = (a, b) => a.cells[col].dataset.sort - b.cells[col].dataset.sort
         else
             compare = (a, b) => table_collator.compare(a.cells[col].dataset.sort ?? a.cells[col].textContent, b.cells[col].dataset.sort ?? b.cells[col].textContent)
-        rows.sort((a, b) => compare(a, b) * order)
+        rows.sort((a, b) => a.cells[col].dataset.sort === '' && b.cells[col].dataset.sort === '' ? 0 : (a.cells[col].dataset.sort === '') - (b.cells[col].dataset.sort === '') || compare(a, b) * order)
         for (let i = 0; i < rows.length; i += 100000)
             this.table.tBodies[0].append(...rows.slice(i, i + 100000))
         this.sort_index = index

@@ -42,6 +42,7 @@ const pages = {
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
     "otomat/": {title: "אות־וֹמט תאי", alt: "OT‑o‑mata: Letter cellular automata", kw: ["2d 3d", "interactive", "live code", "new constraint", "self-referral", "software", "visual"], hazard: "flashing"},
     "xx17n": {title: "חרותת / xx17n", alt: "xx17n", kw: ["cipher", "poem", "software", "visual"]},
+    "compact/": {title: "דחיסות אורתוגרפית", alt: "Orthographic compactness", kw: ["data available", "software"]},
     "freq": {title: "שכיחות האותיות בספרות העברית", alt: "Letter frequencies in Hebrew literature", kw: ["data available", "software"]},
     "taz": {title: "תחום אוטונומי זמני", alt: "Temporary Autonomous Zone", kw: ["cipher", "new constraint", "poem", "software", "sound", "visual"]},
     "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software", "tool"]},

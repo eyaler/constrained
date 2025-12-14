@@ -16,19 +16,19 @@
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
     <p>
-        השוואה של מספר התווים במשפטים מקבילים בשפות שונות יחסית לעברית לפי שני מאגרים של תמלילי הרצאות TED.
-        נוסף לכך, אנו מחשבים את ה־perplexity מסדר־אפס של התווים, משמע האקספוננט של האנטרופיה של התפלגות התווים,
+        השוואה של מספר התווים (יוניקוד) במשפטים מקבילים בשפות שונות יחסית לעברית לפי שני מאגרים של תמלילי הרצאות TED.
+        נוסף לכך, אנו מחשבים את ה־perplexity מסדר־אפס של התווים, משמע אקספוננט האנטרופיה של התפלגות התווים,
         שמודד את המספר האפקטיבי של סימנים שונים המשמשים במערכת הכתב של השפה.
         ה־inefficiency הוא מכפלת מספר התווים היחסי ב־perplexity היחסי.
-        ככלל העברית והערבית אינן מנוקדות, ובשום מקרה לא הוסרו סימני ניקוד או פיסוק.
+        ככלל, העברית והערבית אינן מנוקדות, ובשום מקרה לא הוסרו סימני ניקוד או פיסוק.
         לצורך חישוב המדדים האחרונים, אותיות רישיות הומרו לקטנות,
-        אוחדו צורות סופיות ולא סופיות בעברית וביוונית (בערבית מלכתחילה מדובר באותם תווים),
+        הצורות הסופיות המובחנות בעברית וביוונית אוחדו עם מקבילותיהן,
         והפסיק והספרות הערביים הומרו לצורה לטינית.
     </p>
     <p>
-        יוצא שהעברית היא הקצרה מבין השפות עם מערכות כתב אלף־ביתיות ועיצוריות (אבג'ד), וקצרות ממנה כאן רק יפנית שכוללת כתב קאנג'י הלוגוגרפי, קוריאנית בכתב האנגול ההברתי, ואמהרית בכתב געז שהוא אבוגידה.
-        בהשוואה לאנגלית, משפט עברי יהיה קצר ברבע.
-        כאשר לוקחים בחשבון את המספר האפקטיבי של הסימנים, נראה שעברית היא היעילה מבין השפות ומערכות הכתב שבמאגרים.
+        יוצא שהעברית היא הקצרה מבין השפות עם מערכות כתב אלף־ביתיות ועיצוריות (אבג'ד), וקצרות ממנה כאן סינית ויפנית המשתמשות בכתב לוגוגרפי, קוריאנית בכתב האנגול הברתי, ואמהרית בכתב געז שהוא אבוגידה.
+        בהשוואה לאנגלית, משפט עברי מקביל יהיה קצר ברבע.
+        כאשר לוקחים בחשבון את המספר האפקטיבי של הסימנים, נראה שעברית היא היעילה אורתוגרפית מבין מערכות הכתב של השפות במאגרים.
         את התוצאות להלן ניתן לשחזר באמצעות הקוד ב<a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">גוגל קולאב</a>
         (<a id="data" href>קובץ JSON להורדה</a>).
     </p>
@@ -50,20 +50,20 @@
 
     <div dir="ltr">
         <p>
-            A comparison of the number of characters in parallel sentences in different languages relative to Hebrew according to two databases of TED lecture transcripts.
+            A comparison of the number of Unicode characters in parallel sentences in different languages relative to Hebrew according to two datasets TED lecture transcripts.
             In addition, we compute the zero-order character perplexity, i.e. the exponential of the entropy of the character distribution,
             which measures the effective number of different symbols used in the writing system of the language.
             The inefficiency is the product of the relative number of characters times the relative perplexity.
             The Hebrew and Arabic texts are mostly diacriticless, and in no case have diacritics or punctuation been removed.
             For calculating the latter indices, uppercase letters were lowercased,
-            final and nonfinal letter forms in Hebrew and Greek were unified (in Arabic the forms share the same character to begin with),
+            The distinct final letter forms Hebrew and Greek were unified with their equivalents,
             and Arabic comma and digits were converted to Latin form.
         </p>
         <p>
-            It turns out that Hebrew is the shortest among the languages employing alphabetic and abjad writing systems,
-            the only shorter being Japanese which includes the logographic Kanji script, Korean in the syllabic Hangul script, and Amharic in the Ge'ez script, which is an abugida.
-            Compared to English, a Hebrew sentence will be a quarter shorter.
-            When taking into account the effective number of symbols, Hebrew appears to be the most efficient of the languages and writing systems in the databases.
+            Hebrew emerges as the shortest among the languages employing alphabetic and abjad writing systems,
+            the only shorter being Chinese and Japanese which use logographic scripts, Korean in the syllabic Hangul script, and Amharic in the Ge'ez script, which is an abugida.
+            Relative to English, a corresponding Hebrew sentence will be a quarter shorter.
+            When taking into account the effective number of symbols, Hebrew appears to be the most orthographically efficient of the language writing systems in the datasets.
             The results below can be reproduced using the code in <a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">Google Colab</a>
             (<a id="data_trans" href>JSON file for download</a>).
         </p>
@@ -71,7 +71,7 @@
 
     <div class="refs">
         <blockquote>Ajinkya Kulkarni, <a href="https://hal.science/hal-04702210">TED parallel corpus</a> (<a href="https://github.com/ajinkyakulkarni14/TED-Multilingual-Parallel-Corpus">data</a>) (2015)</blockquote>
-        <blockquote>Nils Reimers and Iryna Gurevych, <a href="https://arxiv.org/abs/2004.09813">Making monolingual sentence embeddings multilingual using knowledge distillation</a>, (<a href="https://huggingface.co/datasets/wecover/OPUS_TED2020">data</a>) Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (2020)</blockquote>
+        <blockquote>Nils Reimers and Iryna Gurevych, <a href="https://arxiv.org/abs/2004.09813">Making monolingual sentence embeddings multilingual using knowledge distillation</a>, (<a href="https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/datasets/parallel-sentences.tsv.gz">data</a>) Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (2020)</blockquote>
     </div>
     <script>
         make_footer()

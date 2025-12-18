@@ -150,6 +150,10 @@ article {
     z-index: 100;
 }
 
+.nikud {
+    translate: .1em;
+}
+
 @keyframes reveal {
     100% {visibility: visible}
 }

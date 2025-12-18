@@ -44,18 +44,20 @@ function reverse(part) {
         span.style.setProperty('--y', from.y - to.y + 'px')
         reverse_index++
         span.classList.add('move')
-    } else
+    } else {
         span.classList.add('reveal')
+        if (span.textContent.match(/\p{M}/u))
+            span.classList.add('nikud')
+    }
     span.addEventListener('animationend', scroll_into_view)
     index++
-    let t
+    let t = 0
     if (index < spans.length) {
-        if (span.textContent)
-            t = part_times_ms[part][1]
-        else {
+        if (!span.textContent) {
             part++
             t = part_times_ms[part][0] - performance.now() + start_time
-        }
+        } else if (!span.textContent.match(/\p{M}/u))
+            t = part_times_ms[part][1]
         setTimeout(reverse, t, part)
     }
 }

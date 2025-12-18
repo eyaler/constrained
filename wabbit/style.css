@@ -43,6 +43,16 @@ article {
     }
 }
 
+#blobs {
+    inset: 0;
+    mix-blend-mode: screen;
+    overflow: clip;
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+    z-index: 100;
+}
+
 :where(#blobs) > div {
     animation: infinite alternate ease-in-out move_morph;
     border-radius: 50%;
@@ -138,16 +148,6 @@ article {
 .move {
     animation: var(--anim_dur) move;
     visibility: visible !important;
-}
-
-#blobs {
-    inset: 0;
-    mix-blend-mode: screen;
-    overflow: clip;
-    pointer-events: none;
-    position: absolute;
-    visibility: hidden;
-    z-index: 100;
 }
 
 .nikud {

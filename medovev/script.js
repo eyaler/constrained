@@ -54,7 +54,16 @@ function check_bio(text) {
     return true
 }
 
-function update(text) {
+function before_unload_handler(event) {
+    event.preventDefault()
+}
+
+function update(text, protect) {
+    if (text && protect)
+        addEventListener('beforeunload', before_unload_handler)
+    else
+        removeEventListener('beforeunload', before_unload_handler)
+
     text = text.match(/^\s*/)[0] + new DOMParser().parseFromString(text.replaceAll('<', '\uff1c'), 'text/html').body.textContent.replaceAll('<', '\uff1c')
     editing.value = text.replaceAll('\uff1c', '<')
 

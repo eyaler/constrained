@@ -162,7 +162,8 @@ author_pages_folder = author_pages_folder.replace(/^[./]+|[./]+$/g, '')
 
 
 function get_lang() {
-    return location.search.slice(1) in ui ? location.search.slice(1) : Object.keys(ui)[0]
+    const lang = location.search.slice(1).split('&')[0]
+    return lang in ui ? lang : Object.keys(ui)[0]
 }
 
 
@@ -498,7 +499,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     if (is_mobile)
         index_title = index_title.split(' ').slice(0, lang ? 1 : 2).join(' ')
     const url = page2url('.', lang, page)
-    const parent = new URL(url.split('?')[0] + '/..', location).href
+    const parent = new URL('..', new URL(url, location)).href
     const parent_title = new URL(url, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
     const nav = document.createElement('nav')
     if (ui[lang].dir && ui[lang].dir != document.documentElement.dir)
@@ -537,6 +538,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         document.body.appendChild(nav)
     if (nav_only)
         return titles.label
+
 
     // header:
 
@@ -801,6 +803,11 @@ function show_hide_cursor(event_or_elem) {
     elem.classList.remove('show_cursor')
     elem.offsetWidth  // Restart animation. See: https://css-tricks.com/restart-css-animation/
     elem.classList.add('show_cursor')
+}
+
+
+function remove_diacritics(s) {
+    return s.replace(/[\u034f\u0591-\u05bd\u05bf-\u05c9\u200c\u200d]/g, '')
 }
 
 

@@ -166,7 +166,7 @@
 
         anagrams = anagrams.trim().split('\n').filter(anagram => anagram.split(',')[0].trim().length == anagram.split(',')[1].trim().length)
         console.log(anagrams.length, new Set(anagrams.map(x => x.split('').toSorted())).size)
-        const match = location.search.slice(1).match(/^\d+$/)?.[0]
+        const match = location.search.slice(1).match(/(?<=^|&)\d+$/)?.[0]
         let index = ((match ?? localStorage['tarefet']) | 0) % anagrams.length
 
         let [values, answer] = anagrams[index].split(',')

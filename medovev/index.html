@@ -25,8 +25,8 @@
             <span id="pangram"></span>
         </span>
         <span id="buttons" class="border">
-            <button onclick="navigator.clipboard.writeText(editing.value)" title="Copy">העתק</button>
-            <button id="share" onclick="const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + editing.value); navigator.share?.({url: url, text: editing.value, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)" title="Share">שתף</button>
+            <button onclick="copy(event.ctrlKey || event.metaKey || event.button == 1)" onauxclick="copy(true)" title="Copy (+Ctrl to remove diacritics)">העתק</button>
+            <button id="share_button" onclick="share(event.ctrlKey || event.metaKey || event.button == 1)" onauxclick="share(true)" title="Share (+Ctrl to remove diacritics)">שתף</button>
         </span>
     </div>
     <script>

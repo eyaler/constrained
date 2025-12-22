@@ -4,12 +4,6 @@
 
 new ResizeObserver(() => container.style.height = editing.offsetHeight + 'px').observe(editing)
 
-if (!navigator.share) {
-    share.classList.add('unsupported')
-    share.textContent = 'העתק קישור לשיתוף'
-    share.title = 'Copy shareable link'
-}
-
 function process(text, perfect) {
     let normalized = ''
     const positions = {}
@@ -111,6 +105,27 @@ function update(text, protect) {
     palindrome.textContent = is_palindrome
     palindrome.classList.toggle('bio', bio)
     pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match('[א-ת]') ? 'פנגרמה מושלמת (עברית)' : ''
+}
+
+function copy(remove) {
+    let text = editing.value
+    if (remove)
+        text = remove_diacritics(text)
+    navigator.clipboard.writeText(text)
+}
+
+function share(remove) {
+    let text = editing.value
+    if (remove)
+        text = remove_diacritics(text)
+    const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + text)
+    navigator.share?.({url, text, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)
+}
+
+if (!navigator.share) {
+    share_button.classList.add('unsupported')
+    share_button.textContent = 'העתק קישור לשיתוף'
+    share_button.title = share_button.title.replace('Share', 'Copy shareable link')
 }
 
 editing.addEventListener('scroll', () => {

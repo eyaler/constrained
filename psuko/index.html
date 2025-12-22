@@ -108,7 +108,7 @@
             document.querySelectorAll('.nikud').forEach(event => {
                 text = event.dataset.sort
                 if (!nikud.checked)
-                    text = text.replace(/[\u05be]/g, ' ').replace(/[\u0591-\u05c9\u034f\u200c\u200d]/g, '')
+                    text = remove_diacritics(text.replace(/[\u05be]/g, ' '))
                 event.innerHTML = text
             })
         }

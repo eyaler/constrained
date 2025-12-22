@@ -269,7 +269,7 @@ function page2url(page, lang, current, hash) {
     current ??= get_page()
     lang ??= get_lang()
     let url = (page == '/' ? '.' : page) + (page.includes('.') || page.endsWith('/') ? '' : '.html') + (lang && '?' + lang) + (hash ? '#' + hash.replace(/^#/, '') : '')
-    if (current.match(/.\//) || author_pages_folder && decodeURI(location.pathname).includes('/' + author_pages_folder + '/'))
+    if (current.match(/.\//) || author_pages_folder && decodeURI(location.pathname).includes(`/${author_pages_folder}/`))
         url = '../' + url
     return url
 }
@@ -497,9 +497,9 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const is_mobile = matchMedia('(max-width: 480px), (max-height: 480px)').matches
     if (is_mobile)
         index_title = index_title.split(' ').slice(0, lang ? 1 : 2).join(' ')
-    const base = page2url('.', lang, page)
-    const parent = new URL(base + '/..', location).href
-    const parent_title = new URL(base, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
+    const url = page2url('.', lang, page)
+    const parent = new URL(url.split('?')[0] + '/..', location).href
+    const parent_title = new URL(url, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
     const nav = document.createElement('nav')
     if (ui[lang].dir && ui[lang].dir != document.documentElement.dir)
         nav.dir = ui[lang].dir
@@ -511,7 +511,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         add_nav_element(nav, parent_title ? '..' : '', bdi, 'back', diff, shortcuts.back)
         keywords = all_keywords
     } else {
-        add_nav_element(nav, base, index_title, 'back', -diff, shortcuts.back)
+        add_nav_element(nav, url, index_title, 'back', -diff, shortcuts.back)
         keywords = reorder(pages[page].kw, lang, reverse_issues_kw)
     }
 

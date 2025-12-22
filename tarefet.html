@@ -3,11 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>טַרֶפֶת אותיות</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=block" rel="stylesheet">
+    <script src="pages.js"></script>
+    <meta property="og:description" content="טַרֶפֶת אותיות">  <!-- og:description is required for WhatsApp to show og:image -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
     <style>
+        nav-wrapper {
+            --fg: rgb(var(--fg_rgb));
+            color: var(--fg);
+            display: block;
+            font-size: var(--font_size);
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: var(--letter_spacing);
+            padding-inline: var(--main_margin);
+            -webkit-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+
         body {
             font-family: Alef, sans-serif;
             margin: 0;
@@ -31,6 +46,7 @@
 
         header {
             box-sizing: border-box;
+            margin-top: 2rem;
             padding-inline: 1em;
             position: absolute;
             text-align: center;
@@ -63,11 +79,25 @@
     </style>
 </head>
 <body>
+    <script>
+        if (document.referrer.startsWith(location.href.split('/').slice(0, -2).join('/'))) {
+            customElements.define('nav-wrapper', class extends HTMLElement {})
+            const wrapper = document.body.appendChild(document.createElement('nav-wrapper'))
+            wrapper.classList.add('root')
+            const shadow = wrapper.attachShadow({mode: 'open'})
+            const link = shadow.appendChild(document.createElement('link'))
+            link.rel = 'stylesheet'
+            link.href = 'style.css'
+            make_header(shadow)
+        }
+    </script>
+
     <header>
         <h1>טַרֶפֶת אותיות</h1>
         <h2>יעל צברי ואיל יהוה גרוּס</h2>
         <p><b>הוראות:</b> סדרו מחדש את המלבנים כך שייווצר צירוף שגור בן שתי מילים</p>
     </header>
+
     <script>
         'use strict'
 

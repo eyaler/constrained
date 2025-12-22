@@ -49,8 +49,8 @@ const pages = {
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
     "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["combinatorial", "hebrew cheatery", "new constraint"]},
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self-referral", "software", "visual"]},
-    "harh/": {title: "הַרְח", alt: "Harḥ", kw: ["poem"]},
 
+    "harh/": {title: "הַרְח", alt: "Harḥ", kw: ["poem"]},
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["software", "visual"]},
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["generative", "live code", "poem", "software", "visual"]},
     "otogram": {title: "אות־וֹגרמה", alt: "OT‑o‑gram: Letter-letter autogram", kw: ["combinatorial", "combined forms", "pangram", "record", "self-referral", "software"]},
@@ -58,6 +58,7 @@ const pages = {
     "barosh/": {title: "בראש יתברא / יתד בקלשוני", alt: "BaRosh Yitbare / Yated BeKilshoni", kw: ["biblical", "combinatorial", "data available", "interactive", "live code", "record", "software", "visual"]},
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "data available", "software"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "new constraint", "software"], with: "yaeltsabari"},
+    "tarefet": {title: "טַרֶפֶת אותיות", alt: "Tarefet (anagram game)", kw: ["interactive"], with: "yaeltsabari"},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
     "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "software", "visual"], wip: true},
@@ -500,6 +501,8 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const parent = new URL(base + '/..', location).href
     const parent_title = new URL(base, location).href == parent ? '' : decodeURI(parent).split('/').slice(-2)[0]
     const nav = document.createElement('nav')
+    if (ui[lang].dir && ui[lang].dir != document.documentElement.dir)
+        nav.dir = ui[lang].dir
     let diff = get_width(index_title, nav) - get_width(parent_title, nav)
     let span, back, keywords, trans
     if (page == '/') {
@@ -528,9 +531,12 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     if (alt_langs.length)
         trans = add_nav_element(nav, page2url(page, alt_langs[0], page, location.hash), ui[alt_langs[0]].lang.slice(0, is_mobile ? 2 : undefined), 'trans')
 
-    document.body.appendChild(nav)
+    if (nav_only instanceof Node)
+        nav_only.appendChild(nav)
+    else
+        document.body.appendChild(nav)
     if (nav_only)
-        return
+        return titles.label
 
     // header:
 
@@ -626,8 +632,6 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             h1.title = titles.alt
     }
     header.appendChild(h1)
-    if (ui[lang].dir && ui[lang].dir != document.documentElement.dir)
-        nav.dir = ui[lang].dir
     const desc = []
     if (en_title)
         desc.push(en_title)
@@ -637,7 +641,6 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             desc.push(current_authors)
     }
     document.currentScript.parentElement.appendChild(header)
-
 
     if (desc.length) {
         const meta = document.head.appendChild(document.createElement('meta'))

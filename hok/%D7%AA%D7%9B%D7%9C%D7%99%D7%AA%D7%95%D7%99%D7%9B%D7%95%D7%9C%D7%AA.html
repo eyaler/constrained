@@ -232,8 +232,8 @@
             elem.addEventListener('keydown', event => {
                 if (event.key == 'Enter'
                     || (event.key == 'ArrowDown' || event.key == 'ArrowUp') && !event.ctrlKey && !event.metaKey
-                    || (event.key == 'ArrowLeft' || event.key == ' ' && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
-                    || (event.key == 'ArrowRight' || event.key == 'Backspace') && !elem.selectionEnd) {
+                    || (event.key == 'ArrowLeft' || event.key == ' ' && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
+                    || (event.key == 'ArrowRight' || event.key == 'Backspace' && i) && !elem.selectionEnd) {
                     event.preventDefault()
                     let step = 1
                     if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))

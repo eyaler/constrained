@@ -25,7 +25,7 @@
             width: 10em;
         }
 
-        input[type="text"] {
+        .epipangram > input {
             background: inherit;
             border: none;
             border-bottom: 1px var(--fg_dim) solid;
@@ -158,16 +158,16 @@
     <div id="timer" class="narrow_poem"><span id="min"></span>:<span id="sec"></span></div>
     <div class="tombs">
         <div class="epipangram">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
         </div>
         <div class="epipangram">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
-            <input type="text" autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
+            <input autocomplete="off" autocorrect="off" maxlength="9" spellcheck="false">
         </div>
     </div>
     <p id="p">&ZeroWidthSpace;</p>
@@ -175,11 +175,12 @@
     <script>
         const max_m = 14
         let remaining = +(localStorage.hok_timer ?? max_m * 60)
+
         let m = remaining / 60 | 0
         let s = remaining % 60
 
         let deadline, solved
-        const inputs = document.querySelectorAll('input[type=text]')
+        const inputs = document.querySelectorAll('.epipangram > input')
 
         let wordlist, words = []
 
@@ -204,12 +205,12 @@
             const new_m = remaining / 60 | 0
             const new_s = remaining % 60
             if (new_m != m || new_s != s) {
+                localStorage.hok_timer = remaining
                 if (enforce_deadline())
                     return
                 m = new_m
                 s = new_s
                 update_timer()
-                localStorage.hok_timer = remaining
             }
             if (solved) {
                 timer.style.color = 'inherit'
@@ -223,6 +224,7 @@
             } else
                 requestAnimationFrame(tick)
         }
+
         if (m == max_m)
             new IntersectionObserver((e, o) => {if (e[0].isIntersecting) {o.unobserve(e[0].target); tick()}}).observe(timer)
         else
@@ -231,7 +233,7 @@
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', event => {
                 if (event.key == 'Enter'
-                    || (event.key == 'ArrowDown' || event.key == 'ArrowUp') && !event.ctrlKey && !event.metaKey
+                    || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.ctrlKey && !event.metaKey
                     || (event.key == 'ArrowLeft' || event.key == ' ' && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
                     || (event.key == 'ArrowRight' || event.key == 'Backspace' && i) && !elem.selectionEnd) {
                     event.preventDefault()
@@ -240,9 +242,9 @@
                         step = -1
                     const line = inputs[(i+step+inputs.length) % inputs.length]
                     line.focus()
-                    if (event.key == ' ')
+                    if (['ArrowLeft', ' '].includes(event.key))
                         line.selectionEnd = 0
-                    else if (event.key == 'Backspace')
+                    else if (['ArrowRight', 'Backspace'].includes(event.key))
                         line.selectionStart = line.value.length
                 }
             })

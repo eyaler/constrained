@@ -772,7 +772,7 @@ li:not(.mono *) {
 
 @counter-style pad {
     system: extends decimal;
-    pad: 2 '\00a0';
+    pad: 2 '\a0';
     suffix: ': ';
 }
 

@@ -302,12 +302,12 @@ function clear(elem) {
   clearTimeout(timeout_id)
   if (elem?.dataset.text) {
     elem.dataset.prev_text = elem.dataset.text
-    elem.removeAttribute('data-text')
+    delete elem.dataset.text
   }
   ;[...me.children].forEach(m => {
     if (m.dataset.text) {
       m.dataset.prev_text = m.dataset.text
-      m.removeAttribute('data-text')
+      delete m.dataset.text
     }
   })
 }

@@ -1,0 +1,44 @@
+@font-face {
+    font-display: block;
+    font-family: Alef;
+    src: url('../fonts/Alef-Regular.woff2');
+}
+
+* {
+    font-family: Alef;
+}
+
+.line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.word {
+    width: min-content;
+    max-width: 100%;
+}
+
+.word > input {
+    box-sizing: border-box;
+    min-width: 5em;
+    width: 100%;
+}
+
+.word > div {
+    width: max-content;
+    max-width: 100%;
+}
+
+output {
+    display: block;
+    margin-block: 2em;
+    white-space: pre-line;
+}
+
+main:not(:has(.line)) ~ button,
+main:not(:has(select)) ~ button:is([title='Erase all'], [title='Copy input']),
+output:empty ~ button[title^=Copy] {
+    display: none;
+}

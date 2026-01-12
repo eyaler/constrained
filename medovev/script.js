@@ -114,6 +114,13 @@ function copy(remove) {
     navigator.clipboard.writeText(text)
 }
 
+editing.addEventListener('copy', event => {  // With no selection - Copy all
+    if (editing.selectionStart == editing.selectionEnd) {
+        event.preventDefault()
+        copy()
+    }
+})
+
 function share(remove) {
     let text = editing.value
     if (remove)

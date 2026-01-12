@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="../fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <meta property="og:description" content="כתיבה אילוצית עברית">  <!-- og:description is required for WhatsApp to show og:image -->
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <main id="main"></main>
+    <button onclick="main.replaceChildren(); add_first_word()" title="Erase all">מחק הכול</button>
+    <button onclick="navigator.clipboard.readText().then(text => {if (paste_input(text, main, true)) main.querySelector('.word > input').focus()})" title="Erase and paste input">מחק והדבק קלט</button>
+    <button onclick="navigator.clipboard.writeText(join('input'))" title="Copy input">העתק קלט</button>
+    <output id="output" contenteditable="plaintext-only"></output>
+    <button onclick="navigator.clipboard.writeText(output.textContent)" title="Copy output">העתק פלט</button>
+    <script src="script.js"></script>
+</body>
+</html>

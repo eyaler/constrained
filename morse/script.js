@@ -171,29 +171,32 @@ function add_word(line, current) {
         } else if (event.key == 'Enter'
             || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.ctrlKey && !event.metaKey
             || ['ArrowLeft', ' '].includes(event.key) && input.selectionStart == input.value.length
-            || (event.key == 'ArrowRight' || event.key == 'Backspace' && line.previousElementSibling) && !input.selectionEnd) {
+            || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd) {
             event.preventDefault()
-
+            let elem
             if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
-                if (event.key == 'ArrowUp')
-                    (line.previousElementSibling || main.lastChild).firstChild.firstChild.focus()
-                else if (!word.previousElementSibling)
-                    (line.previousElementSibling || main.lastChild).lastChild.firstChild.focus()
-                else {
-                    word.previousElementSibling.firstChild.focus()
-                }
+                if (event.key == 'ArrowUp' || !word.previousElementSibling) {
+                    elem = line.previousElementSibling || main.lastChild
+                    if (event.key == 'ArrowUp')
+                        elem = elem.firstChild
+                    else
+                        elem = elem.lastChild
+                } else
+                    elem = word.previousElementSibling
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
-                if (event.key == 'Enter' && line.firstChild.firstChild.value)
+                const line_has_word = line.firstChild.firstChild.value
+                if (event.key == 'Enter' && line_has_word)
                     add_line(line)
-                if (event.key != 'Enter' || line.firstChild.firstChild.value)
-                    (line.nextElementSibling || main.firstChild).firstChild.firstChild.focus()
+                if (event.key != 'Enter' || line_has_word)
+                   elem = (line.nextElementSibling || main.firstChild).firstChild
             } else {
                 if (event.key == ' ' && input.value)
                     add_word(line, word)
                 if (event.key != ' ' || input.value)
-                    (word.nextElementSibling || main.firstChild.firstChild).firstChild.focus()
+                    elem = word.nextElementSibling || main.firstChild.firstChild
             }
 
+            elem?.firstChild.focus()
             if (['ArrowLeft', ' '].includes(event.key))
                 document.activeElement.selectionEnd = 0
             else if (['ArrowRight', 'Backspace'].includes(event.key))

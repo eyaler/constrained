@@ -266,7 +266,7 @@ function add_first_word() {
 fetch('morse.json').then(response => response.json()).then(morse_words_types => {
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
 
-    function add_words(char, new_words) {
+    function extend_dict(char, new_words) {
          morse_words[char] = morse_words[char].concat(new_words.filter(word => !morse_words[char].includes(word)))
     }
 
@@ -282,13 +282,13 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == '-') {
                     if (add_prefix_article)
-                        add_words(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
+                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
                     if (add_prefix_prep)
-                        add_words(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
+                        extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
-                    add_words(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
-                    add_words(char, words.filter(word => word.match(/^[א-טכ-ת]\u05bc?\u05b0/)).map(word => 'לִ' + word))
-                    add_words(char, words.filter(word => word.startsWith('יְ')).map(word => 'לִי' + word.slice(1)))
+                    extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
+                    extend_dict(char, words.filter(word => word.match(/^[א-טכ-ת]\u05bc?\u05b0/)).map(word => 'לִ' + word))
+                    extend_dict(char, words.filter(word => word.startsWith('יְ')).map(word => 'לִי' + word.slice(1)))
                 }
             }
         }

@@ -214,7 +214,7 @@ function add_word(line, current) {
             delete input.dataset.skip_change
             return
         }
-        const chars = input.value.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ').split('').map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
+        const chars = input.value.toLowerCase().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ').split('').map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
         chars.forEach((char, i) => {
             const current = selectors.children[i]
             if (current?.name == char)

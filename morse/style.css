@@ -23,6 +23,7 @@
 .word > input {
     box-sizing: border-box;
     min-width: 5em;
+    unicode-bidi: bidi-override;
     width: 100%;
 }
 

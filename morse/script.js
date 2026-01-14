@@ -6,7 +6,7 @@ const single_color = 'white'
 const rarest_color = '#ff9999'
 const rare_color = '#ffcccc'
 const limit = 0
-const punct = ',.?!'
+const punct = ',.'  // Overrides Morse
 const punct_regex = new RegExp(` (?=[${punct}])`, 'g')
 
 const morse = {
@@ -78,10 +78,6 @@ const morse = {
 Object.entries(morse).filter(([k, v]) => v.match(/[^·-]/)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))
 const selects = {}
-punct.split('').forEach(char => {
-    selects[char] = document.createElement('select')
-    selects[char].appendChild(document.createElement('option')).textContent = char
-})
 let min_count = Infinity
 let max_count = 0
 
@@ -173,6 +169,7 @@ function add_word(line, current) {
             || ['ArrowLeft', ' '].includes(event.key) && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd) {
             event.preventDefault()
+            const line = word.parentElement
             let elem
             if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
                 if (event.key == 'ArrowUp' || !word.previousElementSibling) {
@@ -185,8 +182,16 @@ function add_word(line, current) {
                     elem = word.previousElementSibling
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
                 const line_has_word = line.firstChild.firstChild.value
-                if (event.key == 'Enter' && line_has_word)
-                    add_line(line)
+                if (event.key == 'Enter' && line_has_word) {
+                    const new_line = add_line(line)
+                    if (!event.shiftKey) {
+                        let line_words = [...line.children]
+                        line_words = line_words.slice(line_words.indexOf(word) + 1)
+                        if (line_words.length)
+                            new_line.replaceChildren(...line_words)
+                        main.dispatchEvent(new Event('change'))
+                    }
+                }
                 if (event.key != 'Enter' || line_has_word)
                    elem = (line.nextElementSibling || main.firstChild).firstChild
             } else {
@@ -222,9 +227,10 @@ function add_word(line, current) {
                 select.style.backgroundColor = rarest_color
             else if (selects[char].options.length <= rare_count && min_count <= rarest_count && max_count > rare_count)
                 select.style.backgroundColor = rare_color
+
             select.addEventListener('keydown', event => {
                 if (event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
-                    add_word(line)
+                    add_word(word.parentElement)
                 else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                     event.preventDefault()
                     const all_selectors = main.querySelectorAll('select')
@@ -304,5 +310,11 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         selects[char] = document.createElement('select')
         morse_words[char].forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replace(/ /g, '\u05be'))
     })
+
+    punct.split('').forEach(char => {
+        selects[char] = document.createElement('select')
+        selects[char].appendChild(document.createElement('option')).textContent = char
+    })
+
     add_first_word()
 })

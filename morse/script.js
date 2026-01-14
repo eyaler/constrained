@@ -161,6 +161,7 @@ function add_word(line, current) {
     const selectors = word.appendChild(document.createElement('div'))
 
     input.addEventListener('keydown', event => {
+        const line = word.parentElement
         if (input.value && event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
@@ -169,7 +170,6 @@ function add_word(line, current) {
             || ['ArrowLeft', ' '].includes(event.key) && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd) {
             event.preventDefault()
-            const line = word.parentElement
             let elem
             if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
                 if (event.key == 'ArrowUp' || !word.previousElementSibling) {
@@ -182,14 +182,21 @@ function add_word(line, current) {
                     elem = word.previousElementSibling
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
                 const line_has_word = line.firstChild.firstChild.value
-                if (event.key == 'Enter' && line_has_word) {
-                    const new_line = add_line(line)
-                    if (!event.shiftKey) {
-                        let line_words = [...line.children]
-                        line_words = line_words.slice(line_words.indexOf(word) + 1)
-                        if (line_words.length)
-                            new_line.replaceChildren(...line_words)
-                        main.dispatchEvent(new Event('change'))
+                if (event.key == 'Enter') {
+                    if (event.ctrlKey || event.metaKey) {
+                        input.dispatchEvent(new Event('change', {bubbles: true}))
+                        return
+                    }
+                    if (line_has_word) {
+                        const new_line = add_line(line)
+                        if (!event.shiftKey) {
+                            let line_words = [...line.children]
+                            line_words = line_words.slice(line_words.indexOf(word) + 1)
+                            if (line_words.length) {
+                                new_line.replaceChildren(...line_words)
+                                main.dispatchEvent(new Event('change'))
+                            }
+                        }
                     }
                 }
                 if (event.key != 'Enter' || line_has_word)
@@ -229,8 +236,9 @@ function add_word(line, current) {
                 select.style.backgroundColor = rare_color
 
             select.addEventListener('keydown', event => {
+                const line = word.parentElement
                 if (event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
-                    add_word(word.parentElement)
+                    add_word(line)
                 else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                     event.preventDefault()
                     const all_selectors = main.querySelectorAll('select')
@@ -252,6 +260,7 @@ function add_word(line, current) {
 
     input.addEventListener('blur', () => {
         if (main.querySelectorAll('.word').length > 1 && !input.value) {
+            const line = word.parentElement
             word.remove()
             if (!line.childElementCount)
                 line.remove()

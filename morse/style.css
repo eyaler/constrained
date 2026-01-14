@@ -8,11 +8,21 @@
     font-family: Alef;
 }
 
+#buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+#buttons:not(:has(~ main .line)) {
+    display: none;
+}
+
 .line {
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
-    margin-bottom: 2em;
+    margin-block: 2em;
 }
 
 .word {
@@ -34,12 +44,6 @@
 
 output {
     display: block;
-    margin-block: 2em;
+    margin-top: 2em;
     white-space: pre-line;
-}
-
-main:not(:has(.line)) ~ button,
-main:not(:has(select)) ~ button:is([title='Erase all'], [title='Copy input']),
-output:empty ~ button[title^=Copy] {
-    display: none;
 }

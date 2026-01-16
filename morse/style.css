@@ -14,7 +14,7 @@
     gap: 1em;
 }
 
-#buttons:not(:has(~ main .line)) {
+#buttons:not(:has(~ main .word)) {
     display: none;
 }
 

@@ -2,12 +2,20 @@ const add_prefix_article = true
 const add_prefix_prep = true
 const rarest_count = 1000
 const rare_count = 2000
+const error_color = 'red'
 const single_color = 'white'
 const rarest_color = '#ff9999'
 const rare_color = '#ffcccc'
 const limit = 0
-const punct = ',.'  // Overrides Morse
-const punct_regex = new RegExp(` (?=[${punct}])`, 'g')
+const special = ',.*'  // Overrides Morse
+const bad = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
+const code_regex = RegExp(`[${bad}·-]+`, 'g')
+const noncode_regex = RegExp(`[^\\s${special}${bad}·-]+`, 'g')
+const nontext_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
+const punct = special.replace('*', '')
+const punct_regex = RegExp(` (?=[${punct}])`, 'g')
+const nonpunct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
+const split_regex = RegExp(`\\s|(?=[${punct}])|(?<=[${punct}])`, 'g')
 
 const morse = {
     'a': '·-',
@@ -115,10 +123,29 @@ main.addEventListener('copy', event => {  // With no selection - Copy all
     }
 })
 
-function paste_input(text, word, allow_single) {
+function fix_whitespace(text) {
+    return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
+}
+
+function paste_output(output_text) {
+    output_text = fix_whitespace(output_text)
+    paste_input(output_text.replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, ''))
+    output_words = output_text.replace(nontext_regex, '').split(split_regex)
+    main.querySelectorAll('select').forEach((select, i) => {
+        if (![...select.options].some(option => option.value == output_words[i])) {
+            select.prepend(document.createElement('option'))
+            select.options[0].textContent = output_words[i]
+        }
+        select.value = output_words[i]
+    })
+
+    output.textContent = output_text
+}
+
+function paste_input(text, word=main, allow_single=true) {
     if (word == output || !main.querySelector('.word'))
         return
-    text = text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*[\n\r]+\s*/g, '\n')
+    text = fix_whitespace(text)
     if (!text.match(/\S\s\S/) && !allow_single)
         return
     while (!word.classList.contains('word'))
@@ -144,7 +171,7 @@ function paste_input(text, word, allow_single) {
 }
 
 document.addEventListener('paste', event => {
-    if (paste_input(event.clipboardData.getData('text/plain'), document.activeElement))
+    if (paste_input(event.clipboardData.getData('text/plain'), document.activeElement, false))
         event.preventDefault()
 })
 
@@ -279,11 +306,13 @@ function add_word(line, current) {
                 return
             const select = selects[char].cloneNode(true)
             select.name = char
-            if (selects[char].options.length == 1)
+            if (char == '*')
+                select.style.backgroundColor = error_color
+            else if (selects[char].length == 1)
                 select.style.backgroundColor = single_color
-            else if (selects[char].options.length <= rarest_count && max_count > rarest_count)
+            else if (selects[char].length <= rarest_count && max_count > rarest_count)
                 select.style.backgroundColor = rarest_color
-            else if (selects[char].options.length <= rare_count && min_count <= rarest_count && max_count > rare_count)
+            else if (selects[char].length <= rare_count && min_count <= rarest_count && max_count > rare_count)
                 select.style.backgroundColor = rare_color
 
             select.addEventListener('keydown', event => {
@@ -296,7 +325,7 @@ function add_word(line, current) {
                     all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
                 } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                     event.preventDefault()
-                    select.selectedIndex = (select.selectedIndex + (event.key == 'ArrowDown' ? 1 : -1) + select.options.length) % select.options.length
+                    select.selectedIndex = (select.selectedIndex + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length
                     select.dispatchEvent(new Event('change', {bubbles: true}))
                 }
             })
@@ -364,7 +393,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         morse_words[char].forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replace(/ /g, '\u05be'))
     })
 
-    punct.split('').forEach(char => {
+    special.split('').forEach(char => {
         selects[char] = document.createElement('select')
         selects[char].appendChild(document.createElement('option')).textContent = char
     })

@@ -208,7 +208,7 @@ function add_word(line, current) {
         if (input.value && event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
-        } else if (event.key == 'End' || event.key == 'Home' && !is_alt) || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl)
+        } else if (event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl)
             if (['End', 'ArrowDown'].includes(event.key)) {
                 if (event.key == 'End' && is_ctrl)
                     line = main.lastChild
@@ -335,7 +335,7 @@ function add_word(line, current) {
                 const is_ctrl = event.ctrlKey || event.metaKey
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
-                if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt))
+                if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt)
                     select.classList.remove('default')
                 else if (!is_alt)
                     if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)

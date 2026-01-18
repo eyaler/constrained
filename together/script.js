@@ -221,7 +221,7 @@ for (const c of new Set(allowed_words.join(''))) {
 }
 
 addEventListener('keydown', event => {
-  if (event.key.includes('Arrow') || event.key == 'Tab') {
+  if ((event.key.includes('Arrow') || event.key == 'Tab' && !event.ctrlKey && !event.metaKey) && !event.altKey && !event.getModifierState?.('AltGraph')) {
     event.preventDefault()
     if (event.key == 'ArrowLeft')
       left_key = true
@@ -237,7 +237,7 @@ addEventListener('keydown', event => {
 })
 
 addEventListener('keyup', event => {
-  if (event.key.includes('Arrow'))
+  if (event.key.includes('Arrow') && !event.altKey && !event.getModifierState?.('AltGraph'))
     if (event.key == 'ArrowLeft')
       left_key = false
     else if (event.key == 'ArrowRight')

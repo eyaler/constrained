@@ -202,28 +202,30 @@ function add_word(line, current) {
     const selectors = word.appendChild(document.createElement('div'))
 
     input.addEventListener('keydown', event => {
+        const is_ctrl = event.ctrlKey || event.metaKey
+        const is_alt = event.altKey || event.getModifierState?.('AltGraph')
         let line = word.parentElement
-        if (input.value && event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !input.nextElementSibling.firstChild) {
+        if (input.value && event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
-        } else if (['End', 'Home'].includes(event.key) || ['ArrowDown', 'ArrowUp'].includes(event.key) && (event.ctrlKey || event.metaKey))
+        } else if (event.key == 'End' || event.key == 'Home' && !is_alt) || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl)
             if (['End', 'ArrowDown'].includes(event.key)) {
-                if (event.key == 'End' && (event.ctrlKey || event.metaKey))
+                if (event.key == 'End' && is_ctrl)
                     line = main.lastChild
                 const elem = line.lastChild.firstChild
                 elem.focus()
                 elem.selectionStart = elem.value.length
             } else {
-                if (event.key == 'Home' && (event.ctrlKey || event.metaKey))
+                if (event.key == 'Home' && is_ctrl)
                     line = main.firstChild
                 const elem = line.firstChild.firstChild
                 elem.focus()
                 elem.selectionEnd = 0
             }
         else if (event.key == 'Enter'
-            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.ctrlKey && !event.metaKey
-            || ['ArrowLeft', ' '].includes(event.key) && input.selectionStart == input.value.length
-            || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
+            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !is_ctrl
+            || (event.key == 'ArrowLeft' && !is_alt || event.key == ' ') && input.selectionStart == input.value.length
+            || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) {
             event.preventDefault()
             let elem
@@ -259,7 +261,7 @@ function add_word(line, current) {
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
                 let cr
                 if (event.key == 'Enter')
-                    if (line_had_text && !event.ctrlKey && !event.metaKey) {
+                    if (line_had_text && !is_ctrl) {
                         const new_line = add_line(line)
                         if (!event.shiftKey) {
                             cr = input.selectionEnd || word.previousElementSibling
@@ -306,7 +308,7 @@ function add_word(line, current) {
             if (current?.name == char)
                 return
             const select = selects[char].cloneNode(true)
-            select.classList.add('reset')
+            select.classList.add('default')
             select.name = char
             if (char == '*')
                 select.style.backgroundColor = error_color
@@ -324,24 +326,29 @@ function add_word(line, current) {
                     options.forEach(opt => opt.defaultSelected = false)
                     option.defaultSelected = true
                 }
-                select.classList.remove('reset')
+                select.classList.remove('default')
             })
 
+            select.addEventListener('click', () => select.classList.remove('default'))
+
             select.addEventListener('keydown', event => {
+                const is_ctrl = event.ctrlKey || event.metaKey
+                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
-                if (['Enter', ' '].includes(event.key))
-                    select.classList.remove('reset')
-                else if (event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
-                    add_word(line)
-                else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
-                    event.preventDefault()
-                    const all_selectors = main.querySelectorAll('select')
-                    all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
-                } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
-                    event.preventDefault()
-                    select.selectedIndex = (select.selectedIndex + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length
-                    select.dispatchEvent(new Event('change', {bubbles: true}))
-                }
+                if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt))
+                    select.classList.remove('default')
+                else if (!is_alt)
+                    if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
+                        add_word(line)
+                    else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                        event.preventDefault()
+                        const all_selectors = main.querySelectorAll('select')
+                        all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
+                    } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                        event.preventDefault()
+                        select.selectedIndex = (select.selectedIndex + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length
+                        select.dispatchEvent(new Event('change', {bubbles: true}))
+                    }
             })
             if (current)
                 current.replaceWith(select)

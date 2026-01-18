@@ -42,7 +42,7 @@
     max-width: 100%;
 }
 
-.reset {
+.default:not(:has(:only-child)) {
     color: blue;
 }
 

@@ -233,10 +233,11 @@
 
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', event => {
+                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 if (event.key == 'Enter'
                     || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.ctrlKey && !event.metaKey
-                    || (event.key == 'ArrowLeft' || event.key == ' ' && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
-                    || (event.key == 'ArrowRight' || event.key == 'Backspace' && i) && !elem.selectionEnd) {
+                    || (event.key == 'ArrowLeft' && !is_alt || event.key == ' ' && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
+                    || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && i) && !elem.selectionEnd) {
                     event.preventDefault()
                     let step = 1
                     if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))

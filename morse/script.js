@@ -8,7 +8,6 @@ const rarest_color = '#ff9999'
 const rare_color = '#ffcccc'
 const limit = 0
 const special = ',.*'  // Overrides Morse
-const special_regex = RegExp(`^[${special}]$`)
 const split_regex = RegExp(`\\s|(?=[${special}])|(?<=[${special}])`, 'g')
 const bad = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
 const code_regex = RegExp(`[${bad}·-]+`, 'g')
@@ -130,8 +129,8 @@ function fix_whitespace(text) {
 
 function paste_output(output_text) {
     output_text = fix_whitespace(output_text)
-    paste_input(output_text.replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, ''))
-    output_words = output_text.replace(nontext_regex, '').split(split_regex).filter(word => word.match(/[\u05b4\u05b2\u05b7\u05b8]/) || word.match(special_regex))
+    paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, ''))
+    output_words = output_text.replace(nontext_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(option => option.value == output_words[i])) {
             select.prepend(document.createElement('option'))
@@ -141,6 +140,7 @@ function paste_output(output_text) {
     })
 
     output.textContent = output_text
+    focus_first_word()
 }
 
 function paste_input(text, word=main, allow_single=true) {
@@ -351,8 +351,13 @@ function add_line(current) {
     return line
 }
 
+function focus_first_word() {
+    main.querySelector('input').focus()
+}
+
 function add_first_word() {
-    add_line().firstChild.firstChild.focus()
+    add_line()
+    focus_first_word()
 }
 
 fetch('morse.json').then(response => response.json()).then(morse_words_types => {

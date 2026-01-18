@@ -12,10 +12,11 @@
 <body onload="document.body.style.visibility = 'visible'">
     <div id="buttons">
         <button onclick="main.replaceChildren(); main.dispatchEvent(new Event('change')); add_first_word()" title="Clear">נקה</button>
-        <button onclick="navigator.clipboard.readText().then(text => {if (paste_input(text)) main.querySelector('input').focus()})" title="Clear and paste input">נקה והדבק קלט</button>
-        <button onclick="navigator.clipboard.readText().then(text => {paste_output(text); main.querySelector('input').focus()})" title="Clear and paste output">נקה והדבק פלט</button>
+        <button onclick="navigator.clipboard.readText().then(text => {if (paste_input(text)) focus_first_word()})" title="Clear and paste input">נקה והדבק קלט</button>
+        <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste output">נקה והדבק פלט</button>
         <button onclick="navigator.clipboard.writeText(join('input'))" title="Copy input">העתק קלט</button>
         <button onclick="navigator.clipboard.writeText(output.textContent)" title="Copy output">העתק פלט</button>
+        <button onclick="paste_output(output.textContent)" title="Update input from output">עדכן קלט מפלט</button>
     </div>
     <main id="main"></main>
     <output id="output" contenteditable="plaintext-only"></output>

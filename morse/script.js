@@ -306,6 +306,7 @@ function add_word(line, current) {
             if (current?.name == char)
                 return
             const select = selects[char].cloneNode(true)
+            select.classList.add('reset')
             select.name = char
             if (char == '*')
                 select.style.backgroundColor = error_color
@@ -323,11 +324,14 @@ function add_word(line, current) {
                     options.forEach(opt => opt.defaultSelected = false)
                     option.defaultSelected = true
                 }
+                select.classList.remove('reset')
             })
 
             select.addEventListener('keydown', event => {
                 const line = word.parentElement
-                if (event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
+                if (['Enter', ' '].includes(event.key))
+                    select.classList.remove('reset')
+                else if (event.key == 'Tab' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && !event.getModifierState?.('AltGraph') && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                     add_word(line)
                 else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                     event.preventDefault()

@@ -137,8 +137,8 @@ function paste_output(output_text) {
             select.options[0].textContent = output_words[i]
         }
         select.value = output_words[i]
+        select.dispatchEvent(new Event('change'))
     })
-
     output.textContent = output_text
     focus_first_word()
 }

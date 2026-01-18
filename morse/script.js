@@ -132,7 +132,7 @@ function paste_output(output_text) {
     paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, ''))
     output_words = output_text.replace(nontext_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
-        if (![...select.options].some(option => option.value == output_words[i])) {
+        if (![...select.options].some(opt => opt.value == output_words[i])) {
             select.prepend(document.createElement('option'))
             select.options[0].textContent = output_words[i]
         }
@@ -315,6 +315,15 @@ function add_word(line, current) {
                 select.style.backgroundColor = rarest_color
             else if (selects[char].length <= rare_count && min_count <= rarest_count && max_count > rare_count)
                 select.style.backgroundColor = rare_color
+
+            select.addEventListener('change', () => {
+                const options = [...selects[select.name].options]
+                const option = options.find(opt => opt.value == select.value)
+                if (option) {
+                    options.forEach(opt => opt.defaultSelected = false)
+                    option.defaultSelected = true
+                }
+            })
 
             select.addEventListener('keydown', event => {
                 const line = word.parentElement

@@ -13,7 +13,7 @@ table {
     --tables_on: var(--on, var(--tables_fg));
     --tables_fg_dim: var(--fg_dim, GrayText);
     --tables_fg_verydim: var(--fg_verydim, Highlight);
-    --tables_fg_filter: var(--fg_filter, brightness());
+    --tables_fg_filter: var(--fg_filter, brightness());  /* No-op fallback */
     --tables_inverse_fg: var(--inverse_fg, var(--tables_fg_verydim));
     --tables_icon_dur: var(--icon_dur, .3s);
     --tables_frag_dur: var(--frag_dur, 7s);

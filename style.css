@@ -508,8 +508,8 @@ figcaption:where(:not(.images figure > *)) {
     margin-inline-start: calc((100% - var(--media_width)) / 2);
 }
 
-figure > figcaption + * {
-    margin-top: .5rem;
+figure > figcaption:not(:last-child) {
+    margin-bottom: .5rem;
 }
 
 .images figure img + figcaption {

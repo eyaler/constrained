@@ -94,7 +94,7 @@ function before_unload_handler(event) {
 }
 
 output.addEventListener('change', () => {
-    if (output.textContent)
+    if (output.textContent.trim())
         addEventListener('beforeunload', before_unload_handler)
     else
         removeEventListener('beforeunload', before_unload_handler)
@@ -127,7 +127,7 @@ function fix_whitespace(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
 }
 
-function paste_output(output_text) {
+function paste_output(output_text, protect=true) {
     output_text = fix_whitespace(output_text)
     paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, '').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)))
     output_words = output_text.replace(nontext_regex, '').split(split_regex)
@@ -145,6 +145,8 @@ function paste_output(output_text) {
     })
     output.textContent = output_text
     focus_first_word()
+    if (!protect)
+        removeEventListener('beforeunload', before_unload_handler)
 }
 
 function paste_input(text, word=main, allow_single=true) {
@@ -179,6 +181,16 @@ document.addEventListener('paste', event => {
     if (paste_input(event.clipboardData.getData('text/plain'), document.activeElement, false))
         event.preventDefault()
 })
+
+function share(text) {
+    const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + text)
+    navigator.share?.({url, text, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)
+}
+
+if (!navigator.share) {
+    share_button.textContent = 'העתק קישור לשיתוף'
+    share_button.title = share_button.title.replace('Share', 'Copy shareable link')
+}
 
 function add_dagesh(word) {
     if ('אהחערפ'.includes(word[0]))
@@ -431,4 +443,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     })
 
     add_first_word()
+    const hash = decodeURIComponent(location.hash.slice(1))
+    if (hash[0] == '\t' && hash.trim())
+        paste_output(hash.trim(), false)
 })

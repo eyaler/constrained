@@ -52,8 +52,8 @@ function before_unload_handler(event) {
     event.preventDefault()
 }
 
-function update(text, protect) {
-    if (text && protect)
+function update(text, protect=true) {
+    if (text.trim() && protect)
         addEventListener('beforeunload', before_unload_handler)
     else
         removeEventListener('beforeunload', before_unload_handler)

@@ -17,6 +17,7 @@
         <button onclick="navigator.clipboard.writeText(join('input'))" title="Copy input">העתק קלט</button>
         <button onclick="navigator.clipboard.writeText(output.textContent)" title="Copy output">העתק פלט</button>
         <button onclick="paste_output(output.textContent)" title="Update input from output">עדכן קלט מפלט</button>
+        <button id="share_button" onclick="share(output.textContent)" title="Share">שתף</button>
     </div>
     <main id="main"></main>
     <output id="output" contenteditable="plaintext-only"></output>

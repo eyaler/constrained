@@ -128,6 +128,7 @@ function fix_whitespace(text) {
 }
 
 function paste_output(output_text, protect=true) {
+    const prev_words = [...main.querySelectorAll('.word > div')].map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     output_text = fix_whitespace(output_text)
     paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, '').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)))
     output_words = output_text.replace(nontext_regex, '').split(split_regex)
@@ -142,6 +143,9 @@ function paste_output(output_text, protect=true) {
         }
         select.value = output_words[i]
         select.dispatchEvent(new Event('change'))
+        const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
+        if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
+            select.classList.add('default')
     })
     output.textContent = output_text
     focus_first_word()

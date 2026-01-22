@@ -14,7 +14,8 @@
     gap: 1em;
 }
 
-#buttons:not(:has(~ main .word)) {
+#buttons:not(:has(~ main .word)),
+main:not(:has(.word)) ~ #output {
     display: none;
 }
 
@@ -46,8 +47,12 @@
     color: blue;
 }
 
-output {
+#output {
+    box-sizing: border-box;
     display: block;
+    height: 400px;
     margin-top: 2em;
+    resize: vertical;
+    width: 100%;
     white-space: pre-line;
 }

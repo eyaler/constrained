@@ -8,14 +8,14 @@ const rarest_color = '#ff9999'
 const rare_color = '#ffcccc'
 const limit = 0
 const special = ',.*'  // Overrides Morse
-const split_regex = RegExp(`\\s|(?=[${special}])|(?<=[${special}])`, 'g')
+const split_regex = RegExp(`, |\\s|(?=[${special}])|(?<=[${special}])`, 'g')
 const bad = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
 const code_regex = RegExp(`[${bad}·-]+`, 'g')
-const noncode_regex = RegExp(`[^\\s${special}${bad}·-]+`, 'g')
-const nontext_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
+const non_code_regex = RegExp(`[^\\s${special}${bad}·-]+`, 'g')
+const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
 const punct = special.replace('*', '')
-const punct_regex = RegExp(` (?=[${punct}])`, 'g')
-const nonpunct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
+const fix_punct_regex = RegExp(`,? (?=[${punct}])|(?<=[${punct}]),(?=\\s)`, 'g')
+const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
 
 const morse = {
     'a': '·-',
@@ -88,38 +88,43 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [
 const selects = {}
 let min_count = Infinity
 let max_count = 0
+let output_edit
 
 function before_unload_handler(event) {
     event.preventDefault()
 }
 
-output.addEventListener('change', () => {
-    if (output.textContent.trim())
+function update_protection(protect=true) {
+    if (protect && output.value.trim())
         addEventListener('beforeunload', before_unload_handler)
     else
         removeEventListener('beforeunload', before_unload_handler)
-})
+}
 
-function join(elem) {
-    return [...main.querySelectorAll('.line')].map(line => [...line.querySelectorAll(elem)].map(e => e.value).join(' ').replace(punct_regex, '')).filter(Boolean).join('\n')
+function join_lines(join_words, sep='') {
+    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
+}
+
+function join_inputs() {
+    return join_lines(word => word.firstChild.value)
 }
 
 main.addEventListener('change', () => {
-    output.textContent = join('select')
-    output.dispatchEvent(new Event('change'))
+    output.value = join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), ',').replace(fix_punct_regex, '')
+    update_protection()
 })
 
 output.addEventListener('copy', event => {  // With no selection - Copy all
-    if (getSelection().isCollapsed) {
+    if (output.selectionStart == output.selectionEnd) {
         event.preventDefault()
-        event.clipboardData.setData('text/plain', output.textContent)
+        event.clipboardData.setData('text/plain', output.value)
     }
 })
 
 main.addEventListener('copy', event => {  // With no selection - Copy all
     if (event.target.selectionStart == event.target.selectionEnd) {
         event.preventDefault()
-        event.clipboardData.setData('text/plain', join('input'))
+        event.clipboardData.setData('text/plain', join_inputs())
     }
 })
 
@@ -127,40 +132,16 @@ function fix_whitespace(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
 }
 
-function paste_output(output_text, protect=true) {
-    const prev_words = [...main.querySelectorAll('.word > div')].map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
-    output_text = fix_whitespace(output_text)
-    paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(noncode_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(nonpunct_regex, '').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)))
-    output_words = output_text.replace(nontext_regex, '').split(split_regex)
-    main.querySelectorAll('select').forEach((select, i) => {
-        if (![...select.options].some(opt => opt.value == output_words[i])) {
-            select.prepend(document.createElement('option'))
-            select.options[0].textContent = output_words[i]
-            if (select.name != '*' && ![...selects[select.name].options].some(opt => opt.value == output_words[i])) {
-                selects[select.name].prepend(document.createElement('option'))
-                selects[select.name].options[0].textContent = output_words[i]
-            }
-        }
-        select.value = output_words[i]
-        select.dispatchEvent(new Event('change'))
-        const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
-        if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
-            select.classList.add('default')
-    })
-    output.textContent = output_text
-    focus_first_word()
-    if (!protect)
-        removeEventListener('beforeunload', before_unload_handler)
-}
-
-function paste_input(text, word=main, allow_single=true) {
-    if (word == output || !main.querySelector('.word'))
+function paste_input(text, focus=true, word=main, allow_single=true) {
+    const words = main.querySelectorAll('.word')
+    if (word == output || !words.length)
         return
     text = fix_whitespace(text)
-    if (!text.match(/\S\s\S/) && !allow_single)
+    if (!allow_single && words.length > 1 && !text.match(/\s/))
         return
     while (!word.classList.contains('word'))
         word = word.querySelector('.word') || word.parentElement
+    word.firstChild.selectionStart = word.firstChild.value.length
     let line = word.parentElement
     while (word.nextElementSibling)
         word.nextElementSibling.remove()
@@ -178,12 +159,57 @@ function paste_input(text, word=main, allow_single=true) {
             word.firstChild.dispatchEvent(new Event('change', {bubbles: true}))
         })
     })
+    if (focus)
+        focus_first_word()
     return true
 }
 
 document.addEventListener('paste', event => {
-    if (paste_input(event.clipboardData.getData('text/plain'), document.activeElement, false))
+    const ae = document.activeElement
+    if (paste_input(event.clipboardData.getData('text/plain'), ae == document.body, ae, ae.tagName != 'INPUT'))
         event.preventDefault()
+})
+
+function paste_output(output_text, focus=true, protect=true) {
+    const prev_words = [...main.querySelectorAll('.word > div')].map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+    output_text = fix_whitespace(output_text)
+    const {selectionStart, selectionEnd, selectionDirection} = output
+    paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    output_words = output_text.replace(non_text_regex, '').split(split_regex)
+    main.querySelectorAll('select').forEach((select, i) => {
+        if (![...select.options].some(opt => opt.value == output_words[i])) {
+            select.prepend(document.createElement('option'))
+            select.options[0].textContent = output_words[i]
+            if (select.name != '*' && ![...selects[select.name].options].some(opt => opt.value == output_words[i])) {
+                selects[select.name].prepend(document.createElement('option'))
+                selects[select.name].options[0].textContent = output_words[i]
+            }
+        }
+        select.value = output_words[i]
+        select.dispatchEvent(new Event('change'))
+        const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
+        if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
+            select.classList.add('default')
+    })
+    output.value = output_text
+    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
+    if (!protect)
+        update_protection(false)
+    if (focus)
+        add_word().firstChild.focus()
+}
+
+output.addEventListener('input', () => output_edit = true)
+
+output.addEventListener('blur', () => {
+    if (output_edit)
+        paste_output(output.value, false)
+    output_edit = false
+})
+
+output.addEventListener('keydown', event => {
+    if (event.key == 'Enter' && (event.ctrlKey || event.metaKey))
+        paste_output(output.value, false)
 })
 
 function share(text) {
@@ -215,7 +241,7 @@ function remove_word(event_or_input) {
     }
 }
 
-function add_word(line, current) {
+function add_word(line=main.lastChild, current) {
     const word = line.insertBefore(document.createElement('div'), current?.nextElementSibling)
     word.className = 'word'
     const input = word.appendChild(document.createElement('input'))
@@ -449,5 +475,5 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     add_first_word()
     const hash = decodeURIComponent(location.hash.slice(1))
     if (hash[0] == '\t' && hash.trim())
-        paste_output(hash.trim(), false)
+        paste_output(hash.trim(), true, false)
 })

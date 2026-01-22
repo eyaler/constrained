@@ -469,6 +469,6 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
 
     add_first_word()
     const hash = decodeURIComponent(location.hash.slice(1))
-    if (hash[0] == '\t' && hash.trim())
-        paste_output(hash.trim(), true, false)
+    if (hash[0] == '\t' && hash.slice(1))
+        paste_output(hash.slice(1), true, false)
 })

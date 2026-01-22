@@ -15,8 +15,8 @@
         <button onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
         <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
         <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
-        <button onclick="navigator.clipboard.writeText(output.textContent)" title="Copy output">העתק פלט</button>
-        <button id="share_button" onclick="share(output.textContent)" title="Share">שתף</button>
+        <button onclick="navigator.clipboard.writeText(output.value)" title="Copy output">העתק פלט</button>
+        <button id="share_button" onclick="share(output.value)" title="Share">שתף</button>
     </div>
     <main id="main"></main>
     <textarea id="output" autocomplete="off" autocorrect="off"></textarea>

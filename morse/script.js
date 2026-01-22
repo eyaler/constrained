@@ -88,7 +88,6 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [
 const selects = {}
 let min_count = Infinity
 let max_count = 0
-let output_edit
 
 function before_unload_handler(event) {
     event.preventDefault()
@@ -172,10 +171,10 @@ document.addEventListener('paste', event => {
 
 function paste_output(output_text, focus=true, protect=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
-    output_text = fix_whitespace(output_text)
+    fixed_text = fix_whitespace(output_text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(output_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
-    output_words = output_text.replace(non_text_regex, '').split(split_regex)
+    paste_input(fixed_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
             select.prepend(document.createElement('option'))
@@ -199,12 +198,8 @@ function paste_output(output_text, focus=true, protect=true) {
         add_word().firstChild.focus()
 }
 
-output.addEventListener('input', () => output_edit = true)
-
-output.addEventListener('blur', () => {
-    if (output_edit)
-        paste_output(output.value, false)
-    output_edit = false
+output.addEventListener('change', () => {
+    paste_output(output.value, false)
 })
 
 output.addEventListener('keydown', event => {

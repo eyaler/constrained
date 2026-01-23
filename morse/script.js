@@ -437,12 +437,12 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             const tail_char = reverse_morse[code.slice(1)]
             let words
             if (tail_char in morse_words_types)
-                words = Object.entries(morse_words_types[tail_char]).filter(([word, type]) => type && !word.match(/[ \u05be]/)).map(([word]) => word)
+                words = Object.entries(morse_words_types[tail_char]).filter(([word, type]) => type).map(([word]) => word)
             if (words) {
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == '-') {
                     if (add_prefix_article)
-                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
+                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]/) && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {

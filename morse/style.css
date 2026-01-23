@@ -50,8 +50,10 @@ main:not(:has(.word)) ~ #output {
 #output {
     box-sizing: border-box;
     display: block;
-    height: 400px;
+    field-sizing: content;
     margin-top: 2em;
+    min-height: 400px;
+    padding-inline: .5em;
     resize: vertical;
     width: 100%;
     white-space: pre-line;

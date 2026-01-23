@@ -170,10 +170,10 @@ document.addEventListener('paste', event => {
 })
 
 function paste_output(output_text, focus=true, protect=true) {
-    const prev_words = [...main.querySelectorAll('.word > div')].map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+    const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(output_text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    paste_input(fixed_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]+/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
@@ -223,10 +223,9 @@ function add_dagesh(word) {
     return word.replace(/^([א-ת])\u05bc?/, '$1\u05bc')
 }
 
-function remove_word(event_or_input) {
-    const input = event_or_input.currentTarget || event_or_input
-    if (!input.value && main.querySelectorAll('.word').length > 1) {
-        input.removeEventListener('blur', remove_word)
+function remove_word(input) {
+    if (!input.value.trim() && main.querySelectorAll('.word').length > 1) {
+        input.removeEventListener('blur', blur)
         const word = input.parentElement
         const line = word.parentElement
         word.remove()
@@ -236,8 +235,14 @@ function remove_word(event_or_input) {
     }
 }
 
-function add_word(line=main.lastChild, current) {
-    const word = line.insertBefore(document.createElement('div'), current?.nextElementSibling)
+function blur(event) {
+    const input = event.currentTarget
+    if (!remove_word(input) && input.value.match(/\s/))
+        input.value = input.value.replace(/\s+/g, '')
+}
+
+function add_word(line=main.lastChild, current, before) {
+    const word = line.insertBefore(document.createElement('div'), before ? current : current?.nextElementSibling)
     word.className = 'word'
     const input = word.appendChild(document.createElement('input'))
     const selectors = word.appendChild(document.createElement('div'))
@@ -246,7 +251,7 @@ function add_word(line=main.lastChild, current) {
         const is_ctrl = event.ctrlKey || event.metaKey
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
         let line = word.parentElement
-        if (input.value && event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && !input.nextElementSibling.firstChild) {
+        if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
         } else if (event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl)
@@ -263,14 +268,14 @@ function add_word(line=main.lastChild, current) {
                 elem.focus()
                 elem.selectionEnd = 0
             }
-        else if (event.key == 'Enter'
+        else if (['Enter', ' '].includes(event.key)
             || ['ArrowDown', 'ArrowUp'].includes(event.key) && !is_ctrl
-            || (event.key == 'ArrowLeft' && !is_alt || event.key == ' ') && input.selectionStart == input.value.length
+            || event.key == 'ArrowLeft' && !is_alt && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) {
             event.preventDefault()
             let elem
-            const line_had_text = input.value || line.childElementCount > 1
+            const line_had_text = input.value.trim() || line.childElementCount > 1
             if (event.key == 'Delete') {
                 const next_word = word.nextElementSibling
                 elem = next_word || line.nextElementSibling.firstChild
@@ -285,7 +290,7 @@ function add_word(line=main.lastChild, current) {
                     else
                         input.dispatchEvent(new Event('change', {bubbles: true}))
                 }
-            } else if (event.key == 'Backspace' && input.value && !word.previousElementSibling) {
+            } else if (event.key == 'Backspace' && input.value.trim() && !word.previousElementSibling) {
                 line.previousElementSibling.append(...line.children)
                 line.remove()
                 input.focus()
@@ -305,13 +310,13 @@ function add_word(line=main.lastChild, current) {
                     if (line_had_text && !is_ctrl) {
                         const new_line = add_line(line)
                         if (!event.shiftKey) {
-                            cr = input.selectionEnd || word.previousElementSibling
+                            cr = input.value.trim() && input.selectionEnd || word.previousElementSibling
                             let line_words = [...line.children]
-                            line_words = line_words.slice(line_words.indexOf(word) + (input.selectionEnd > 0 || !input.value && !word.previousElementSibling))
+                            line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && input.selectionEnd || !input.value.trim() && !word.previousElementSibling))
                             if (line_words.length) {
-                                input.removeEventListener('blur', remove_word)
+                                input.removeEventListener('blur', blur)
                                 new_line.replaceChildren(...line_words)
-                                input.addEventListener('blur', remove_word)
+                                input.addEventListener('blur', blur)
                                 if (!line.childElementCount)
                                     add_word(line).firstChild.focus()
                                 input.dispatchEvent(new Event('change', {bubbles: true}))
@@ -321,12 +326,10 @@ function add_word(line=main.lastChild, current) {
                         input.dispatchEvent(new Event('change', {bubbles: true}))
                 if (event.key != 'Enter' || cr)
                    elem = (line.nextElementSibling || main.firstChild).firstChild
-            } else {
-                if (event.key == ' ' && input.value)
-                    add_word(line, word)
-                if (event.key != ' ' || input.value)
-                    elem = word.nextElementSibling || main.firstChild.firstChild
-            }
+            } else if (event.key != ' ')
+                elem = word.nextElementSibling || main.firstChild.firstChild
+            else if (input.value.trim())
+                elem = add_word(line, word, !input.selectionEnd)
 
             if (elem) {
                 elem.firstChild.focus()
@@ -402,7 +405,7 @@ function add_word(line=main.lastChild, current) {
             selectors.lastChild.remove()
     })
 
-    input.addEventListener('blur', remove_word)
+    input.addEventListener('blur', blur)
 
     return word
 }

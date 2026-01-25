@@ -32,7 +32,7 @@ const non_code_regex = RegExp(`[^\\s${special}${bad}${dit}${dah}]+`, 'g')
 const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
 const fix_punct_regex = RegExp(`[${default_sep}]? (?=[${punct}])|(?<=[${punct}])[${default_sep}](?=\\s)`, 'g')
 const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
-const not_morse_regex = RegExp(`[^${dit}${dah}]`)
+const non_morse_regex = RegExp(`[^${dit}${dah}]`)
 
 const morse = {
     'a': '·-',

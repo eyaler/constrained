@@ -7,15 +7,32 @@ const single_color = 'white'
 const rarest_color = '#ff9999'
 const rare_color = '#ffcccc'
 const limit = 0
-const special = ',.*'  // Overrides Morse
-const split_regex = RegExp(`, |\\s|(?=[${special}])|(?<=[${special}])`, 'g')
+let special = ',.*'  // Overrides Morse
+const default_sep = '.'  // Overrides Morse
+const joker = '*'  // Overrides Morse
+const dit = '·'
+const dah = '-'
+const hirik = '\u05b4'
+const patah_kamats = '\u05b2\u05b7\u05b8'
 const bad = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
-const code_regex = RegExp(`[${bad}·-]+`, 'g')
-const non_code_regex = RegExp(`[^\\s${special}${bad}·-]+`, 'g')
+
+if (!special.includes(default_sep))
+    special += default_sep
+if (!special.includes(joker))
+    special += joker
+const punct = special.replaceAll(joker, '')
+
+const hirik_regex = RegExp(hirik, 'g')
+const patah_kamats_regex = RegExp(`[${patah_kamats}]`, 'g')
+const nikud_regex = RegExp(`[${hirik}${patah_kamats}]`, 'g')
+const split_regex = RegExp(`[${default_sep}] |\\s|(?=[${special}])|(?<=[${special}])`, 'g')
+const default_sep_regex = RegExp(`[${default_sep}] `, 'g')
+const code_regex = RegExp(`[${bad}${dit}${dah}]+`, 'g')
+const non_code_regex = RegExp(`[^\\s${special}${bad}${dit}${dah}]+`, 'g')
 const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
-const punct = special.replace('*', '')
-const fix_punct_regex = RegExp(`,? (?=[${punct}])|(?<=[${punct}]),(?=\\s)`, 'g')
+const fix_punct_regex = RegExp(`[${default_sep}]? (?=[${punct}])|(?<=[${punct}])[${default_sep}](?=\\s)`, 'g')
 const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
+const not_morse_regex = RegExp(`[^${dit}${dah}]`)
 
 const morse = {
     'a': '·-',
@@ -83,7 +100,7 @@ const morse = {
     '?': '··--·',
 }
 
-Object.entries(morse).filter(([k, v]) => v.match(/[^·-]/)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
+Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))
 const selects = {}
 let min_count = Infinity
@@ -109,7 +126,7 @@ function join_inputs() {
 }
 
 main.addEventListener('change', () => {
-    output.value = join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), ',').replace(fix_punct_regex, '')
+    output.value = join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), default_sep).replace(fix_punct_regex, '')
     update_protection()
 })
 
@@ -173,13 +190,13 @@ function paste_output(output_text, focus=true, protect=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(output_text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(/[\u05b4\u05b2\u05b7\u05b8]/) ? m : '*').replace(/\u05b4/g, '·').replace(/[\u05b2\u05b7\u05b8]+/g, '-').replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || '*').replace(non_punct_regex, '').replace(/, /g, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    paste_input(fixed_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(default_sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
             select.prepend(document.createElement('option'))
             select.options[0].textContent = output_words[i]
-            if (select.name != '*' && ![...selects[select.name].options].some(opt => opt.value == output_words[i])) {
+            if (select.name != joker && ![...selects[select.name].options].some(opt => opt.value == output_words[i])) {
                 selects[select.name].prepend(document.createElement('option'))
                 selects[select.name].options[0].textContent = output_words[i]
             }
@@ -218,9 +235,9 @@ if (!navigator.share) {
 }
 
 function add_dagesh(word) {
-    if ('אהחערפ'.includes(word[0]))
+    if ('אהחערכפ'.includes(word[0]) || word.split(/(?=[א-ת])/, 1)[0].includes('\u05bc'))
         return word
-    return word.replace(/^([א-ת])\u05bc?/, '$1\u05bc')
+    return word[0] + '\u05bc' + word.slice(1)
 }
 
 function remove_word(input) {
@@ -354,7 +371,7 @@ function add_word(line=main.lastChild, current, before) {
             const select = selects[char].cloneNode(true)
             select.classList.add('default')
             select.name = char
-            if (char == '*')
+            if (char == joker)
                 select.style.backgroundColor = error_color
             else if (selects[char].length == 1)
                 select.style.backgroundColor = single_color
@@ -364,7 +381,7 @@ function add_word(line=main.lastChild, current, before) {
                 select.style.backgroundColor = rare_color
 
             select.addEventListener('change', () => {
-                if (select.name != '*') {
+                if (select.name != joker) {
                     const options = [...selects[select.name].options]
                     const option = options.find(opt => opt.value == select.value)
                     options.forEach(opt => opt.defaultSelected = false)
@@ -443,15 +460,15 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 words = Object.entries(morse_words_types[tail_char]).filter(([word, type]) => type).map(([word]) => word)
             if (words) {
                 morse_words[char].push('')  // For <hr>
-                if (code[0] == '-') {
+                if (code[0] == dah) {
                     if (add_prefix_article)
                         extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]/) && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
                     extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
-                    extend_dict(char, words.filter(word => word.match(/^[א-טכ-ת]\u05bc?\u05b0/)).map(word => 'לִ' + word))
-                    extend_dict(char, words.filter(word => word.startsWith('יְ')).map(word => 'לִי' + word.slice(1)))
+                    extend_dict(char, words.filter(word => word.match(/^[א-טכ-ת][\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + word))
+                    extend_dict(char, words.filter(word => word.startsWith('יְ')).map(word => 'לִי' + word.slice(2)))
                 }
             }
         }
@@ -462,7 +479,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         max_count = Math.max(max_count, len)
         console.log(char, len)
         selects[char] = document.createElement('select')
-        morse_words[char].forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replace(/ /g, '\u05be'))
+        morse_words[char].forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
     })
 
     special.split('').forEach(char => {

@@ -105,6 +105,7 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [
 const selects = {}
 let min_count = Infinity
 let max_count = 0
+let total = 0
 
 function before_unload_handler(event) {
     event.preventDefault()
@@ -443,11 +444,20 @@ function add_first_word() {
     focus_first_word()
 }
 
+function save_words(morse_words) {
+    const save = document.createElement('a')
+    save.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(Object.values(morse_words).map(words => words.filter(Boolean).join('\n')).filter(Boolean).join('\n'))
+    save.download = 'morse.txt'
+    save.style.display = 'none'
+    document.body.appendChild(save).click()
+    save.remove()
+}
+
 fetch('morse.json').then(response => response.json()).then(morse_words_types => {
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
 
     function extend_dict(char, new_words) {
-         morse_words[char] = morse_words[char].concat(new_words.filter(word => !morse_words[char].includes(word)))
+        morse_words[char] = [...new Set(morse_words[char].concat(new_words))]
     }
 
     Object.entries(reverse_morse).forEach(([code, char]) => {
@@ -474,13 +484,15 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         }
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)
-        const len = morse_words[char].length
+        const len = morse_words[char].filter(Boolean).length
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)
+        total += len
         console.log(char, len)
         selects[char] = document.createElement('select')
-        morse_words[char].forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
+        morse_words[char].filter(word => !word.includes(' ') || !morse_words[char].includes(word.replaceAll(' ', '\u05be'))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
     })
+    console.log('total', total)
 
     special.split('').forEach(char => {
         selects[char] = document.createElement('select')
@@ -491,4 +503,6 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     const hash = decodeURIComponent(location.hash.slice(1))
     if (hash[0] == '\t' && hash.slice(1))
         paste_output(hash.slice(1), true, false)
+
+    //save_words(morse_words)
 })

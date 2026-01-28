@@ -107,17 +107,6 @@ let min_count = Infinity
 let max_count = 0
 let total = 0
 
-function before_unload_handler(event) {
-    event.preventDefault()
-}
-
-function update_protection(protect=true) {
-    if (protect && output.value.trim())
-        addEventListener('beforeunload', before_unload_handler)
-    else
-        removeEventListener('beforeunload', before_unload_handler)
-}
-
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
 }
@@ -126,10 +115,13 @@ function join_inputs() {
     return join_lines(word => word.firstChild.value)
 }
 
-main.addEventListener('change', () => {
-    output.value = join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), default_sep).replace(fix_punct_regex, '')
-    update_protection()
-})
+function update_output(text) {
+    if (typeof text == 'string')
+        output.value = text
+    history.replaceState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
+}
+
+main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), default_sep).replace(fix_punct_regex, '')))
 
 output.addEventListener('copy', event => {  // With no selection - Copy all
     if (output.selectionStart == output.selectionEnd) {
@@ -187,9 +179,9 @@ document.addEventListener('paste', event => {
         event.preventDefault()
 })
 
-function paste_output(output_text, focus=true, protect=true) {
+function paste_output(text, focus=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
-    fixed_text = fix_whitespace(output_text)
+    fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
     paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])"(?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(default_sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
@@ -208,13 +200,13 @@ function paste_output(output_text, focus=true, protect=true) {
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
             select.classList.add('default')
     })
-    output.value = output_text
+    update_output(text)
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    if (!protect)
-        update_protection(false)
     if (focus)
         add_word().firstChild.focus()
 }
+
+output.addEventListener('input', update_output)
 
 output.addEventListener('change', () => {
     paste_output(output.value, false)
@@ -225,9 +217,8 @@ output.addEventListener('keydown', event => {
         paste_output(output.value, false)
 })
 
-function share(text) {
-    const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + text)
-    navigator.share?.({url, text, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)
+function share() {
+    navigator.share?.({url: location, text: output.value, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(location)
 }
 
 if (!navigator.share) {
@@ -424,7 +415,6 @@ function add_word(line=main.lastChild, current, before) {
     })
 
     input.addEventListener('blur', blur)
-
     return word
 }
 
@@ -502,7 +492,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     add_first_word()
     const hash = decodeURIComponent(location.hash.slice(1))
     if (hash[0] == '\t' && hash.slice(1))
-        paste_output(hash.slice(1), true, false)
+        paste_output(hash.slice(1))
 
     //save_words(morse_words)
 })

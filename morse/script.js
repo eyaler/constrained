@@ -173,7 +173,7 @@ function paste_input(text, focus=true, word=main, allow_single=true) {
     return true
 }
 
-document.addEventListener('paste', event => {
+addEventListener('paste', event => {
     const ae = document.activeElement
     if (paste_input(event.clipboardData.getData('text/plain'), ae == document.body, ae, ae.tagName != 'INPUT'))
         event.preventDefault()

@@ -20,7 +20,7 @@ reverse_button.onclick = () => {
     reverse_button.style.visibility = 'hidden'
     backward.style.setProperty('--anim_dur', anim_dur_ms + 'ms')
     document.body.classList.add('hide_cursor')
-    document.body.addEventListener('mousemove', show_hide_cursor)
+    addEventListener('mousemove', show_hide_cursor)
     setTimeout(() => blobs.style.visibility = 'visible', 15000)
     setTimeout(scroll_into_view, 21000, h1)
     setTimeout(() => h1.textContent = lang ? 'White rabbit' : 'הארנב הלבן', 24000)

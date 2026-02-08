@@ -1,5 +1,6 @@
 const add_prefix_article = true
 const add_prefix_prep = true
+const remove_shva_na = true
 const rarest_count = 1000
 const rare_count = 2000
 const error_color = 'red'
@@ -25,12 +26,13 @@ const punct = special.replaceAll(joker, '')
 const hirik_regex = RegExp(hirik, 'g')
 const patah_kamats_regex = RegExp(`[${patah_kamats}]`, 'g')
 const nikud_regex = RegExp(`[${hirik}${patah_kamats}]`, 'g')
-const split_regex = RegExp(`[${default_sep}] |\\s|(?=[${special}])|(?<=[${special}])`, 'g')
-const default_sep_regex = RegExp(`[${default_sep}] `, 'g')
+const sep_string = `(?<=[^$\\s{punct}])[${default_sep}] (?= *[^\\s${punct}])`
+const sep_regex = RegExp(sep_string, 'g')
+const split_regex = RegExp(`${sep_string}|\\s+|(?=[${special}])|(?<=[${special}])`, 'g')
 const code_regex = RegExp(`[${bad}${dit}${dah}]+`, 'g')
 const non_code_regex = RegExp(`[^\\s${special}${bad}${dit}${dah}]+`, 'g')
-const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"]+|(?<![\u05b0-\u05ea])"|"(?![א-ת])`, 'g')
-const fix_punct_regex = RegExp(`[${default_sep}]? (?=[${punct}])|(?<=[${punct}])[${default_sep}](?=\\s)`, 'g')
+const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea\u05f3\u05f4'"]+|(?<![\u05b0-\u05ea])[\u05f4"]|[\u05f4"](?![א-ת])`, 'g')
+const fix_punct_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
 const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
 const non_morse_regex = RegExp(`[^${dit}${dah}]`)
 
@@ -121,7 +123,7 @@ function update_output(text) {
     history.replaceState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
 }
 
-main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), default_sep).replace(fix_punct_regex, '')))
+main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_punct_regex, '').replaceAll('\t', default_sep)))
 
 output.addEventListener('copy', event => {  // With no selection - Copy all
     if (output.selectionStart == output.selectionEnd) {
@@ -183,7 +185,7 @@ function paste_output(text, focus=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])"(?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(default_sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
@@ -248,6 +250,10 @@ function blur(event) {
     const input = event.currentTarget
     if (!remove_word(input) && input.value.match(/\s/))
         input.value = input.value.replace(/\s+/g, '')
+}
+
+function norm(s) {
+    return s.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 }
 
 function add_word(line=main.lastChild, current, before) {
@@ -355,7 +361,7 @@ function add_word(line=main.lastChild, current, before) {
             delete input.dataset.skip_change
             return
         }
-        const chars = input.value.toLowerCase().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ').split('').map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
+        const chars = norm(input.value.toLowerCase()).split('').map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
         chars.forEach((char, i) => {
             const current = selectors.children[i]
             if (current?.name == char)
@@ -462,7 +468,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah) {
                     if (add_prefix_article)
-                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]/) && !word.match(/^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
+                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
@@ -472,6 +478,8 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 }
             }
         }
+        if (remove_shva_na)
+            morse_words[char] = morse_words[char].filter(word => !norm(word).match(/^[ילמנר]\u05b0|([אג-יל-עצ-רת])\u05bc?\u05b0\1|([בכפ])\u05bc\u05b0\2\u05bc|([בכפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)
         const len = morse_words[char].filter(Boolean).length

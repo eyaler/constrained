@@ -1,3 +1,4 @@
+// ECMAScript 2021 (ES12) compatible
 'use strict'
 
 const table_collator = Intl.Collator(document.documentElement.lang, {numeric: true})

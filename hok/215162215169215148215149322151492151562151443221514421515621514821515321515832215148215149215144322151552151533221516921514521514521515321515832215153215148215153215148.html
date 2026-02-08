@@ -100,7 +100,7 @@
                     for (const move of game.moves()) {
                         game.move(move)
                         const next_moves = new Set(filter(move_num + 1))
-                        intersect = intersect?.intersection(next_moves) ?? next_moves
+                        intersect = intersect ? new Set([...intersect].filter(x => next_moves.has(x))) : next_moves
                         if (next_moves.size)
                             found = true
                         game.undo()

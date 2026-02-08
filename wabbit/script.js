@@ -1,7 +1,7 @@
 sidebyside_align()
 forward.innerHTML = forward.textContent.replace(/\p{L}/gu, '<span>$&</span>')
 backward.innerHTML = backward.textContent.replace(/\S/g, '<span>$&</span>').replace(/\S+/g, '<span>$&</span>').replace(/\n{2,}|:<\/span><\/span>\n/g, '$&<span><span></span></span>')
-const reverse_spans = [...forward.children].toReversed()
+const reverse_spans = [...forward.children].reverse()
 const spans = backward.querySelectorAll('span > span')
 
 const lang = get_lang()

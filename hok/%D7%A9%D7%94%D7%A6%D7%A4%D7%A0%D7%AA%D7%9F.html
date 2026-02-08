@@ -53,7 +53,7 @@
         function draw() {
             background(0)
             let topZ
-            boxes.toSorted((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
+            ;[...boxes].sort((a, b) => a.z - b.z).forEach(box => topZ = drawBox(box).z)
             const candidate = boxes.reduce((s, box) => s += box.value, '')
             if (solved) {
                 if (!a) {

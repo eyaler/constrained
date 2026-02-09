@@ -14,9 +14,9 @@ table {
     --tables_fg_dim: var(--fg_dim, GrayText);
     --tables_fg_verydim: var(--fg_verydim, Highlight);
     --tables_fg_filter: var(--fg_filter, brightness());  /* No-op fallback */
-    --tables_inverse_fg: var(--inverse_fg, var(--tables_fg_verydim));
-    --tables_icon_dur: var(--icon_dur, .3s);
+    --tables_fg_inverse: var(--fg_inverse, var(--tables_fg_verydim));
     --tables_frag_dur: var(--frag_dur, 7s);
+    --tables_icon_dur: var(--icon_dur, .3s);
 
     border-collapse: separate;
     border-spacing: 0;  /* Workaround for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=688556#c51 */
@@ -161,7 +161,7 @@ thead button {
 
 thead button:active {
     background: var(--tables_on);
-    color: var(--tables_inverse_fg);
+    color: var(--tables_fg_inverse);
 }
 
 thead.data_header {

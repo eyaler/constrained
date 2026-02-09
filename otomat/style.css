@@ -16,7 +16,7 @@
 
 #grid:active {
     background: var(--on);
-    color: var(--inverse_fg);
+    color: var(--fg_inverse);
 }
 
 #otomat > .overflow {

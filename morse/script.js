@@ -479,7 +479,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             }
         }
         if (remove_shva_na)
-            morse_words[char] = morse_words[char].filter(word => !norm(word).match(/^[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
+            morse_words[char] = morse_words[char].filter(word => !norm(word).match(/(?:^|[ \u05be])[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)
         const len = morse_words[char].filter(Boolean).length

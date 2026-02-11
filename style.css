@@ -77,13 +77,13 @@
 }
 
 ::selection {
-    color: var(--fg_inverse);
     background-color: var(--bg_inverse);
+    color: var(--fg_inverse);
 }
 
 body.fullscreen ::selection {
-    color: inherit;
     background-color: inherit;
+    color: inherit;
 }
 
 html {

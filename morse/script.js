@@ -482,13 +482,13 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             morse_words[char] = morse_words[char].filter(word => !norm(word).match(/(?:^|[ \u05be])[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)
-        const len = morse_words[char].filter(Boolean).length
+        selects[char] = document.createElement('select')
+        morse_words[char].filter(word => !word.match(/ |\u05be$/) || !morse_words[char].includes(word.replaceAll(' ', '\u05be').replace(/\u05be$/, ''))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
+        const len = selects[char].length
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)
         total += len
         console.log(char, len)
-        selects[char] = document.createElement('select')
-        morse_words[char].filter(word => !word.includes(' ') || !morse_words[char].includes(word.replaceAll(' ', '\u05be'))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
     })
     console.log('total', total)
 

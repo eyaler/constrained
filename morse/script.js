@@ -475,7 +475,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
-                    extend_dict(char, words.filter(word => word.match(/^[א-ת][\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word)))
+                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word)))
                     extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
                 }
             }

@@ -125,17 +125,11 @@ function update_output(text) {
 
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_punct_regex, '').replaceAll('\t', default_sep)))
 
-output.addEventListener('copy', event => {  // With no selection - Copy all
-    if (output.selectionStart == output.selectionEnd) {
+addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
+    const ae = document.activeElement
+    if ((event.target.selectionStart == event.target.selectionEnd || ae.tagName == 'SELECT') && (ae == output || main.contains(ae))) {
         event.preventDefault()
-        event.clipboardData.setData('text/plain', output.value)
-    }
-})
-
-main.addEventListener('copy', event => {  // With no selection - Copy all
-    if (event.target.selectionStart == event.target.selectionEnd) {
-        event.preventDefault()
-        event.clipboardData.setData('text/plain', join_inputs())
+        event.clipboardData.setData('text/plain', ae == output || ae.tagName == 'SELECT' ? ae.value : join_inputs())
     }
 })
 
@@ -148,6 +142,15 @@ function paste_input(text, focus=true, word=main, allow_single=true) {
     if (word == output || !words.length)
         return
     text = fix_whitespace(text)
+    if (text && word.tagName == 'SELECT') {
+        for (const option of word.options)
+            if (option.value.startsWith(text)) {
+                option.selected = true
+                word.dispatchEvent(new Event('change', {bubbles: true}))
+                return true
+            }
+        return
+    }
     if (!allow_single && words.length > 1 && !text.match(/\s/))
         return
     while (!word.classList.contains('word'))
@@ -472,16 +475,19 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
+                    extend_dict(char, words.filter(word => word.match(/^[א-ת][\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word)))
                     extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
-                    extend_dict(char, words.filter(word => word.match(/^[א-טכ-ת][\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + word))
-                    extend_dict(char, words.filter(word => word.startsWith('יְ')).map(word => 'לִי' + word.slice(2)))
                 }
             }
         }
         if (remove_shva_na)
             morse_words[char] = morse_words[char].filter(word => !norm(word).match(/(?:^|[ \u05be])[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
+        if (morse_words[char][0] == '')
+            morse_words[char].shift()
+        if (morse_words[char].slice(-1)[0] == '')
+            morse_words[char].pop()
         if (limit)
-            morse_words[char] = morse_words[char].slice(0, limit)
+            morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
         selects[char] = document.createElement('select')
         morse_words[char].filter(word => !word.match(/ |\u05be$/) || !morse_words[char].includes(word.replaceAll(' ', '\u05be').replace(/\u05be$/, ''))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
         const len = selects[char].length
@@ -492,10 +498,10 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     })
     console.log('total', total)
 
-    special.split('').forEach(char => {
+    for (const char of special) {
         selects[char] = document.createElement('select')
         selects[char].appendChild(document.createElement('option')).textContent = char
-    })
+    }
 
     add_first_word()
     const hash = decodeURIComponent(location.hash.slice(1))

@@ -117,10 +117,17 @@ function join_inputs() {
     return join_lines(word => word.firstChild.value)
 }
 
-function update_output(text) {
-    if (typeof text == 'string')
+function make_hash() {
+    return '#' + encodeURIComponent('\t' + output.value)
+}
+
+function update_output(text, save) {
+    if (typeof text == 'string') {
+        if (save)
+            history.pushState(history.state, '', make_hash())
         output.value = text
-    history.replaceState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
+    }
+    history.replaceState(history.state, '', make_hash())
 }
 
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_punct_regex, '').replaceAll('\t', default_sep)))
@@ -137,7 +144,7 @@ function fix_whitespace(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
 }
 
-function paste_input(text, focus=true, word=main, allow_single=true) {
+function paste_input(text='', focus=true, word=main, allow_single=true) {
     const words = main.querySelectorAll('.word')
     if (word == output || !words.length)
         return
@@ -184,7 +191,7 @@ addEventListener('paste', event => {
         event.preventDefault()
 })
 
-function paste_output(text, focus=true) {
+function paste_output(text='', focus=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
@@ -208,7 +215,7 @@ function paste_output(text, focus=true) {
     update_output(text)
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     if (focus)
-        add_word().firstChild.focus()
+        (main.querySelector('.word') || add_word()).firstChild.focus()
 }
 
 output.addEventListener('input', update_output)

@@ -11,7 +11,7 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'">
     <div id="buttons">
-        <button onclick="main.replaceChildren(); main.dispatchEvent(new Event('change')); add_first_word()" title="Clear">נקה</button>
+        <button onclick="paste_input()" title="Clear">נקה</button>
         <button onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
         <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
         <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>

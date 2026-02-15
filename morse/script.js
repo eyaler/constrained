@@ -15,22 +15,26 @@ const dit = '·'
 const dah = '-'
 const hirik = '\u05b4'
 const patah_kamats = '\u05b2\u05b7\u05b8'
-const bad = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
+const bad_nikud = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
+const va = 'וַ'
+const la = 'לַ'
+const li = 'לִ'
+const mi = 'מִ'
 
 if (!special.includes(default_sep))
     special += default_sep
 if (!special.includes(joker))
     special += joker
 const punct = special.replaceAll(joker, '')
-
 const hirik_regex = RegExp(hirik, 'g')
 const patah_kamats_regex = RegExp(`[${patah_kamats}]`, 'g')
-const nikud_regex = RegExp(`[${hirik}${patah_kamats}]`, 'g')
+const nikud_regex = RegExp(`[${hirik}${patah_kamats}]`)
+const bad_nikud_regex = RegExp(`[${hirik}${patah_kamats}]{2}|[${bad_nikud}]`)
 const sep_string = `(?<=[^$\\s{punct}])[${default_sep}] (?= *[^\\s${punct}])`
 const sep_regex = RegExp(sep_string, 'g')
 const split_regex = RegExp(`${sep_string}|\\s+|(?=[${special}])|(?<=[${special}])`, 'g')
-const code_regex = RegExp(`[${bad}${dit}${dah}]+`, 'g')
-const non_code_regex = RegExp(`[^\\s${special}${bad}${dit}${dah}]+`, 'g')
+const code_regex = RegExp(`[${dit}${dah}]+`, 'g')
+const non_code_regex = RegExp(`[^\\s${special}${dit}${dah}]+`, 'g')
 const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea\u05f3\u05f4'"]+|(?<![\u05b0-\u05ea])[\u05f4"]|[\u05f4"](?![א-ת])`, 'g')
 const fix_punct_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
 const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
@@ -200,7 +204,7 @@ function paste_output(text='', focus=true, save=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
+    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
@@ -497,17 +501,18 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             const tail_char = reverse_morse[code.slice(1)]
             let words
             if (tail_char in morse_words_types)
-                words = Object.entries(morse_words_types[tail_char]).filter(([word, type]) => type).map(([word]) => word)
+                words = Object.keys(morse_words_types[tail_char])
             if (words) {
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah) {
                     if (add_prefix_article)
                         extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)).map(word => article_fixes[word] || word))
                     if (add_prefix_prep)
-                        extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
+                        extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => (morse_words_types[tail_char][word] ? la : va) + word))
                 } else if (add_prefix_prep) {
-                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word.replace(/(?<=^.)\u05bc/, ''))))
-                    extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
+                    words = words.filter(word => morse_words_types[tail_char][word])
+                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => li + (word[0] == 'י' ? word.replace('\u05b0', '') : word.replace(/(?<=^.)\u05bc/, ''))))
+                    extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => mi + add_dagesh(word)))
                 }
             }
         }

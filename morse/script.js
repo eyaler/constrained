@@ -102,12 +102,19 @@ const morse = {
     '?': '··--·',
 }
 
+article_fixes = {
+    'הָעַם': 'הָעָם',
+    'הַהַר': 'הָהָר',
+    'הַפַּר': 'הָפָּר',
+}
+
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))
 const selects = {}
 let min_count = Infinity
 let max_count = 0
 let total = 0
+let skip_push, ready
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -117,17 +124,11 @@ function join_inputs() {
     return join_lines(word => word.firstChild.value)
 }
 
-function make_hash() {
-    return '#' + encodeURIComponent('\t' + output.value)
-}
-
-function update_output(text, save) {
-    if (typeof text == 'string') {
-        if (save)
-            history.pushState(history.state, '', make_hash())
+function update_output(text, save=true) {
+    if (typeof text == 'string')
         output.value = text
-    }
-    history.replaceState(history.state, '', make_hash())
+    if (save && !skip_push)
+        history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
 }
 
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_punct_regex, '').replaceAll('\t', default_sep)))
@@ -144,7 +145,7 @@ function fix_whitespace(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
 }
 
-function paste_input(text='', focus=true, word=main, allow_single=true) {
+function paste_input(text='', focus=true, save=true, word=main, allow_single=true) {
     const words = main.querySelectorAll('.word')
     if (word == output || !words.length)
         return
@@ -160,6 +161,7 @@ function paste_input(text='', focus=true, word=main, allow_single=true) {
     }
     if (!allow_single && words.length > 1 && !text.match(/\s/))
         return
+    skip_push = true
     while (!word.classList.contains('word'))
         word = word.querySelector('.word') || word.parentElement
     word.firstChild.selectionStart = word.firstChild.value.length
@@ -180,6 +182,9 @@ function paste_input(text='', focus=true, word=main, allow_single=true) {
             word.firstChild.dispatchEvent(new Event('change', {bubbles: true}))
         })
     })
+    skip_push = false
+    if (save)
+        update_output()
     if (focus)
         focus_first_word()
     return true
@@ -187,15 +192,15 @@ function paste_input(text='', focus=true, word=main, allow_single=true) {
 
 addEventListener('paste', event => {
     const ae = document.activeElement
-    if (paste_input(event.clipboardData.getData('text/plain'), ae == document.body, ae, ae.tagName != 'INPUT'))
+    if (paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae, ae.tagName != 'INPUT'))
         event.preventDefault()
 })
 
-function paste_output(text='', focus=true) {
+function paste_output(text='', focus=true, save=true) {
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false)
+    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
         if (![...select.options].some(opt => opt.value == output_words[i])) {
@@ -212,10 +217,12 @@ function paste_output(text='', focus=true) {
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
             select.classList.add('default')
     })
-    update_output(text)
+    update_output(text, save)
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    if (focus)
-        (main.querySelector('.word') || add_word()).firstChild.focus()
+    if (focus) {
+        const first_word = main.querySelector('.word')
+        ;(first_word.firstChild.value ? add_word() : first_word).firstChild.focus()
+    }
 }
 
 output.addEventListener('input', update_output)
@@ -239,7 +246,7 @@ if (!navigator.share) {
 }
 
 function add_dagesh(word) {
-    if ('אהחערכפ'.includes(word[0]) || word.split(/(?=[א-ת])/, 1)[0].includes('\u05bc'))
+    if ('אהחערכפ'.includes(word[0]) || word[1] == '\u05bc')
         return word
     return word[0] + '\u05bc' + word.slice(1)
 }
@@ -459,6 +466,23 @@ function save_words(morse_words) {
     save.remove()
 }
 
+addEventListener('keydown', event => {  // Remove selection
+    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph')
+        && event.target.selectionStart != event.target.selectionEnd) {
+        const caret = event.target.selectionDirection == 'forward' ? event.target.selectionEnd : event.target.selectionStart
+        event.target.setSelectionRange(caret, caret)
+    }
+})
+
+function paste_hash(pop) {
+    const hash = decodeURIComponent(location.hash.slice(1))
+    if (ready)
+        if (hash.match(/^\t./))
+            paste_output(hash.slice(1), true, false)
+        else if (pop)
+            paste_input('', true, false)
+}
+
 fetch('morse.json').then(response => response.json()).then(morse_words_types => {
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
 
@@ -478,11 +502,11 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah) {
                     if (add_prefix_article)
-                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)))
+                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)).map(word => article_fixes[word] || word))
                     if (add_prefix_prep)
                         extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => 'לַ' + word))
                 } else if (add_prefix_prep) {
-                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word)))
+                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => 'לִ' + (word[0] == 'י' ? word.replace('\u05b0', '') : word.replace(/(?<=^.)\u05bc/, ''))))
                     extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => 'מִ' + add_dagesh(word)))
                 }
             }
@@ -510,10 +534,9 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         selects[char].appendChild(document.createElement('option')).textContent = char
     }
 
-    add_first_word()
-    const hash = decodeURIComponent(location.hash.slice(1))
-    if (hash[0] == '\t' && hash.slice(1))
-        paste_output(hash.slice(1))
+    ready = true
 
+    add_first_word()
+    paste_hash()
     //save_words(morse_words)
 })

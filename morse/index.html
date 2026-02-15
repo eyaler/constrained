@@ -9,7 +9,7 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
+<body onload="document.body.style.visibility = 'visible'" onpopstate="paste_hash(true)">
     <div id="buttons">
         <button onclick="paste_input()" title="Clear">נקה</button>
         <button onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>

@@ -1,8 +1,8 @@
 const add_prefix_article = true
 const add_prefix_prep = true
 const remove_shva_na = true
-const rarest_count = 1000
-const rare_count = 2000
+const rarest_count = 700
+const rare_count = 4000
 const error_color = 'red'
 const single_color = 'white'
 const rarest_color = '#ff9999'
@@ -113,7 +113,7 @@ article_fixes = {
 }
 
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
-const reverse_morse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))
+const reverse_morse = Object.fromEntries(Object.entries(Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))).sort(([,a], [,b]) => a.localeCompare(b)))
 const selects = {}
 let min_count = Infinity
 let max_count = 0

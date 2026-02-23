@@ -48,7 +48,7 @@ const pages = {
     "taz": {title: "תחום אוטונומי זמני", alt: "Temporary Autonomous Zone", kw: ["cipher", "new constraint", "poem", "software", "sound", "visual"]},
     "shirbert": {title: "שירבֵּרט", alt: "ShirBERT", kw: ["generative", "poem", "software", "tool"]},
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
-    "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["combinatorial", "hebrew cheatery", "new constraint"]},
+    "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["biblical", "combinatorial", "hebrew cheatery", "new constraint"]},
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self-referral", "software", "visual"]},
 
     "harh/": {title: "הַרְח", alt: "Harḥ", kw: ["poem"]},

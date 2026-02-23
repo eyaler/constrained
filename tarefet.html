@@ -167,8 +167,8 @@
             return s.trim().replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
         }
 
-        const anagrams = all_anagrams.filter(anagram => norm(anagram.split(',')[0]).split('').sort().join('') == norm(anagram.split(',')[1]).split('').sort().join(''))
-        console.log(all_anagrams.length, anagrams.length, new Set(anagrams.map(x => norm(x).split('').sort().join(''))).size)
+        const anagrams = all_anagrams.filter(anagram => [...norm(anagram.split(',')[0])].sort().join('') == [...norm(anagram.split(',')[1])].sort().join(''))
+        console.log(all_anagrams.length, anagrams.length, new Set(anagrams.map(x => [...norm(x)].sort().join(''))).size)
         const match = location.search.slice(1).match(/(?<=^|&)\d+$/)?.[0]
         let index = ((match ?? localStorage['tarefet']) | 0) % anagrams.length
 

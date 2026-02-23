@@ -35,9 +35,9 @@ const sep_regex = RegExp(sep_string, 'g')
 const split_regex = RegExp(`${sep_string}|\\s+|(?=[${special}])|(?<=[${special}])`, 'g')
 const code_regex = RegExp(`[${dit}${dah}]+`, 'g')
 const non_code_regex = RegExp(`[^\\s${special}${dit}${dah}]+`, 'g')
-const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea\u05f3\u05f4'"]+|(?<![\u05b0-\u05ea])[\u05f4"]|[\u05f4"](?![א-ת])`, 'g')
-const fix_punct_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
+const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"-]+|(?<![\u05b0-\u05ea])["-]|"(?![א-ת])`, 'g')
 const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
+const fix_space_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
 const non_morse_regex = RegExp(`[^${dit}${dah}]`)
 
 const morse = {
@@ -106,7 +106,9 @@ const morse = {
     '?': '··--·',
 }
 
-article_fixes = {
+const dont_show = 'äöšü'
+
+const article_fixes = {
     'הָעַם': 'הָעָם',
     'הַהַר': 'הָהָר',
     'הַפַּר': 'הָפָּר',
@@ -135,7 +137,7 @@ function update_output(text, save=true) {
         history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
 }
 
-main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_punct_regex, '').replaceAll('\t', default_sep)))
+main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
 
 addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
     const ae = document.activeElement
@@ -145,18 +147,41 @@ addEventListener('copy', event => {  // With no selection - Copy all; Allow copy
     }
 })
 
-function fix_whitespace(text) {
-    return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n')
+function norm(text) {
+    return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n').replaceAll('\u05f3', "'").replaceAll('\u05f4', '"').replaceAll('\u2011', '-')
+}
+
+function norm_hyphen(text) {
+    return text.replace(/ -/g, '\u05be').replace(/\u05be$/, '')
+}
+
+function get_word_parts(word) {
+    return word.match(/\p{L}[\p{M}\u05be'"]*/gu) || []
+}
+
+function partial_match(dict_word, word_parts) {
+    const dict_word_parts = get_word_parts(dict_word)
+    if (word_parts.length > dict_word_parts.length)
+        return false
+    return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
 function paste_input(text='', focus=true, save=true, word=main, allow_single=true) {
     const words = main.querySelectorAll('.word')
     if (word == output || !words.length)
         return
-    text = fix_whitespace(text)
+    text = norm(text)
     if (text && word.tagName == 'SELECT') {
+        text = norm_hyphen(text)
         for (const option of word.options)
             if (option.value.startsWith(text)) {
+                option.selected = true
+                word.dispatchEvent(new Event('change', {bubbles: true}))
+                return true
+            }
+        const word_parts = get_word_parts(text)
+        for (const option of word.options)
+            if (partial_match(option.value, word_parts)) {
                 option.selected = true
                 word.dispatchEvent(new Event('change', {bubbles: true}))
                 return true
@@ -201,16 +226,17 @@ addEventListener('paste', event => {
 })
 
 function paste_output(text='', focus=true, save=true) {
-    const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
-    fixed_text = fix_whitespace(text)
     const {selectionStart, selectionEnd, selectionDirection} = output
-    paste_input(fixed_text.replace(/(?<=[\u05b0-\u05ea])[\u05f4"](?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] || joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
-    output_words = fixed_text.replace(non_text_regex, '').split(split_regex)
+    const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+    norm_text = norm(text)
+    paste_input(norm_text.replace(/(?<=[\u05b0-\u05ea])"(?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
+    output_words = norm_text.replace(non_text_regex, '').split(split_regex)
     main.querySelectorAll('select').forEach((select, i) => {
-        if (![...select.options].some(opt => opt.value == output_words[i])) {
+        const word = norm_hyphen(output_words[i])
+        if (![...select.options].some(opt => opt.value.replace(/\u05be$/, '') == word)) {
             select.prepend(document.createElement('option'))
             select.options[0].textContent = output_words[i]
-            if (select.name != joker && ![...selects[select.name].options].some(opt => opt.value == output_words[i])) {
+            if (select.name != joker && ![...selects[select.name].options].some(opt => opt.value.replace(/\u05be$/, '') == word)) {
                 selects[select.name].prepend(document.createElement('option'))
                 selects[select.name].options[0].textContent = output_words[i]
             }
@@ -273,8 +299,8 @@ function blur(event) {
         input.value = input.value.replace(/\s+/g, '')
 }
 
-function norm(s) {
-    return s.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
+function to_middle(text) {
+    return text.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 }
 
 function add_word(line=main.lastChild, current, before) {
@@ -382,7 +408,7 @@ function add_word(line=main.lastChild, current, before) {
             delete input.dataset.skip_change
             return
         }
-        const chars = norm(input.value.toLowerCase()).split('').map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
+        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
         chars.forEach((char, i) => {
             const current = selectors.children[i]
             if (current?.name == char)
@@ -517,7 +543,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             }
         }
         if (remove_shva_na)
-            morse_words[char] = morse_words[char].filter(word => !norm(word).match(/(?:^|[ \u05be])[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
+            morse_words[char] = morse_words[char].filter(word => !to_middle(word).match(/(?:^|[ \u05be])[ילמנר]\u05b0|([א-יל-עצ-רת])\u05bc?\u05b0\1|([כפ])\u05bc\u05b0\2\u05bc|([כפ])\u05b0\3(?!\u05bc)|ש\u05bc?\u05c1\u05bc?\u05b0ש\u05bc?\u05c1|ש\u05bc?\u05c2\u05bc?\u05b0ש\u05bc?\u05c2/))
         if (morse_words[char][0] == '')
             morse_words[char].shift()
         if (morse_words[char].slice(-1)[0] == '')

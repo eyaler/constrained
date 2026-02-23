@@ -43,6 +43,12 @@ main:not(:has(.word)) ~ #output {
     max-width: 100%;
 }
 
+.word select {
+    border-radius: 0;
+    border-style: solid;
+    border-width: 1px;
+}
+
 .default:not(:has(:only-child)) {
     color: blue;
 }

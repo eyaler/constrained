@@ -178,7 +178,7 @@ function partial_match(dict_word, word_parts) {
 
 function paste_input(text='', focus=true, save=true, word=main, allow_single=true) {
     const words = main.querySelectorAll('.word')
-    if (word == output || !words.length)
+    if (!words.length)
         return
     text = norm(text)
     if (text && word.tagName == 'SELECT') {
@@ -231,7 +231,7 @@ function paste_input(text='', focus=true, save=true, word=main, allow_single=tru
 
 addEventListener('paste', event => {
     const ae = document.activeElement
-    if (paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae, ae.tagName != 'INPUT'))
+    if (ae != output && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae, ae.tagName != 'INPUT'))
         event.preventDefault()
 })
 

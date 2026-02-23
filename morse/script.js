@@ -25,20 +25,26 @@ if (!special.includes(default_sep))
     special += default_sep
 if (!special.includes(joker))
     special += joker
+
 const punct = special.replaceAll(joker, '')
+const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
+const fix_space_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
+
 const hirik_regex = RegExp(hirik, 'g')
 const patah_kamats_regex = RegExp(`[${patah_kamats}]`, 'g')
 const nikud_regex = RegExp(`[${hirik}${patah_kamats}]`)
 const bad_nikud_regex = RegExp(`[${hirik}${patah_kamats}]{2}|[${bad_nikud}]`)
+
+const morse_regex = RegExp(`[${dit}${dah}]+`, 'g')
+const non_morse_regex = RegExp(`[^${dit}${dah}]`)
+const non_code_regex = RegExp(`[^\\s${special}${dit}${dah}]+`, 'g')
+
 const sep_string = `(?<=[^$\\s{punct}])[${default_sep}] (?= *[^\\s${punct}])`
 const sep_regex = RegExp(sep_string, 'g')
 const split_regex = RegExp(`${sep_string}|\\s+|(?=[${special}])|(?<=[${special}])`, 'g')
-const code_regex = RegExp(`[${dit}${dah}]+`, 'g')
-const non_code_regex = RegExp(`[^\\s${special}${dit}${dah}]+`, 'g')
+
+const final_regex = RegExp(`(?<=[\u05b0-\u05ea'"])[כמנפצ](?![א-ת${joker}])`, 'g')
 const non_text_regex = RegExp(`[^\\s${special}\u05b0-\u05ea'"-]+|(?<![\u05b0-\u05ea])["-]|"(?![א-ת])`, 'g')
-const non_punct_regex = RegExp(`(?<![${punct}]) (?![${punct}])`, 'g')
-const fix_space_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
-const non_morse_regex = RegExp(`[^${dit}${dah}]`)
 
 const morse = {
     'a': '·-',
@@ -137,7 +143,7 @@ function update_output(text, save=true) {
         history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
 }
 
-main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value.replace(/\u05be$/, '')).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
+main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_hyphen(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
 
 addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
     const ae = document.activeElement
@@ -151,8 +157,12 @@ function norm(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n').replaceAll('\u05f3', "'").replaceAll('\u05f4', '"').replaceAll('\u2011', '-')
 }
 
+function remove_final_hyphen(text) {
+    return text.replace(/(?<=[\u05b0-\u05ea])\u05be$/, '')
+}
+
 function norm_hyphen(text) {
-    return text.replace(/ -/g, '\u05be').replace(/\u05be$/, '')
+    return remove_final_hyphen(text.replace(/[ -]/g, '\u05be'))
 }
 
 function get_word_parts(word) {
@@ -228,15 +238,14 @@ addEventListener('paste', event => {
 function paste_output(text='', focus=true, save=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
-    norm_text = norm(text)
-    paste_input(norm_text.replace(/(?<=[\u05b0-\u05ea])"(?=[א-ת])/g, '').replace(/[\u05b0-\u05ea']+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(code_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(/[כמנפצ](?![א-ת])/g, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
-    output_words = norm_text.replace(non_text_regex, '').split(split_regex)
+    const norm_text = norm(text)
+    paste_input(norm_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(morse_regex, '').replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
+    const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
     main.querySelectorAll('select').forEach((select, i) => {
-        const word = norm_hyphen(output_words[i])
-        if (![...select.options].some(opt => opt.value.replace(/\u05be$/, '') == word)) {
+        if (![...select.options].some(opt => remove_final_hyphen(opt.value) == output_words[i])) {
             select.prepend(document.createElement('option'))
             select.options[0].textContent = output_words[i]
-            if (select.name != joker && ![...selects[select.name].options].some(opt => opt.value.replace(/\u05be$/, '') == word)) {
+            if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_hyphen(opt.value) == output_words[i])) {
                 selects[select.name].prepend(document.createElement('option'))
                 selects[select.name].options[0].textContent = output_words[i]
             }
@@ -551,7 +560,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
         selects[char] = document.createElement('select')
-        morse_words[char].filter(word => !word.match(/ |\u05be$/) || !morse_words[char].includes(word.replaceAll(' ', '\u05be').replace(/\u05be$/, ''))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
+        morse_words[char].filter(word => !word.match(/ |\u05be$/) || !morse_words[char].includes(remove_final_hyphen(word.replaceAll(' ', '\u05be')))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', '\u05be'))
         const len = selects[char].length
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)

@@ -136,13 +136,13 @@ function join_inputs() {
     return join_lines(word => word.firstChild.value)
 }
 
-function update_output(text, save=true) {
+function update_output(text, push=true) {
     if (typeof text == 'string')
         output.value = text
-    if (save && !skip_push)
+    if (push && !skip_push)
         try {
             history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
-        } catch {}  // For iframes and history api rate limit
+        } catch {}
 }
 
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_hyphen(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
@@ -178,7 +178,7 @@ function partial_match(dict_word, word_parts) {
     return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
-function paste_input(text='', focus=true, save=true, word=main, allow_single=true) {
+function paste_input(text='', focus=true, push=true, word=main, allow_single=true) {
     const words = main.querySelectorAll('.word')
     if (!words.length)
         return
@@ -224,7 +224,7 @@ function paste_input(text='', focus=true, save=true, word=main, allow_single=tru
         })
     })
     skip_push = false
-    if (save)
+    if (push)
         update_output()
     if (focus)
         focus_first_word()
@@ -237,7 +237,7 @@ addEventListener('paste', event => {
         event.preventDefault()
 })
 
-function paste_output(text='', focus=true, save=true) {
+function paste_output(text='', focus=true, push=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     const norm_text = norm(text)
@@ -258,7 +258,7 @@ function paste_output(text='', focus=true, save=true) {
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
             select.classList.add('default')
     })
-    update_output(text, save)
+    update_output(text, push)
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     if (focus) {
         const first_word = main.querySelector('.word')
@@ -266,11 +266,8 @@ function paste_output(text='', focus=true, save=true) {
     }
 }
 
-output.addEventListener('input', update_output)
-
-output.addEventListener('change', () => {
-    paste_output(output.value, false)
-})
+//output.addEventListener('input', update_output)
+output.addEventListener('change', () => paste_output(output.value, false))
 
 output.addEventListener('keydown', event => {
     if (event.key == 'Enter' && (event.ctrlKey || event.metaKey))

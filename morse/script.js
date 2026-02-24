@@ -126,7 +126,7 @@ const selects = {}
 let min_count = Infinity
 let max_count = 0
 let total = 0
-let skip_push, ready
+let last_hash, skip_push, ready
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -136,15 +136,27 @@ function join_inputs() {
     return join_lines(word => word.firstChild.value)
 }
 
-function update_output(text, push=true) {
-    if (typeof text == 'string')
-        output.value = text
-    if (push && !skip_push)
-        try {
-            history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
-        } catch {}
+function make_hash() {
+    return encodeURIComponent('\t' + output.value)
 }
 
+function update_output(text, push=true) {
+    try {
+        if (typeof text == 'string')
+            output.value = text
+        else if (!push)
+            history.replaceState(history.state, '', '#' + make_hash())
+        if (push && !skip_push) {
+            const hash = make_hash()
+            if (hash != last_hash) {
+                last_hash = hash
+                history.pushState(history.state, '', '#' + hash)
+            }
+        }
+    } catch {}
+}
+
+addEventListener('pagehide', () => update_output(null, false))
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_hyphen(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
 
 addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
@@ -266,7 +278,6 @@ function paste_output(text='', focus=true, push=true) {
     }
 }
 
-//output.addEventListener('input', update_output)
 output.addEventListener('change', () => paste_output(output.value, false))
 
 output.addEventListener('keydown', event => {
@@ -513,10 +524,10 @@ addEventListener('keydown', event => {  // Remove selection
 })
 
 function paste_hash(pop) {
-    const hash = decodeURIComponent(location.hash.slice(1))
+    last_hash = decodeURIComponent(location.hash.slice(1))
     if (ready)
-        if (hash.match(/^\t./))
-            paste_output(hash.slice(1), true, false)
+        if (last_hash.match(/^\t./))
+            paste_output(last_hash.slice(1), true, false)
         else if (pop)
             paste_input('', true, false)
 }

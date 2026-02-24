@@ -140,7 +140,9 @@ function update_output(text, save=true) {
     if (typeof text == 'string')
         output.value = text
     if (save && !skip_push)
-        history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
+        try {
+            history.pushState(history.state, '', '#' + encodeURIComponent('\t' + output.value))
+        } catch {}  // For iframes and history api rate limit
 }
 
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_hyphen(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))

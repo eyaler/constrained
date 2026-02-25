@@ -197,19 +197,25 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
     text = norm(text)
     if (text && word.tagName == 'SELECT') {
         text = norm_hyphen(text)
-        for (const option of word.options)
+        const len = word.options.length
+        for (let i = 1; i <= len; i++) {
+            const option = word.options[(word.selectedIndex + i) % len]
             if (option.value.startsWith(text)) {
                 option.selected = true
                 word.dispatchEvent(new Event('change', {bubbles: true}))
                 return true
             }
+        }
+
         const word_parts = get_word_parts(text)
-        for (const option of word.options)
+        for (let i = 1; i <= len; i++) {
+            const option = word.options[(word.selectedIndex + i) % len]
             if (partial_match(option.value, word_parts)) {
                 option.selected = true
                 word.dispatchEvent(new Event('change', {bubbles: true}))
                 return true
             }
+        }
         return
     }
     if (!allow_single && words.length > 1 && !text.match(/\s/))

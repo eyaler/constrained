@@ -161,9 +161,9 @@ main.addEventListener('change', () => update_output(join_lines(word => [...word.
 
 addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
     const ae = document.activeElement
-    if ((event.target.selectionStart == event.target.selectionEnd || ['SELECT', 'OPTION'].includes(ae.tagName)) && (ae == output || main.contains(ae))) {
+    if ((event.target.selectionStart == event.target.selectionEnd || ae.closest('select')) && (ae == output || main.contains(ae))) {
         event.preventDefault()
-        event.clipboardData.setData('text/plain', ae == output || ['SELECT', 'OPTION'].includes(ae.tagName) ? ae.value : join_inputs())
+        event.clipboardData.setData('text/plain', ae == output || ae.closest('select') ? ae.value : join_inputs())
     }
 })
 
@@ -195,9 +195,8 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
     if (!words.length)
         return
     text = norm(text)
-    if (text && ['SELECT', 'OPTION'].includes(word.tagName)) {
-        if (word.tagName == 'OPTION')
-            word = word.parentElement
+    if (text && word.closest('select')) {
+        word = word.closest('select')
         text = norm_hyphen(text)
         const len = word.options.length
         for (let i = 1; i <= len; i++) {

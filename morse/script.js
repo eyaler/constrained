@@ -126,7 +126,7 @@ const selects = {}
 let min_count = Infinity
 let max_count = 0
 let total = 0
-let last_hash, skip_push, ready
+let last_hash, legacy_select, ready, skip_push
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -195,25 +195,36 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
     if (!words.length)
         return
     text = norm(text)
-    if (text && word.closest('select')) {
-        word = word.closest('select')
+    const select = word.closest('select')
+    if (select) {
+        if (!text.match(/[א-ת]/))
+            return
         text = norm_hyphen(text)
-        const len = word.options.length
+        const len = select.options.length
+        const index = legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)
         for (let i = 1; i <= len; i++) {
-            const option = word.options[(word.selectedIndex + i) % len]
+            const option = select.options[(index + i) % len]
             if (option.value.startsWith(text)) {
-                option.selected = true
-                word.dispatchEvent(new Event('change', {bubbles: true}))
+                if (legacy_select || !select.matches(':open'))
+                    option.selected = true
+                else
+                    option.focus()
+                select.dispatchEvent(new Event('change', {bubbles: true}))
                 return true
             }
         }
 
+        if (text.length == 1)
+            return
         const word_parts = get_word_parts(text)
         for (let i = 1; i <= len; i++) {
-            const option = word.options[(word.selectedIndex + i) % len]
+            const option = select.options[(index + i) % len]
             if (partial_match(option.value, word_parts)) {
-                option.selected = true
-                word.dispatchEvent(new Event('change', {bubbles: true}))
+                if (legacy_select || !select.matches(':open'))
+                    option.selected = true
+                else
+                    option.focus()
+                select.dispatchEvent(new Event('change', {bubbles: true}))
                 return true
             }
         }
@@ -480,7 +491,11 @@ function add_word(line=main.lastChild, current, before) {
                         all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
                     } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                         event.preventDefault()
-                        select.selectedIndex = (select.selectedIndex + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length
+                        const delta = (event.key == 'ArrowDown' ? 1 : -1) + select.length
+                        if (legacy_select || !select.matches(':open'))
+                            select.selectedIndex = (select.selectedIndex + delta) % select.length
+                        else
+                            select.options[((select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + delta) % select.length].focus()
                         select.dispatchEvent(new Event('change', {bubbles: true}))
                     }
             })
@@ -488,6 +503,7 @@ function add_word(line=main.lastChild, current, before) {
                 current.replaceWith(select)
             else
                 selectors.appendChild(select)
+            legacy_select = getComputedStyle(select).appearance != 'base-select'
         })
         while (selectors.childElementCount > chars.length)
             selectors.lastChild.remove()

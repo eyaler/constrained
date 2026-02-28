@@ -368,7 +368,12 @@ function iframe_load_handler() {
     if (footer)
         footer.style.visibility = 'hidden'
     this.contentDocument.documentElement.style.overflowY = 'clip'  // Prevent redundant scrollbars in Chrome
-    new ResizeObserver(() => {const h = this.contentDocument.documentElement.scrollHeight; if (h >= 10800) console.warn(`Truncated height of ${this.contentDocument.title} from ${h}`); this.style.height = h + 'px'}).observe(this.contentDocument.documentElement)  // Note: vh units will be relative to the iframe and may cause excessive heights
+    new ResizeObserver(() => {
+        const h = this.contentDocument.documentElement.scrollHeight
+        if (h >= 10800)
+            console.warn(`Truncated height of ${this.contentDocument.title} from ${h}`)
+        this.style.height = h + 'px'
+    }).observe(this.contentDocument.documentElement)  // Note: vh units will be relative to the iframe and may cause excessive heights
 }
 
 
@@ -576,7 +581,15 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
                 page_items.forEach(p => p.firstChild.hash = p.classList.contains('_' + url_kw) ? url_kw : '')
             }
             const fg_rgb = getComputedStyle(document.documentElement).color
-            page_items.forEach(p => {const enabled = getComputedStyle(p).color == fg_rgb; p.querySelectorAll(':scope > a').forEach(a => {if (enabled) a.removeAttribute('aria-disabled'); else a.ariaDisabled = 'true'})})
+            page_items.forEach(p => {
+                const enabled = getComputedStyle(p).color == fg_rgb
+                p.querySelectorAll(':scope > a').forEach(a => {
+                    if (enabled)
+                        a.removeAttribute('aria-disabled')
+                    else
+                        a.ariaDisabled = 'true'
+                })
+            })
             if (reorder_contents)
                 document.querySelector('.contents').append(...[...page_items].sort((a, b) => (getComputedStyle(b).color == fg_rgb) - (getComputedStyle(a).color == fg_rgb) || a.id.split('_')[1] - b.id.split('_')[1]))
             if (on && this.id.match(/^kw_\d+$/))

@@ -126,7 +126,7 @@ const selects = {}
 let min_count = Infinity
 let max_count = 0
 let total = 0
-let last_hash, legacy_select, ready, skip_push
+let last_hash, legacy_select, ready, recent_input, skip_push
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -159,7 +159,12 @@ function update_output(text, push=true) {
 addEventListener('pagehide', () => update_output(null, false))
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_hyphen(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
 
-addEventListener('copy', event => {  // With no selection - Copy all; Allow copying selector value
+addEventListener('copy', event => {
+    /* Augment regular copy with:
+       1. On select element - Copy selected value (doesn't work for open legacy select elements in Chrome)
+       2. On output when no selection - Copy all output
+       3. Otherwise when no selection - Copy all input
+    */
     const ae = document.activeElement
     if ((event.target.selectionStart == event.target.selectionEnd || ae.closest('select')) && (ae == output || main.contains(ae))) {
         event.preventDefault()
@@ -190,9 +195,8 @@ function partial_match(dict_word, word_parts) {
     return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
-function paste_input(text='', focus=true, push=true, word=main, allow_single=true) {
-    const words = main.querySelectorAll('.word')
-    if (!words.length)
+function paste_input(text='', focus=true, push=true, word=main) {
+    if (!main.querySelectorAll('.word').length)
         return
     text = norm(text)
     const select = word.closest('select')
@@ -230,7 +234,8 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
         }
         return
     }
-    if (!allow_single && words.length > 1 && !text.match(/\s/))
+
+    if (word.tagName == 'INPUT' && !text.match(/\s/))
         return
     skip_push = true
     while (!word.classList.contains('word'))
@@ -262,8 +267,13 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
 }
 
 addEventListener('paste', event => {
+    /* Augment regular paste with:
+       1. On select element - Search for value with partial diacritics matching fallback (doesn't work for open legacy select elements in Chrome)
+       2. On input element when multiple words in clipboard - Replace element and everything afterwards with pasted words
+       3. Otherwise when not on output - Replace all input with pasted word(s)
+    */
     const ae = document.activeElement
-    if (ae != output && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae, ae.tagName != 'INPUT'))
+    if (ae != output && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae))
         event.preventDefault()
 })
 
@@ -338,6 +348,12 @@ function blur(event) {
         input.value = input.value.replace(/\s+/g, '')
 }
 
+addEventListener('focus', () => {
+    const input = recent_input?.deref()
+    if (input?.isConnected)
+        input.dispatchEvent(new FocusEvent('blur'))
+})
+
 function to_middle(text) {
     return text.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
 }
@@ -355,7 +371,7 @@ function add_word(line=main.lastChild, current, before) {
         if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
-        } else if (event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl)
+        } else if ((event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey)
             if (['End', 'ArrowDown'].includes(event.key)) {
                 if (event.key == 'End' && is_ctrl)
                     line = main.lastChild
@@ -370,7 +386,7 @@ function add_word(line=main.lastChild, current, before) {
                 elem.selectionEnd = 0
             }
         else if (['Enter', ' '].includes(event.key)
-            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !is_ctrl
+            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey && !is_ctrl
             || event.key == 'ArrowLeft' && !is_alt && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) {
@@ -411,9 +427,9 @@ function add_word(line=main.lastChild, current, before) {
                     if (line_had_text && !is_ctrl) {
                         const new_line = add_line(line)
                         if (!event.shiftKey) {
-                            cr = input.value.trim() && input.selectionEnd || word.previousElementSibling
+                            cr = input.value.trim() && input.selectionStart || word.previousElementSibling
                             let line_words = [...line.children]
-                            line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && input.selectionEnd || !input.value.trim() && !word.previousElementSibling))
+                            line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && !!input.selectionStart || !input.value.trim() && !word.previousElementSibling))
                             if (line_words.length) {
                                 input.removeEventListener('blur', blur)
                                 new_line.replaceChildren(...line_words)
@@ -429,8 +445,8 @@ function add_word(line=main.lastChild, current, before) {
                    elem = (line.nextElementSibling || main.firstChild).firstChild
             } else if (event.key != ' ')
                 elem = word.nextElementSibling || main.firstChild.firstChild
-            else if (input.value.trim())
-                elem = add_word(line, word, !input.selectionEnd)
+            else if (input.value.trim())  // ' '
+                elem = add_word(line, word, !input.selectionStart)
 
             if (elem) {
                 elem.firstChild.focus()
@@ -512,6 +528,7 @@ function add_word(line=main.lastChild, current, before) {
     })
 
     input.addEventListener('blur', blur)
+    recent_input = new WeakRef(word.firstChild)
     return word
 }
 

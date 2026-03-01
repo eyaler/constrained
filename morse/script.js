@@ -171,12 +171,12 @@ function norm(text) {
     return text.trim().replace(/[ \t\xa0]+/g, ' ').replace(/\s*\n\s*/g, '\n').replaceAll('\u05f3', "'").replaceAll('\u05f4', '"').replaceAll('\u2011', '-')
 }
 
-function remove_final_hyphen(text) {
-    return text.replace(/(?<=[\u05b0-\u05ea])\u05be$/, '')
+function norm_hyphen(text) {
+    return text.replace(/[ -]/g, '\u05be')
 }
 
-function norm_hyphen(text) {
-    return remove_final_hyphen(text.replace(/[ -]/g, '\u05be'))
+function remove_final_hyphen(text) {
+    return text.replace(/(?<=[\u05b0-\u05ea])\u05be$/, '')
 }
 
 function get_word_parts(word) {
@@ -199,7 +199,7 @@ function paste_input(text='', focus=true, push=true, word=main, allow_single=tru
     if (select) {
         if (!text.match(/[א-ת]/))
             return
-        text = norm_hyphen(text)
+        text = remove_final_hyphen(norm_hyphen(text))
         const len = select.options.length
         const index = legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)
         for (let i = 1; i <= len; i++) {
@@ -274,15 +274,17 @@ function paste_output(text='', focus=true, push=true) {
     paste_input(norm_text.replace(/[\u05b0-\u05ea'"]+/g, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(morse_regex, '').replace(hirik_regex, dit).replace(patah_kamats_regex, dah).replace(non_code_regex, '').replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
     main.querySelectorAll('select').forEach((select, i) => {
-        if (![...select.options].some(opt => remove_final_hyphen(opt.value) == output_words[i])) {
-            select.prepend(document.createElement('option'))
-            select.options[0].textContent = output_words[i]
+        let option = [...select.options].find(opt => remove_final_hyphen(opt.value) == remove_final_hyphen(output_words[i]))
+        if (!option) {
+            option = document.createElement('option')
+            option.textContent = output_words[i]
+            select.prepend(option)
             if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_hyphen(opt.value) == output_words[i])) {
                 selects[select.name].prepend(document.createElement('option'))
                 selects[select.name].options[0].textContent = output_words[i]
             }
         }
-        select.value = output_words[i]
+        option.selected = true
         select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
@@ -465,7 +467,7 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('change', () => {
                 if (select.name != joker) {
                     const options = [...selects[select.name].options]
-                    const option = options.find(opt => opt.value == select.value)
+                    const option = options[select.selectedIndex]
                     options.forEach(opt => opt.defaultSelected = false)
                     option.defaultSelected = true
                 }

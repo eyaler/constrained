@@ -195,6 +195,16 @@ function partial_match(dict_word, word_parts) {
     return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
+function select_option(option) {
+    const select = option.closest('select')
+    if (legacy_select || !select.matches(':open'))
+        option.selected = true
+    else
+        option.focus()
+    select.dispatchEvent(new Event('change', {bubbles: true}))
+    return true
+}
+
 function paste_input(text='', focus=true, push=true, word=main) {
     if (!main.querySelectorAll('.word').length)
         return
@@ -208,14 +218,8 @@ function paste_input(text='', focus=true, push=true, word=main) {
         const index = legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)
         for (let i = 1; i <= len; i++) {
             const option = select.options[(index + i) % len]
-            if (option.value.startsWith(text)) {
-                if (legacy_select || !select.matches(':open'))
-                    option.selected = true
-                else
-                    option.focus()
-                select.dispatchEvent(new Event('change', {bubbles: true}))
-                return true
-            }
+            if (option.value.startsWith(text))
+                return select_option(option)
         }
 
         if (text.length == 1)
@@ -223,14 +227,8 @@ function paste_input(text='', focus=true, push=true, word=main) {
         const word_parts = get_word_parts(text)
         for (let i = 1; i <= len; i++) {
             const option = select.options[(index + i) % len]
-            if (partial_match(option.value, word_parts)) {
-                if (legacy_select || !select.matches(':open'))
-                    option.selected = true
-                else
-                    option.focus()
-                select.dispatchEvent(new Event('change', {bubbles: true}))
-                return true
-            }
+            if (partial_match(option.value, word_parts))
+                return select_option(option)
         }
         return
     }
@@ -500,6 +498,16 @@ function add_word(line=main.lastChild, current, before) {
                     select.classList.remove('default')
                     if (event.key == 'Enter' && !is_ctrl && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
+                } else if (event.key == '-') {
+                    const len = select.options.length
+                    const index = legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)
+                    for (let i = 1; i <= len; i++) {
+                        const option = select.options[(index + i) % len]
+                        if (option.value.match('.\u05be.')) {
+                            select_option(option)
+                            break
+                        }
+                    }
                 } else if (!is_alt)
                     if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                         add_word(line)
@@ -509,12 +517,7 @@ function add_word(line=main.lastChild, current, before) {
                         all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
                     } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                         event.preventDefault()
-                        const delta = (event.key == 'ArrowDown' ? 1 : -1) + select.length
-                        if (legacy_select || !select.matches(':open'))
-                            select.selectedIndex = (select.selectedIndex + delta) % select.length
-                        else
-                            select.options[((select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + delta) % select.length].focus()
-                        select.dispatchEvent(new Event('change', {bubbles: true}))
+                        select_option(select.options[((legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
                     }
             })
             if (current)

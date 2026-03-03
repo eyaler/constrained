@@ -233,7 +233,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         return
     }
 
-    if (word.tagName == 'INPUT' && !text.match(/\s/))
+    if (word.tagName == 'INPUT' && !text.match(/\s/) || word.tagName == 'BODY' && join_inputs())
         return
     skip_push = true
     while (!word.classList.contains('word'))
@@ -268,11 +268,13 @@ addEventListener('paste', event => {
     /* Augment regular paste with:
        1. On select element - Search for value with partial diacritics matching fallback (doesn't work for open legacy select elements in Chrome)
        2. On input element when multiple words in clipboard - Replace element and everything afterwards with pasted words
-       3. Otherwise when not on output - Replace all input with pasted word(s)
+       3. Otherwise when not on output and when input is empty - Paste as input
     */
     const ae = document.activeElement
-    if (ae != output && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae))
-        event.preventDefault()
+    try {
+        if (ae != output && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae))
+            event.preventDefault()
+    } catch {}
 })
 
 function paste_output(text='', focus=true, push=true) {

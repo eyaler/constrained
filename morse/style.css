@@ -33,6 +33,7 @@ main:not(:has(.word)) ~ #output {
 
 .word > input {
     box-sizing: border-box;
+    margin-bottom: 1px;
     min-width: 5em;
     unicode-bidi: bidi-override;
     width: 100%;
@@ -44,9 +45,13 @@ main:not(:has(.word)) ~ #output {
 }
 
 .word select {
-    border-radius: 0;
+    border-radius: 2px;
     border-style: solid;
     border-width: 1px;
+}
+
+.word select + select {
+    margin-inline-start: 1px;
 }
 
 .default:not(:has(:only-child)) {

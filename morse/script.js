@@ -289,6 +289,10 @@ function paste_output(text='', focus=true, push=true) {
             option = document.createElement('option')
             option.textContent = output_words[i]
             select.prepend(option)
+            if (select.dataset.old_index)
+                select.dataset.old_index = +select.dataset.old_index + 1
+            if (select.dataset.last_index)
+                select.dataset.last_index = +select.dataset.last_index + 1
             if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_hyphen(opt.value) == output_words[i])) {
                 selects[select.name].prepend(document.createElement('option'))
                 selects[select.name].options[0].textContent = output_words[i]
@@ -481,13 +485,17 @@ function add_word(line=main.lastChild, current, before) {
                 select.style.backgroundColor = rare_color
 
             select.addEventListener('change', () => {
+                select.classList.remove('default')
+                if (select.dataset.last_index != select.selectedIndex) {
+                    select.dataset.old_index = select.dataset.last_index ?? ''
+                    select.dataset.last_index = select.selectedIndex
+                }
                 if (select.name != joker) {
                     const options = [...selects[select.name].options]
                     const option = options[select.selectedIndex]
                     options.forEach(opt => opt.defaultSelected = false)
                     option.defaultSelected = true
                 }
-                select.classList.remove('default')
             })
 
             select.addEventListener('click', () => select.classList.remove('default'))
@@ -501,6 +509,7 @@ function add_word(line=main.lastChild, current, before) {
                     if (event.key == 'Enter' && !is_ctrl && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
                 } else if (event.key == '-') {
+                    event.preventDefault()
                     const len = select.options.length
                     const index = legacy_select ? select.selectedIndex : (select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0)
                     for (let i = 1; i <= len; i++) {
@@ -510,6 +519,9 @@ function add_word(line=main.lastChild, current, before) {
                             break
                         }
                     }
+                } else if (event.key == 'Backspace' && select.dataset.old_index) {
+                    event.preventDefault()
+                    select_option(select.options[select.dataset.old_index])
                 } else if (!is_alt)
                     if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                         add_word(line)

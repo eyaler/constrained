@@ -117,9 +117,9 @@ const morse = {
 const dont_show = 'äöšü'
 
 const article_fixes = {
-    hlba_kamats + 'עַם': hlbk_kamats + 'עָם',
-    hlbk_patah + 'הַר': hlbk_kamats + 'הָר',
-    hlbk_patah + 'פַּר': hlbk_patah + 'פָּר',
+    [hlbk_kamats + 'עַם']: hlbk_kamats + 'עָם',
+    [hlbk_patah + 'הַר']: hlbk_kamats + 'הָר',
+    [hlbk_patah + 'פַּר']: hlbk_patah + 'פָּר',
 }
 
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))

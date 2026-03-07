@@ -16,10 +16,12 @@ const dah = '-'
 const hirik = '\u05b4'
 const patah_kamats = '\u05b2\u05b7\u05b8'
 const bad_nikud = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
-const va = 'וַ'
-const la = 'לַ'
-const li = 'לִ'
+const hlbk_patah = 'הַַ'
+const hlbk_kamats = 'הָ'
+const lbk_a = 'לַַ'
+const lbk_i = 'לִ'
 const mi = 'מִ'
+const va = 'וַ'
 
 if (!special.includes(default_sep))
     special += default_sep
@@ -115,9 +117,9 @@ const morse = {
 const dont_show = 'äöšü'
 
 const article_fixes = {
-    'הָעַם': 'הָעָם',
-    'הַהַר': 'הָהָר',
-    'הַפַּר': 'הָפָּר',
+    hlba_kamats + 'עַם': hlbk_kamats + 'עָם',
+    hlbk_patah + 'הַר': hlbk_kamats + 'הָר',
+    hlbk_patah + 'פַּר': hlbk_patah + 'פָּר',
 }
 
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
@@ -610,12 +612,12 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah) {
                     if (add_prefix_article)
-                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => 'ה' + ('ארע'.includes(word[0]) ? '\u05b8' : '\u05b7') + add_dagesh(word)).map(word => article_fixes[word] || word))
+                        extend_dict(char, words.filter(word => morse_words_types[tail_char][word] == 2 && !word.match(/[ \u05be]|^[החע]\u05b8/)).map(word => ('ארע'.includes(word[0]) ? hlbk_kamats : hlbk_patah) + add_dagesh(word)).map(word => article_fixes[word] || word))
                     if (add_prefix_prep)
-                        extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => (morse_words_types[tail_char][word] ? la : va) + word))
+                        extend_dict(char, words.filter(word => word.match(/^[אהחע]\u05b2/)).map(word => (morse_words_types[tail_char][word] ? lbk_a : va) + word))
                 } else if (add_prefix_prep) {
                     words = words.filter(word => morse_words_types[tail_char][word])
-                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => li + (word[0] == 'י' ? word.replace('\u05b0', '') : word.replace(/(?<=^.)\u05bc/, ''))))
+                    extend_dict(char, words.filter(word => word.match(/^.[\u05bc\u05c1\u05c2]?\u05b0/)).map(word => lbk_i + (word[0] == 'י' ? word.replace('\u05b0', '') : word.replace(/(?<=^.)\u05bc/, ''))))
                     extend_dict(char, words.filter(word => !'אהחער'.includes(word[0])).map(word => mi + add_dagesh(word)))
                 }
             }

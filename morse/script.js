@@ -646,7 +646,6 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
     }
 
     ready = true
-
     add_first_word()
     paste_hash()
     //save_words(morse_words)

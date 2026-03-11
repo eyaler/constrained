@@ -607,7 +607,7 @@ fetch('morse.json').then(response => response.json()).then(morse_words_types => 
             const tail_char = reverse_morse[code.slice(1)]
             let words
             if (tail_char in morse_words_types)
-                words = Object.keys(morse_words_types[tail_char])
+                words = Object.keys(morse_words_types[tail_char]).filter(word => !word.match(/^וְ(\p{L}\p{M}*){2}[ \u05be]\p{L}/u))
             if (words) {
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah) {

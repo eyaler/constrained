@@ -139,7 +139,7 @@ function join_inputs() {
 }
 
 function make_hash() {
-    return encodeURIComponent('\t' + output.value)
+    return encodeURIComponent('\t' + output.value).replace(/\p{P}(?=\p{P}*$)/gu, c => `%${c.charCodeAt().toString(16).toUpperCase()}`)
 }
 
 function update_output(text, push=true) {

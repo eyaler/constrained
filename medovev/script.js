@@ -125,7 +125,7 @@ function share(remove) {
     let text = editing.value
     if (remove)
         text = remove_diacritics(text)
-    const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + text)
+    const url = location.href.replace(location.hash, '') + '#' + encodeURIComponent('\t' + text).replace(/\p{P}(?=\p{P}*$)/gu, c => `%${c.charCodeAt().toString(16).toUpperCase()}`)
     navigator.share?.({url, text, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)
 }
 

@@ -118,7 +118,7 @@
         function make_fire() {
             const start_time = performance.now()
             for (let i = w; i < len; i++) {
-                const index = indices[i] - (Math.random()*(factor+(indices[i] == rgb.length - 1)*.2)|0)
+                const index = indices[i] - (Math.random()*(factor+(indices[i] == rgb.length - 1)*.2) | 0)
                 if (index >= 0) {
                     const k = i * 4
                     ;[data[k], data[k + 1], data[k + 2]] = rgb[index]

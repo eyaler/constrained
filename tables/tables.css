@@ -18,7 +18,6 @@ table {
     --tables_frag_dur: var(--frag_dur, 7s);
     --tables_icon_dur: var(--icon_dur, .3s);
 
-    border-collapse: separate;
     border-spacing: 0;  /* Workaround for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=688556#c51 */
     font-size: initial;
     font-variant-numeric: lining-nums tabular-nums;
@@ -166,7 +165,7 @@ thead button:active {
 
 thead.data_header {
     border-bottom-style: double;
-    border-color: currentcolor;
+    border-color: currentColor;  /* Needed in Chrome for border-collapse: collapse; See: https://issues.chromium.org/issues/494554835 */
 }
 
 tr {

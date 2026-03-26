@@ -8,15 +8,26 @@
     font-family: Alef, Arial, sans-serif;
 }
 
-#buttons {
+#controls > div {
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
+    margin-bottom: 2em;
 }
 
-#buttons:not(:has(~ main .word)),
+#controls:not(:has(~ main .word)),
 main:not(:has(.word)) ~ #output {
     display: none;
+}
+
+#checkboxes {
+    font-size: .833em;
+}
+
+#checkboxes span {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
 }
 
 .line {

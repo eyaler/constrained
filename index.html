@@ -10,31 +10,39 @@
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
     <noscript><style>body {visibility: visible}</style></noscript>
     <style>
-        @media (hover: hover) {
-            @keyframes stroke {
-                50% { -webkit-text-stroke-color: var(--fg_dim) }
-            }
+        @keyframes stroke {
+            50% { -webkit-text-stroke-color: var(--fg_dim) }
+        }
 
-            #dot:is(:hover, :focus-visible) {
-                animation: var(--icon_dur) infinite stroke;
-                -webkit-text-stroke-width: 1px;
-            }
+        #dot:is(:hover, :focus-visible), .zoom #dot {
+            animation: var(--icon_dur) infinite stroke;
+            -webkit-text-stroke-width: 1px;
         }
 
         #dot {
             display: inline-block;
             line-height: .3;
-            margin-inline: -.25em -.1em;
+            margin-inline: -.29em -.1em;
             padding-bottom: .1em;
-            padding-inline-start: .3em;
+            padding-inline-start: .34em;
             position: relative;
             text-decoration: none;
             -webkit-user-select: none;
             user-select: none;
         }
+
+        body {
+            transition: transform 5s cubic-bezier(1, 0, 1, 0);
+        }
+
+        .zoom {
+            overflow: hidden;
+            pointer-events: none;
+            transform: translate(var(--x), var(--y)) scale(2000);
+        }
     </style>
 </head>
-<body onload="document.body.style.visibility = 'visible'">
+<body onload="document.body.style.visibility = 'visible'" onpageshow="if (event.persisted) location.reload()">
     <noscript dir="ltr"><p>Please enable JavaScript to view contents.</p></noscript>
     <script>
         make_header()
@@ -43,7 +51,25 @@
         p.className = 'preface_he'
         const author = document.querySelector('.author')
         author.before(p)
-        author.firstChild.innerHTML = author.firstChild.innerHTML.replace(/([א-ת]+)(\u05bc)([א-ת]*)/, `<span class="nowrap">$1<a id="dot" href="${page2url('me/')}">$2</a>$3</span>`)
+
+        function zoom(event) {
+            event.preventDefault()
+            addEventListener('wheel', e => e.preventDefault())
+            document.documentElement.style.touchAction = 'none'
+            const vv = window.visualViewport
+            const rect = dot.getBoundingClientRect()
+            const ox = scrollX + rect.left + rect.width/2
+            const oy = scrollY + rect.top + rect.height/2
+            const body = document.body
+            const style = body.style
+            style.setProperty('transform-origin', `${ox}px ${oy}px`);
+            style.setProperty('--x', `${vv.pageLeft + vv.width/2 - ox}px`)
+            style.setProperty('--y', `${vv.pageTop + vv.height/2 - oy}px`)
+            body.addEventListener('transitionend', e => location = page2url('me/'))
+            body.classList.add('zoom')
+        }
+
+        author.firstChild.innerHTML = author.firstChild.innerHTML.replace(/([א-ת]+)(\u05bc)([א-ת]*)/, `<span class="nowrap">$1<a id="dot" href="#" onclick="zoom(event)">$2</a>$3</span>`)
         make_contents()
         make_footer()
     </script>

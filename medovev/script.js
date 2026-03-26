@@ -104,7 +104,7 @@ function update(text, protect=true) {
     counts.innerHTML = `מילים:&nbsp;<output>${words.toLocaleString()}</output>\t\tאותיות:&nbsp;<output>${normalized.length.toLocaleString()}</output>`
     palindrome.textContent = is_palindrome
     palindrome.classList.toggle('bio', bio)
-    pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match('[א-ת]') ? 'פנגרמה מושלמת (עברית)' : ''
+    pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match(/[א-ת]/) ? 'פנגרמה מושלמת (עברית)' : ''
 }
 
 function copy(remove) {

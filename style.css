@@ -401,8 +401,6 @@ button, pre {
 
 .contents > p > a img {
     aspect-ratio: 16 / 9;
-    border-color: var(--fg);
-    border-width: 1px;
     display: block;
     margin-bottom: 1rem;
     object-fit: cover;
@@ -1124,7 +1122,7 @@ a.sponsors {
 
 .subscribe {
     animation: 50s linear infinite border_dance;
-    background-image: linear-gradient(90deg, currentcolor 50%, transparent 50%), linear-gradient(90deg, currentcolor 50%, transparent 50%), linear-gradient(0, currentcolor 50%, transparent 50%), linear-gradient(0, currentcolor 50%, transparent 50%);
+    background-image: linear-gradient(90deg, currentColor 50%, transparent 50%), linear-gradient(90deg, currentColor 50%, transparent 50%), linear-gradient(0, currentColor 50%, transparent 50%), linear-gradient(0, currentColor 50%, transparent 50%);
     background-position: 0 0, 100% 100%, 0 100%, 100% 0;
     background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
     background-size: .5rem 2px, .5rem 2px, 2px .5rem, 2px .5rem;
@@ -1188,6 +1186,7 @@ video::-webkit-media-controls-enclosure {  /* Not supported in Firefox */
 .video {
     aspect-ratio: 16 / 9;
     border: none;
+    clip-path: inset(1px);
     margin-block: 3rem;
     max-height: var(--max_media_height);
     max-width: calc(var(--max_media_height) * 16 / 9);

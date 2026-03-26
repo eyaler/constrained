@@ -10,13 +10,61 @@
     <noscript><style>body {visibility: visible}</style></noscript>
 </head>
 <body onload="document.body.style.visibility = 'visible'" onpopstate="paste_hash(true)">
-    <div id="buttons">
-        <button onclick="paste_input()" title="Clear">נקה</button>
-        <button onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
-        <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
-        <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
-        <button onclick="navigator.clipboard.writeText(output.value)" title="Copy output">העתק פלט</button>
-        <button id="share_button" onclick="share()" title="Share">שתף</button>
+    <div id="controls">
+        <div id="checkboxes" title="שימו לב: הוספת/הסרת הסימון אינו מבטיח הוספת/הסרת כל ההיקרויות">
+            <label>
+                <input id="allow_subpar_declensions" type="checkbox" autocomplete="off">
+                <span>נטיות השם</span>
+            </label>
+            <label>
+                <input id="add_prep_b" type="checkbox" autocomplete="off">
+                <span>בִּ/בַּ לא מיודעת</span>
+            </label>
+            <label>
+                <input id="add_article_b" type="checkbox" autocomplete="off">
+                <span>בַּ/בָּ מיודעת</span>
+            </label>
+            <label>
+                <input id="add_article_h" type="checkbox" autocomplete="off" checked>
+                <span>הַ/הָ הידיעה</span>
+            </label>
+            <label>
+                <input id="add_prep_v" type="checkbox" autocomplete="off">
+                <span>וִ/וַ החיבור</span>
+            </label>
+            <label>
+                <input id="add_prep_k" type="checkbox" autocomplete="off">
+                <span>כִּ/כַּ לא מיודעת</span>
+            </label>
+            <label>
+                <input id="add_article_k" type="checkbox" autocomplete="off">
+                <span>כַּ/כָּ מיודעת</span>
+            </label>
+            <label>
+                <input id="add_prep_l" type="checkbox" autocomplete="off" checked>
+                <span>לִ/לַ לא מיודעת</span>
+            </label>
+            <label>
+                <input id="add_article_l" type="checkbox" autocomplete="off">
+                <span>לַ/לָ מיודעת</span>
+            </label>
+            <label>
+                <input id="add_prep_m" type="checkbox" autocomplete="off" checked>
+                <span>מִ השימוש</span>
+            </label>
+            <label>
+                <input id="allow_shva_na" type="checkbox" autocomplete="off">
+                <span>שווא נע</span>
+            </label>
+        </div>
+        <div id="buttons">
+            <button onclick="paste_input()" title="Clear">נקה</button>
+            <button id="paste_input_button" onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
+            <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
+            <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
+            <button onclick="navigator.clipboard.writeText(output.value)" title="Copy output">העתק פלט</button>
+            <button id="share_button" onclick="share()" title="Share">שתף</button>
+        </div>
     </div>
     <main id="main"></main>
     <textarea id="output" autocomplete="off" autocorrect="off"></textarea>

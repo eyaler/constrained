@@ -46,11 +46,6 @@
     <noscript dir="ltr"><p>Please enable JavaScript to view contents.</p></noscript>
     <script>
         make_header()
-        const p = document.createElement('p')
-        p.textContent = 'מרחב של שיח תואם ובו מ־אות חישל שבח רם:'
-        p.className = 'preface_he'
-        const author = document.querySelector('.author')
-        author.before(p)
 
         function zoom(event) {
             event.preventDefault()
@@ -65,10 +60,15 @@
             style.setProperty('transform-origin', `${ox}px ${oy}px`);
             style.setProperty('--x', `${vv.pageLeft + vv.width/2 - ox}px`)
             style.setProperty('--y', `${vv.pageTop + vv.height/2 - oy}px`)
-            body.addEventListener('transitionend', e => location = page2url('me/'))
+            body.addEventListener('transitionend', () => location = page2url('me/'))
             body.classList.add('zoom')
         }
 
+        const p = document.createElement('p')
+        p.textContent = 'מרחב של שיח תואם ובו מ־אות חישל שבח רם:'
+        p.className = 'preface_he'
+        const author = document.querySelector('.author')
+        author.before(p)
         author.firstChild.innerHTML = author.firstChild.innerHTML.replace(/([א-ת]+)(\u05bc)([א-ת]*)/, `<span class="nowrap">$1<a id="dot" href="#" onclick="zoom(event)">$2</a>$3</span>`)
         make_contents()
         make_footer()

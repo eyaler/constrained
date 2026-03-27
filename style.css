@@ -61,12 +61,13 @@
 
     --article_width: none;
     --font_size: 1.3rem;
+    --frag_dur: 7s;
     --h1_size: clamp(1.5em, 5rem, 10vw);
     --hor_scrollbar_offset: 16px;
+    --icon_dur: .3s;
     --larger_font: clamp(1.3em, 2rem, 2vw);
     --max_media_height: 85vh;
     --media_width: 85%;
-    --frag_dur: 7s;
 
     /* Following variables must use units that are not relative to elements (i.e. avoid %, em, ex) */
     --main_margin: max(2rem, 5vw);
@@ -127,7 +128,6 @@ body.todark, .todark ::backdrop {
 @media (hover: hover) {
     :root, :host(.root) {
         --back: 1;
-        --icon_dur: .3s;
     }
 
     :where(:not(input[type=checkbox])):focus-visible, .outline {

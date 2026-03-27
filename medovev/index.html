@@ -14,6 +14,11 @@
 </head>
 <body onload="document.body.style.visibility = 'visible'; editing.focus(); const hash = decodeURIComponent(location.hash.slice(1)); content = hash[0] == '\t' ? hash.slice(1) : editing.value; if (content) update(content, false)">
     <script>make_header()</script>
+    <p>
+        כלי עזר לחיבור ובדיקה של פלינדרומים,
+        <a href="#bio" onclick="open_internal_link(this)">ביו־פלינדרומים</a>,
+        ו<a href="#pangrams" onclick="open_internal_link(this)">פנגרמות מושלמות</a> עבריות.
+    </p>
     <div id="container">
         <textarea id="editing" class="outline" autocomplete="off" autocorrect="off" oninput="update(value)"></textarea>
         <div id="highlighting" aria-hidden="true"><span class="placeholder">ינסני!</span></div>
@@ -29,6 +34,11 @@
             <button id="share_button" onclick="share(event.ctrlKey || event.metaKey || event.button == 1)" onauxclick="share(true)" title="Share (+Ctrl to remove diacritics)">שתף</button>
         </span>
     </div>
+    <p dir="ltr">
+        An assistive tool for composing and checking palindromes,
+        <a href="#bio" onclick="open_internal_link(this)">bio-palindromes</a>,
+        and Hebrew <a href="#pangrams" onclick="open_internal_link(this)">perfect pangrams</a>.
+    </p>
     <script>
         make_footer()
     </script>

@@ -187,7 +187,7 @@ function update_output(text, push=true) {
 
 addEventListener('pagehide', () => update_output(null, false))
 main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_makaf(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
-checkboxes.addEventListener('change', () => {rebuild = true; build_selects(); rebuild = false})
+checkboxes.addEventListener('change', () => {if (ready) {rebuild = true; build_selects(); rebuild = false}})
 
 addEventListener('copy', event => {
     /* Augment regular copy with:

@@ -536,7 +536,7 @@ function add_word(line=main.lastChild, current, before) {
                     select.classList.remove('default')
                     if (event.key == 'Enter' && !is_meta && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
-                } else if ('-_'.includes(event.key)) {
+                } else if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
                     event.preventDefault()
                     const len = select.options.length
                     const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0

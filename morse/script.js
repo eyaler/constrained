@@ -396,10 +396,11 @@ function add_word(line=main.lastChild, current, before) {
     const selectors = word.appendChild(document.createElement('div'))
 
     input.addEventListener('keydown', event => {
+        const is_meta = event.ctrlKey || event.metaKey
         const is_ctrl = event.ctrlKey && !is_mac || event.metaKey && is_mac
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
         let line = word.parentElement
-        if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
+        if (event.key == 'Tab' && !event.shiftKey && !is_meta && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
         } else if ((event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey)
@@ -417,7 +418,7 @@ function add_word(line=main.lastChild, current, before) {
                 elem.selectionEnd = 0
             }
         else if (['Enter', ' '].includes(event.key)
-            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey && !is_ctrl
+            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey && !is_meta
             || event.key == 'ArrowLeft' && !is_alt && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) {
@@ -455,7 +456,7 @@ function add_word(line=main.lastChild, current, before) {
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
                 let cr
                 if (event.key == 'Enter')
-                    if (line_had_text && !is_ctrl) {
+                    if (line_had_text && !is_meta) {
                         const new_line = add_line(line)
                         if (!event.shiftKey) {
                             cr = input.value.trim() && input.selectionStart || word.previousElementSibling
@@ -528,12 +529,12 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('click', () => select.classList.remove('default'))
 
             select.addEventListener('keydown', event => {
-                const is_ctrl = event.ctrlKey && !is_mac || event.metaKey && is_mac
+                const is_meta = event.ctrlKey || event.metaKey
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
                 if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
                     select.classList.remove('default')
-                    if (event.key == 'Enter' && !is_ctrl && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
+                    if (event.key == 'Enter' && !is_meta && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
                 } else if ('-_'.includes(event.key)) {
                     event.preventDefault()
@@ -550,7 +551,7 @@ function add_word(line=main.lastChild, current, before) {
                     event.preventDefault()
                     select_option(select.options[select.dataset.old_index])
                 } else if (!is_alt)
-                    if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
+                    if (event.key == 'Tab' && !event.shiftKey && !is_meta && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                         add_word(line)
                     else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                         event.preventDefault()

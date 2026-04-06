@@ -2,6 +2,8 @@
 // https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
 // https://web.archive.org/web/20250122201357/https://phuoc.ng/collection/mirror-a-text-area/build-a-simple-code-editor/
 
+const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
+
 new ResizeObserver(() => container.style.height = editing.offsetHeight + 'px').observe(editing)
 
 function process(text, perfect) {
@@ -114,7 +116,7 @@ function copy(remove) {
     navigator.clipboard.writeText(text)
 }
 
-editing.addEventListener('copy', event => {  // With no selection - Copy all
+editing.addEventListener('copy', event => {  // When no selection - Copy all
     if (editing.selectionStart == editing.selectionEnd) {
         event.preventDefault()
         copy()

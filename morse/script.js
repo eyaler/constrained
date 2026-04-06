@@ -2,10 +2,10 @@ const error_color = 'red'
 const single_color = 'white'
 const rare_color = '#ff9999'
 const medium_color = '#ffcccc'
-const rare_frac = .15
-const medium_frac = .5
+const rare_count = 700
+const medium_count = 2000
 const limit = 0
-const subpar_declension_suffixes = ['הּ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
+const declension_suffixes = ['הּ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
 const prep_declensions1 = ['אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמָּדָהּ', 'עִמְּךָ']
 const prep_declensions2 = ['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן']
 let special = ',.*'  // Overrides Morse
@@ -16,6 +16,7 @@ const dah = '-'
 
 const dit_dah = dit + dah
 const makaf = '\u05be'
+const space_makaf_class = `[ ${makaf}]`
 const dagesh = '\u05bc'
 const dots = dagesh + '\u05c1\u05c2'
 const shva = '\u05b0'
@@ -48,7 +49,7 @@ const whitespace_regex = RegExp('[ \t\xa0]+', 'g')
 const newline_regex = RegExp('\\s*\n\\s*', 'g')
 
 const space_hyphen_regex = RegExp('[ -]', 'g')
-const middle_makaf_refex = RegExp(`.${makaf}.`)
+const middle_makaf_regex = RegExp(`.${makaf}.`)
 const final_makaf_regex = RegExp(`(?<=[${hebrew_block}])${makaf}$`)
 const word_parts_regex = RegExp(`\\p{L}[\\p{M}${makaf}'"]*`, 'gu')
 const alefbet_regex = RegExp(alefbet_class)
@@ -62,11 +63,12 @@ const a_vowel_regex = RegExp(`[${a_vowel}]`, 'g')
 const nikud_regex = RegExp(`[${good_nikud}]`)
 const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${good_nikud}][${dots}]*){2}`)
 
-const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2}[ ${makaf}]\\p{L}`, 'u')
-const skip_article_regex = RegExp(`[ ${makaf}]|^[החע]` + kamats)
+const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2} \\p{L}`, 'u')
+const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
 const hataf_patah_regex = RegExp('^[אהחע]' + hataf_patah)
 const initial_shva_regex = RegExp(`^.[${dots}]?${shva}`)
-const shva_na_regex = RegExp(`(?:^|[ ${makaf}])(?:[ילמנר]${shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]*${shva}ךָ`)
+const shva_na_regex = RegExp(`(?:^|${space_makaf_class})(?:[ילמנר]${shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]*${shva}ךָ| ${vav}${shva}(\\p{L}\\p{M}*){2}`, 'u')
+console.log(shva_na_regex)
 
 const morse_regex = RegExp(`[${dit_dah}]+`, 'g')
 const non_morse_regex = RegExp(`[^${dit_dah}]`)
@@ -148,6 +150,7 @@ const morse = {
 
 const dont_show = 'äöšü'
 
+const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))).sort(([,a], [,b]) => a.localeCompare(b)))
 const selects = {}
@@ -155,7 +158,7 @@ let morse_words_types
 let min_count = Infinity
 let max_count = 0
 let total_count = 0
-let last_hash, legacy_select, medium_count, rare_count, ready, rebuild, recent_input, skip_push
+let last_hash, legacy_select, ready, rebuild, recent_input
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -175,7 +178,7 @@ function update_output(text, push=true) {
             output.value = text
         else if (!push)
             history.replaceState(history.state, '', '#' + make_hash())
-        if (push && !skip_push) {
+        if (push) {
             const hash = make_hash()
             if (hash != last_hash) {
                 last_hash = hash
@@ -186,7 +189,7 @@ function update_output(text, push=true) {
 }
 
 addEventListener('pagehide', () => update_output(null, false))
-main.addEventListener('change', () => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_makaf(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep)))
+main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_makaf(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
 checkboxes.addEventListener('change', () => {if (ready) {rebuild = true; build_selects(); rebuild = false}})
 
 addEventListener('copy', event => {
@@ -210,7 +213,7 @@ function norm_hyphen(text) {
     return text.replace(space_hyphen_regex, makaf)
 }
 
-function remove_final_makaf(text) {
+function remove_final_makaf(text='') {
     return text.replace(final_makaf_regex, '')
 }
 
@@ -227,12 +230,11 @@ function partial_match(dict_word, word_parts) {
 
 function select_option(option) {
     const select = option.closest('select')
-    if (legacy_select || !select.matches(':open'))
+    if (legacy_select || !select.matches(':open')) {
         option.selected = true
-    else
+        select.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {skip_push: true}}))
+    } else
         option.focus()
-    select.dispatchEvent(new Event('change', {bubbles: true}))
-    return true
 }
 
 function paste_input(text='', focus=true, push=true, word=main) {
@@ -248,8 +250,10 @@ function paste_input(text='', focus=true, push=true, word=main) {
         const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
         for (let i = 1; i <= len; i++) {
             const option = select.options[(index + i) % len]
-            if (option.value.startsWith(text))
-                return select_option(option)
+            if (option.value.startsWith(text)) {
+                select_option(option)
+                return true
+            }
         }
 
         if (text.length == 1)
@@ -257,15 +261,16 @@ function paste_input(text='', focus=true, push=true, word=main) {
         const word_parts = get_word_parts(text)
         for (let i = 1; i <= len; i++) {
             const option = select.options[(index + i) % len]
-            if (partial_match(option.value, word_parts))
-                return select_option(option)
+            if (partial_match(option.value, word_parts)) {
+                select_option(option)
+                return true
+            }
         }
         return
     }
 
     if (word.tagName == 'INPUT' && !text.match(/\s/))
         return
-    skip_push = true
     while (!word.classList.contains('word'))
         word = word.querySelector('.word') || word.parentElement
     word.firstChild.selectionStart = word.firstChild.value.length
@@ -283,10 +288,9 @@ function paste_input(text='', focus=true, push=true, word=main) {
             if (j)
                 word = add_word(line)
             word.firstChild.value = text_word
-            word.firstChild.dispatchEvent(new Event('change', {bubbles: true}))
+            word.firstChild.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {skip_push: true}}))
         })
     })
-    skip_push = false
     if (push)
         update_output()
     if (focus)
@@ -314,7 +318,8 @@ function paste_output(text='', focus=true, push=true) {
     paste_input(norm_text.replace(hebrew_block_quotes_regex, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '').replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
     main.querySelectorAll('select').forEach((select, i) => {
-        let option = [...select.options].find(opt => remove_final_makaf(opt.value) == remove_final_makaf(output_words[i]))
+        const makafless = remove_final_makaf(output_words[i])
+        let option = [...select.options].find(opt => remove_final_makaf(opt.value) == makafless)
         if (!option) {
             option = document.createElement('option')
             option.textContent = output_words[i]
@@ -323,10 +328,8 @@ function paste_output(text='', focus=true, push=true) {
                 select.dataset.old_index = +select.dataset.old_index + 1
             if (select.dataset.last_index)
                 select.dataset.last_index = +select.dataset.last_index + 1
-            if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_makaf(opt.value) == output_words[i])) {
-                selects[select.name].prepend(document.createElement('option'))
-                selects[select.name].options[0].textContent = output_words[i]
-            }
+            if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_makaf(opt.value) == makafless))
+                selects[select.name].prepend(option.cloneNode(true))
         }
         option.selected = true
         select.dispatchEvent(new Event('change'))
@@ -345,7 +348,7 @@ function paste_output(text='', focus=true, push=true) {
 output.addEventListener('change', () => paste_output(output.value, false))
 
 output.addEventListener('keydown', event => {
-    if (event.key == 'Enter' && (event.ctrlKey || event.metaKey))
+    if (event.key == 'Enter' && (event.ctrlKey && !is_mac || event.metaKey && is_mac))
         paste_output(output.value, false)
 })
 
@@ -393,7 +396,7 @@ function add_word(line=main.lastChild, current, before) {
     const selectors = word.appendChild(document.createElement('div'))
 
     input.addEventListener('keydown', event => {
-        const is_ctrl = event.ctrlKey || event.metaKey
+        const is_ctrl = event.ctrlKey && !is_mac || event.metaKey && is_mac
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
         let line = word.parentElement
         if (event.key == 'Tab' && !event.shiftKey && !is_ctrl && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
@@ -511,7 +514,7 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('change', () => {
                 select.classList.remove('default')
                 if (select.dataset.last_index != select.selectedIndex) {
-                    select.dataset.old_index = select.dataset.last_index ?? ''
+                    select.dataset.old_index = select.dataset.last_index || ''
                     select.dataset.last_index = select.selectedIndex
                 }
                 if (select.name != joker) {
@@ -525,19 +528,19 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('click', () => select.classList.remove('default'))
 
             select.addEventListener('keydown', event => {
-                const is_ctrl = event.ctrlKey || event.metaKey
+                const is_ctrl = event.ctrlKey && !is_mac || event.metaKey && is_mac
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
                 if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
                     select.classList.remove('default')
                     if (event.key == 'Enter' && !is_ctrl && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
-                } else if (event.key == '-') {
+                } else if ('-_'.includes(event.key)) {
                     event.preventDefault()
                     const len = select.options.length
                     const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
                     for (let i = 1; i <= len; i++) {
-                        const option = select.options[(index + i) % len]
+                        const option = select.options[(index + (event.key == '-' ? i : -i) + len) % len]
                         if (option.value.match(middle_makaf_regex)) {
                             select_option(option)
                             break
@@ -628,11 +631,15 @@ function build_selects(focus=false) {
         morse_words[char] = [...new Set(morse_words[char].concat(new_words))]
     }
 
+    function filter_declensions(words) {
+        return words.filter(word => word_types[word] != 1 || word.match(`${space_makaf_class}.`) || prep_declensions1.includes(word) || prep_declensions2.includes(word) || !declension_suffixes.some(suffix => word.endsWith(suffix)))
+    }
+
     Object.entries(reverse_morse).forEach(([code, char]) => {
         if (!morse_words[char])
             morse_words[char] = []
-        if (!allow_subpar_declensions.checked)
-            morse_words[char] = morse_words[char].filter(word => word_types[word] != 1 || word.match(`[ ${makaf}].`) || prep_declensions1.includes(word) || prep_declensions2.includes(word) || !subpar_declension_suffixes.some(suffix => word.endsWith(suffix)))
+        if (!allow_declensions.checked)
+            morse_words[char] = filter_declensions(morse_words[char])
 
         const add_bvkl = [...bet.slice(0, add_prep_b.checked) + vav.slice(0, add_prep_v.checked) + kaf.slice(0, add_prep_k.checked) + lamed.slice(0, add_prep_l.checked)]
         const add_bhkl = [...bet.slice(0, add_article_b.checked) + he.slice(0, add_article_h.checked) + kaf.slice(0, add_article_k.checked) + lamed.slice(0, add_article_l.checked)]
@@ -641,6 +648,8 @@ function build_selects(focus=false) {
            || code[0] == dit && add_prep_m.checked)) {
             const tail_char = reverse_morse[code.slice(1)]
             let words = Object.keys(morse_words_types[tail_char]).filter(word => !word.match(conj_mwe_regex))
+            if (!allow_declensions.checked)
+                words = filter_declensions(words)
             if (words.length) {
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah)
@@ -661,10 +670,10 @@ function build_selects(focus=false) {
         }
 
         if (!allow_shva_na.checked)
-            morse_words[char] = morse_words[char].filter(word => !word.match(shva_na_regex))
-        if (morse_words[char][0] == '')
+            morse_words[char] = morse_words[char].filter(word => !word.match(shva_na_regex) && !word.match(conj_mwe_regex))
+        if (!morse_words[char][0])
             morse_words[char].shift()
-        if (morse_words[char].slice(-1)[0] == '')
+        if (!morse_words[char].slice(-1)[0])
             morse_words[char].pop()
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
@@ -678,13 +687,7 @@ function build_selects(focus=false) {
             counts.push(len)
         console.log(char, len)
     })
-
-    counts.sort((a, b) => a - b)
-    const rare_index = counts.length * rare_frac | 0
-    const medium_index = counts.length * medium_frac | 0
-    rare_count = (counts[rare_index]+counts[rare_index + 1]) / 2
-    medium_count = (counts[medium_index]+counts[medium_index + 1]) / 2
-    console.log({rare_count, medium_count, total_count})
+    console.log({total_count})
 
     for (const char of special) {
         selects[char] = document.createElement('select')

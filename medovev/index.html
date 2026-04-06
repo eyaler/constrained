@@ -30,8 +30,8 @@
             <span id="pangram"></span>
         </span>
         <span id="buttons" class="border">
-            <button onclick="copy(event.ctrlKey && !is_mac || event.metaKey && is_mac) || event.button == 1)" onauxclick="copy(true)" title="Copy (+Ctrl to remove diacritics)">העתק</button>
-            <button id="share_button" onclick="share(event.ctrlKey && !is_mac || event.metaKey && is_mac || event.button == 1)" onauxclick="share(true)" title="Share (+Ctrl to remove diacritics)">שתף</button>
+            <button onclick="copy(event.ctrlKey && !global_is_mac || event.metaKey && global_is_mac) || event.button == 1)" onauxclick="copy(true)" title="Copy (+Ctrl to remove diacritics)">העתק</button>
+            <button id="share_button" onclick="share(event.ctrlKey && !global_is_mac || event.metaKey && global_is_mac || event.button == 1)" onauxclick="share(true)" title="Share (+Ctrl to remove diacritics)">שתף</button>
         </span>
     </div>
     <p dir="ltr">

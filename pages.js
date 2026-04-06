@@ -161,7 +161,7 @@ const default_show_author = true
 
 let author_pages_folder = ''
 author_pages_folder = author_pages_folder.replace(/^[./]+|[./]+$/g, '')
-const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
+const global_is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
 
 
 function get_lang() {
@@ -409,13 +409,13 @@ function is_shortcut(event, shortcut) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt') && (event.ctrlKey && !is_mac || event.metaKey && is_mac) == shortcut.includes('ctrl') && event.shiftKey == shortcut.includes('shift')
+    return event_key == shortcut_key && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt') && (event.ctrlKey && !global_is_mac || event.metaKey && global_is_mac) == shortcut.includes('ctrl') && event.shiftKey == shortcut.includes('shift')
 }
 
 
 function add_shortcut(elem, shortcut) {
     if (shortcut) {
-        elem.ariaKeyShortcuts = shortcut.replaceAll('Ctrl', is_mac ? 'Meta' : 'Control').replaceAll(' ', '')
+        elem.ariaKeyShortcuts = shortcut.replaceAll('Ctrl', global_is_mac ? 'Meta' : 'Control').replaceAll(' ', '')
         addEventListener('keydown', event => {
             if (is_shortcut(event, shortcut)) {
                 event.preventDefault()

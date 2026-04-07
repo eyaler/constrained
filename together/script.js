@@ -258,10 +258,10 @@ function update() {
   const up = up_key || controls.querySelector('#up_button:active')
   const down = down_key || controls.querySelector('#down_button:active')
 
-  left_button.classList.toggle('on', left_key)
-  right_button.classList.toggle('on', right_key)
-  up_button.classList.toggle('on', up_key)
-  down_button.classList.toggle('on', down_key)
+  left_button.classList.toggle('always_on', left_key)
+  right_button.classList.toggle('always_on', right_key)
+  up_button.classList.toggle('always_on', up_key)
+  down_button.classList.toggle('always_on', down_key)
 
   me.classList.toggle('walk', !!(left || right || up || down))
   let step = walk_step

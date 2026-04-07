@@ -233,7 +233,8 @@ addEventListener('keydown', event => {
       down_key = true
     else if (event.key == 'Tab')
       change_word(random_text(anagrams))
-  }
+  } else
+    left_key = right_key = up_key = down_key = false
 })
 
 addEventListener('keyup', event => {

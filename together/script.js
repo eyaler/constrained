@@ -237,7 +237,7 @@ addEventListener('keydown', event => {
 })
 
 addEventListener('keyup', event => {
-  if (event.key.includes('Arrow') && !event.altKey && !event.getModifierState?.('AltGraph'))
+  if (event.key.includes('Arrow') && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph'))
     if (event.key == 'ArrowLeft')
       left_key = false
     else if (event.key == 'ArrowRight')

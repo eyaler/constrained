@@ -237,15 +237,14 @@ addEventListener('keydown', event => {
 })
 
 addEventListener('keyup', event => {
-  if (event.key.includes('Arrow') && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph'))
-    if (event.key == 'ArrowLeft')
-      left_key = false
-    else if (event.key == 'ArrowRight')
-      right_key = false
-    else if (event.key == 'ArrowUp')
-      up_key = false
-    else if (event.key == 'ArrowDown')
-      down_key = false
+  if (event.key == 'ArrowLeft')
+    left_key = false
+  else if (event.key == 'ArrowRight')
+    right_key = false
+  else if (event.key == 'ArrowUp')
+    up_key = false
+  else if (event.key == 'ArrowDown')
+    down_key = false
 })
 
 addEventListener('blur', () => (left_key = right_key = up_key = down_key = false))

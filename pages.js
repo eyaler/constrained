@@ -409,7 +409,7 @@ function is_shortcut(event, shortcut) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt') && (event.ctrlKey && !global_is_mac || event.metaKey && global_is_mac) == shortcut.includes('ctrl') && event.shiftKey == shortcut.includes('shift')
+    return event_key == shortcut_key && event.shiftKey == shortcut.includes('shift') && (event.ctrlKey && !global_is_mac && !event.metaKey || event.metaKey && global_is_mac && !event.ctrlKey) == shortcut.includes('ctrl') && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt')
 }
 
 
@@ -837,7 +837,14 @@ function remove_diacritics(s) {
 }
 
 
-addEventListener('keydown', e => {if (e.key == '~') document.body.classList.toggle('psycler')})
+addEventListener('keydown', event => {
+    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph')
+        && event.target.selectionStart != event.target.selectionEnd) {  // Remove selection
+        const caret = event.target.selectionDirection == 'forward' ? event.target.selectionEnd : event.target.selectionStart
+        event.target.setSelectionRange(caret, caret)
+    } else if (event.key == '~')
+        document.body.classList.toggle('psycler')
+})
 
 
 // FULLSCREEN

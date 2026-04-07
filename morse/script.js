@@ -397,7 +397,7 @@ function add_word(line=main.lastChild, current, before) {
 
     input.addEventListener('keydown', event => {
         const is_meta = event.ctrlKey || event.metaKey
-        const is_ctrl = event.ctrlKey && !is_mac || event.metaKey && is_mac
+        const is_ctrl = event.ctrlKey && !is_mac && !event.metaKey || event.metaKey && is_mac && !event.ctrlKey
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
         let line = word.parentElement
         if (event.key == 'Tab' && !event.shiftKey && !is_meta && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
@@ -593,9 +593,9 @@ function save_words(morse_words) {
     save.remove()
 }
 
-addEventListener('keydown', event => {  // Remove selection
+addEventListener('keydown', event => {
     if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph')
-        && event.target.selectionStart != event.target.selectionEnd) {
+        && event.target.selectionStart != event.target.selectionEnd) {  // Remove selection
         const caret = event.target.selectionDirection == 'forward' ? event.target.selectionEnd : event.target.selectionStart
         event.target.setSelectionRange(caret, caret)
     }

@@ -88,7 +88,7 @@ class Table {
             history.replaceState(new_state, '')
         }
         this.table.addEventListener('click', event => {
-            if (event.target.href && !event.getModifierState?.('Control') && !event.getModifierState?.('Shift') && !event.getModifierState?.('Meta'))
+            if (event.target.href && !event.shiftKey && !event.ctrlKey && !event.metaKey)
                 history.replaceState({...history.state, id: event.target.closest('tr')?.id, sort_index: this.sort_index, sort_order: this.sort_order}, '')
         })
         return state

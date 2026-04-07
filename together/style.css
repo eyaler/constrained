@@ -1,22 +1,10 @@
 main {
     align-content: center;
-    background-color: #eee;
-    background-image: linear-gradient(
-        45deg,
-        black 25%,
-        transparent 25% 75%,
-        black 75% 100%
-    ),
-    linear-gradient(
-        45deg,
-        black 25%,
-        transparent 25% 75%,
-        black 75% 100%
-    );
+    background-image: repeating-conic-gradient(black 0 25%, #eee 0 50%);
     --square_size: 50px;
     --x: 0;
     --y: 0;
-    background-position: var(--x) var(--y), calc(var(--x) + var(--square_size)) calc(var(--y) + var(--square_size));
+    background-position: var(--x) var(--y);
     background-size: calc(var(--square_size) * 2) calc(var(--square_size) * 2);
     display: grid;
     font-size: 10rem;

@@ -38,10 +38,10 @@ video {
     aspect-ratio: 8 / 3;
     --triangle_color: var(--fg_dim);
     background-color: transparent;
-    background-image: linear-gradient(to top right, transparent 80%, var(--triangle_color) 0), linear-gradient(to top left, var(--triangle_color) 20%, transparent 0);
-    background-position: bottom left, top left;
+    background-image: linear-gradient(30deg, transparent 80%, var(--triangle_color) 0), linear-gradient(-30deg, var(--triangle_color) 20%, transparent 0);
+    background-position-y: 100%, 0;
     background-repeat: no-repeat;
-    background-size: 31.5% 50.04%;
+    background-size: 30% 50%;
     border: none;
     display: flex;
     --dur: 5.8s;

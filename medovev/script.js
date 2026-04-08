@@ -95,16 +95,16 @@ function update(text, protect=true) {
         }
         if (is_palindrome) {
             const [normalized, positions] = process(text, true)
-            if (!check_inner(normalized) || check_bio(normalized))
+            if (normalized.includes(' ') && (!check_inner(normalized) || check_bio(normalized)))
                 is_palindrome += ' מושלם'
         }
     }
     marks.forEach(([pos, cls]) => text = text.slice(0, positions[pos]) + `<mark class="${cls}">${text[positions[pos]]}</mark>` + text.slice(positions[pos] + 1))
     highlighting.innerHTML = text.replaceAll('\uff1c', '&lt;')
-    counts.innerHTML = `מילים:&nbsp;<output>${words.toLocaleString()}</output>\t\tאותיות:&nbsp;<output>${normalized.length.toLocaleString()}</output>`
+    counts.innerHTML = `מילים:&nbsp;<output>${words.toLocaleString()}</output>\t\tאותיות:&nbsp;<output>${n.toLocaleString()}</output>`
     palindrome.textContent = is_palindrome
     palindrome.classList.toggle('bio', bio)
-    pangram.textContent = normalized.length == 22 && new Set(normalized).size == 22 && normalized.match(/[א-ת]/) ? 'פנגרמה מושלמת (עברית)' : ''
+    pangram.textContent = n % 22 == 0 && normalized.match(/^[א-ת]+$/) && normalized.match(/.{22}/g).every(m => new Set(m).size == 22) ? 'פנגרמה מושלמת' + (n > 22 ? ` (${n / 22}x)` : '') : ''
 }
 
 function copy(remove) {

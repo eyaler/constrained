@@ -396,14 +396,17 @@ function add_word(line=main.lastChild, current, before) {
     const selectors = word.appendChild(document.createElement('div'))
 
     input.addEventListener('keydown', event => {
-        const is_meta = event.ctrlKey || event.metaKey
-        const is_ctrl = event.ctrlKey && !is_mac && !event.metaKey || event.metaKey && is_mac && !event.ctrlKey
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
+        if (event.ctrlKey && is_mac || !is_mac && (event.metaKey || is_alt))
+            return
+        const is_ctrl = event.ctrlKey || event.metaKey
+        const is_mod = is_ctrl || is_alt
         let line = word.parentElement
-        if (event.key == 'Tab' && !event.shiftKey && !is_meta && !is_alt && input.value.trim() && !input.nextElementSibling.firstChild) {
+        const line_had_text = input.value.trim() || line.childElementCount > 1
+        if (event.key == 'Tab' && !event.shiftKey && !is_mod && input.value.trim() && !input.nextElementSibling.firstChild) {
             input.dispatchEvent(new Event('change'))
             input.dataset.skip_change = 1
-        } else if ((event.key == 'End' || event.key == 'Home' && !is_alt || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey)
+        } else if ((event.key == 'End' || event.key == 'Home' || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey && !is_alt)
             if (['End', 'ArrowDown'].includes(event.key)) {
                 if (event.key == 'End' && is_ctrl)
                     line = main.lastChild
@@ -417,14 +420,13 @@ function add_word(line=main.lastChild, current, before) {
                 elem.focus()
                 elem.selectionEnd = 0
             }
-        else if (['Enter', ' '].includes(event.key)
-            || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey && !is_meta
-            || event.key == 'ArrowLeft' && !is_alt && input.selectionStart == input.value.length
-            || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
-            || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) {
-            event.preventDefault()
+        else if (event.key == 'Enter' && (!line_had_text || is_ctrl) && !is_alt)
+            input.dispatchEvent(new Event('change', {bubbles: true}))
+        else if ((['Enter', ' '].includes(event.key) || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey) && !is_mod
+            || (event.key == 'ArrowLeft' && input.selectionStart == input.value.length
+            || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
+            || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) && !event.metaKey) {
             let elem
-            const line_had_text = input.value.trim() || line.childElementCount > 1
             if (event.key == 'Delete') {
                 const next_word = word.nextElementSibling
                 elem = next_word || line.nextElementSibling.firstChild
@@ -442,8 +444,12 @@ function add_word(line=main.lastChild, current, before) {
             } else if (event.key == 'Backspace' && input.value.trim() && !word.previousElementSibling) {
                 line.previousElementSibling.append(...line.children)
                 line.remove()
-                input.focus()
-                input.dispatchEvent(new Event('change', {bubbles: true}))
+                if (is_mod)
+                    elem = word.previousElementSibling
+                else {
+                    input.focus()
+                    input.dispatchEvent(new Event('change', {bubbles: true}))
+                }
             } else if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
                 if (event.key == 'ArrowUp' || !word.previousElementSibling) {
                     elem = line.previousElementSibling || main.lastChild
@@ -455,24 +461,22 @@ function add_word(line=main.lastChild, current, before) {
                     elem = word.previousElementSibling
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
                 let cr
-                if (event.key == 'Enter')
-                    if (line_had_text && !is_meta) {
-                        const new_line = add_line(line)
-                        if (!event.shiftKey) {
-                            cr = input.value.trim() && input.selectionStart || word.previousElementSibling
-                            let line_words = [...line.children]
-                            line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && !!input.selectionStart || !input.value.trim() && !word.previousElementSibling))
-                            if (line_words.length) {
-                                input.removeEventListener('blur', blur)
-                                new_line.replaceChildren(...line_words)
-                                input.addEventListener('blur', blur)
-                                if (!line.childElementCount)
-                                    add_word(line).firstChild.focus()
-                                input.dispatchEvent(new Event('change', {bubbles: true}))
-                            }
+                if (event.key == 'Enter') {
+                    const new_line = add_line(line)
+                    if (!event.shiftKey) {
+                        cr = input.value.trim() && input.selectionStart || word.previousElementSibling
+                        let line_words = [...line.children]
+                        line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && !!input.selectionStart || !input.value.trim() && !word.previousElementSibling))
+                        if (line_words.length) {
+                            input.removeEventListener('blur', blur)
+                            new_line.replaceChildren(...line_words)
+                            input.addEventListener('blur', blur)
+                            if (!line.childElementCount)
+                                add_word(line).firstChild.focus()
+                            input.dispatchEvent(new Event('change', {bubbles: true}))
                         }
-                    } else
-                        input.dispatchEvent(new Event('change', {bubbles: true}))
+                    }
+                }
                 if (event.key != 'Enter' || cr)
                    elem = (line.nextElementSibling || main.firstChild).firstChild
             } else if (event.key != ' ')
@@ -487,6 +491,8 @@ function add_word(line=main.lastChild, current, before) {
                 else if (['ArrowRight', 'Backspace'].includes(event.key))
                     document.activeElement.selectionStart = document.activeElement.value.length
             }
+            if (!is_mod)
+                event.preventDefault()
         }
     })
 
@@ -529,38 +535,39 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('click', () => select.classList.remove('default'))
 
             select.addEventListener('keydown', event => {
-                const is_meta = event.ctrlKey || event.metaKey
+                if (event.ctrlKey && is_mac || event.metaKey && !is_mac)
+                    return
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
-                if (['Enter', ' '].includes(event.key) || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
+                if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
                     select.classList.remove('default')
-                    if (event.key == 'Enter' && !is_meta && !is_alt)  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
+                    if (event.key == 'Enter')  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
-                } else if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
-                    event.preventDefault()
-                    const len = select.options.length
-                    const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
-                    for (let i = 1; i <= len; i++) {
-                        const option = select.options[(index + (event.key == '-' ? i : -i) + len) % len]
-                        if (option.value.match(middle_makaf_regex)) {
-                            select_option(option)
-                            break
-                        }
-                    }
-                } else if (event.key == 'Backspace' && select.dataset.old_index) {
-                    event.preventDefault()
-                    select_option(select.options[select.dataset.old_index])
                 } else if (!is_alt)
-                    if (event.key == 'Tab' && !event.shiftKey && !is_meta && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
-                        add_word(line)
-                    else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                    if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                        event.preventDefault()
+                        select_option(select.options[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
+                    } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                         event.preventDefault()
                         const all_selectors = main.querySelectorAll('select')
                         all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
-                    } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
-                        event.preventDefault()
-                        select_option(select.options[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
-                    }
+                    } else if (!event.ctrlKey && !event.metaKey)
+                        if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
+                            event.preventDefault()
+                            const len = select.options.length
+                            const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
+                            for (let i = 1; i <= len; i++) {
+                                const option = select.options[(index + (event.key == '-' ? i : -i) + len) % len]
+                                if (option.value.match(middle_makaf_regex)) {
+                                    select_option(option)
+                                    break
+                                }
+                            }
+                        } else if (event.key == 'Backspace' && select.dataset.old_index) {
+                            event.preventDefault()
+                            select_option(select.options[select.dataset.old_index])
+                        } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
+                            add_word(line)
             })
             if (current)
                 current.replaceWith(select)

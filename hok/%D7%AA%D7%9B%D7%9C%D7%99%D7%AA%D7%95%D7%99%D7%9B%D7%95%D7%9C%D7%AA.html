@@ -234,11 +234,12 @@
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', event => {
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
-                if (event.key == 'Enter'
-                    || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.ctrlKey && !event.metaKey
-                    || (event.key == 'ArrowLeft' && !is_alt || event.key == ' ' && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
-                    || (event.key == 'ArrowRight' && !is_alt || event.key == 'Backspace' && i) && !elem.selectionEnd) {
-                    event.preventDefault()
+                if (event.ctrlKey && global_is_mac || event.metaKey || is_alt && !global_is_mac)
+                    return
+                const is_mod = event.ctrlKey || is_alt
+                if (['Enter', 'ArrowDown', 'ArrowUp'].includes(event.key) && !is_mod
+                    || (event.key == 'ArrowLeft' || event.key == ' ' && !is_mod && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
+                    || (event.key == 'ArrowRight' || event.key == 'Backspace' && i) && !elem.selectionEnd) {
                     let step = 1
                     if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
                         step = -1
@@ -248,6 +249,8 @@
                         line.selectionEnd = 0
                     else if (['ArrowRight', 'Backspace'].includes(event.key))
                         line.selectionStart = line.value.length
+                    if (!is_mod)
+                        event.preventDefault()
                 }
             })
             elem.addEventListener('input', async () => {

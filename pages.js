@@ -143,7 +143,6 @@ const social = {
 }
 
 const shortcuts = {
-    "back": "Alt+Backspace",
     "next": "Alt+PageDown",
     "prev": "Alt+PageUp",
 }
@@ -403,6 +402,8 @@ function is_shortcut(event, shortcut) {
         shortcut_key = ' '
     else if (shortcut_key == 'plus')
         shortcut_key = '+'
+    else if (shortcut_key == 'minus')
+        shortcut_key = '-'
     let event_key = event.key.toLowerCase()
     if (shortcut_key == '+' && event.code == 'Equal' && !'-_'.includes(event.key)
         || shortcut_key == '-' && event.code == 'Minus' && !'+?\\'.includes(event.key)
@@ -415,7 +416,7 @@ function is_shortcut(event, shortcut) {
 
 function add_shortcut(elem, shortcut) {
     if (shortcut) {
-        elem.ariaKeyShortcuts = shortcut.replaceAll('Ctrl', global_is_mac ? 'Meta' : 'Control').replaceAll(' ', '')
+        elem.ariaKeyShortcuts = shortcut.replace(/ ?[+-] ?(?!$)/g, '+').replace(/Ctrl/i, global_is_mac ? 'Meta' : 'Control').replace(/ $/, 'Space').replace(/\+$/, 'plus')
         addEventListener('keydown', event => {
             if (is_shortcut(event, shortcut)) {
                 event.preventDefault()

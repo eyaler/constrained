@@ -68,7 +68,6 @@ const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
 const hataf_patah_regex = RegExp('^[אהחע]' + hataf_patah)
 const initial_shva_regex = RegExp(`^.[${dots}]?${shva}`)
 const shva_na_regex = RegExp(`(?:^|${space_makaf_class})(?:[ילמנר]${shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]*${shva}ךָ| ${vav}${shva}(\\p{L}\\p{M}*){2}`, 'u')
-console.log(shva_na_regex)
 
 const morse_regex = RegExp(`[${dit_dah}]+`, 'g')
 const non_morse_regex = RegExp(`[^${dit_dah}]`)
@@ -151,6 +150,7 @@ const morse = {
 const dont_show = 'äöšü'
 
 const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
+const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))).sort(([,a], [,b]) => a.localeCompare(b)))
 const selects = {}
@@ -511,11 +511,11 @@ function add_word(line=main.lastChild, current, before) {
             select.name = char
             if (char == joker)
                 select.style.backgroundColor = error_color
-            else if (selects[char].length == 1)
+            else if (select.length == 1)
                 select.style.backgroundColor = single_color
-            else if (selects[char].length <= rare_count && max_count > rare_count)
+            else if (select.length <= rare_count && max_count > rare_count)
                 select.style.backgroundColor = rare_color
-            else if (selects[char].length <= medium_count && min_count <= rare_count && max_count > medium_count)
+            else if (select.length <= medium_count && min_count <= rare_count && max_count > medium_count)
                 select.style.backgroundColor = medium_color
 
             select.addEventListener('change', () => {
@@ -532,7 +532,8 @@ function add_word(line=main.lastChild, current, before) {
                 }
             })
 
-            select.addEventListener('click', () => select.classList.remove('default'))
+            if (!is_firefox_android)  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
+                select.addEventListener('click', () => select.classList.remove('default'), {once: true})
 
             select.addEventListener('keydown', event => {
                 if (event.ctrlKey && is_mac || event.metaKey && !is_mac)
@@ -569,6 +570,7 @@ function add_word(line=main.lastChild, current, before) {
                         } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                             add_word(line)
             })
+
             if (current)
                 current.replaceWith(select)
             else
@@ -625,7 +627,6 @@ function add_dagesh(word) {
 
 function build_selects(focus=false) {
     ready = false
-    const counts = []
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
     prep_declensions2.forEach(word => {
@@ -691,8 +692,6 @@ function build_selects(focus=false) {
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)
         total_count += len
-        if (char.match(alefbet_regex))
-            counts.push(len)
         console.log(char, len)
     })
     console.log({total_count})

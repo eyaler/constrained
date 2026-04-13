@@ -532,8 +532,7 @@ function add_word(line=main.lastChild, current, before) {
                 }
             })
 
-            if (!is_firefox_android)  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
-                select.addEventListener('click', () => select.classList.remove('default'), {once: true})
+            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('default'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
 
             select.addEventListener('keydown', event => {
                 if (event.ctrlKey && is_mac || event.metaKey && !is_mac)

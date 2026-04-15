@@ -61,6 +61,7 @@ const pages = {
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "computational", "data available"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "computational", "new constraint"], with: "yaeltsabari"},
     "tarefet": {title: "טַרֶפֶת אותיות", alt: "Tarefet (anagram game)", kw: ["interactive"], with: "yaeltsabari"},
+    "morse/": {title: "עַלִּיזָה בַּתָּא – שִׁירִים מִן הַשְּׁבִי", alt: "Alice in crypts", kw: ["cipher", "new constraint", "poem", "tool"], skip: true},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
     "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "visual"], wip: true},

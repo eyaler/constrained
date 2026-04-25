@@ -365,28 +365,30 @@ output.addEventListener('keydown', event => {
         output.dispatchEvent(new Event('change'))
 })
 
-function find_best_word(phrase_words, index, candidate_words) {
+function optimize_word(phrase_words, index, candidate_words) {
+    if (candidate_words.length == 1)
+        return candidate_words[0]
     const probs = candidate_words.map(word => Math.random())  // Place holder pending implementation
     return candidate_words[probs.reduce((argmax, prob, i) => prob > probs[argmax] ? i : argmax, 0)]
 }
 
-function optimize_phrase_impl(words) {
+function optimize_phrase(words) {
     const all_words = Object.fromEntries([...new Set(words.map(([c, w]) => c))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
     words.map(([char, word], index) => [char, index])
          .sort((a, b) => proto_selects[a[0]].length - proto_selects[b[0]].length)
-         .forEach(([char, index]) => words[index] = find_best_word(words, index, all_words[char]))
+         .forEach(([char, index]) => words[index] = optimize_word(words, index, all_words[char]))
     return words
 }
 
-function optimize_phrase(selects) {
-    optimize_phrase_impl(selects.map(select => [select.name, select.value])).forEach((word, i) => {
+function suggest_phrase(selects) {
+    optimize_phrase(selects.map(select => [select.name, select.value])).forEach((word, i) => {
         selects[i].value = word
         selects[i].dispatchEvent(new Event('change'))
     })
     selects.length = 0
 }
 
-function optimize() {
+function suggest() {
     const start_time = performance.now()
     const selects = []
     main.querySelectorAll('.word > div').forEach(word => {
@@ -394,11 +396,11 @@ function optimize() {
             if (select.name in morse)
                 selects.push(select)
             else
-                optimize_phrase(selects)
-        optimize_phrase(selects)
+                suggest_phrase(selects)
+        suggest_phrase(selects)
     })
     main.dispatchEvent(new Event('change'))
-    console.log(`optimize took ${performance.now() - start_time | 0} ms.`)
+    console.log(`suggest took ${performance.now() - start_time | 0} ms.`)
 }
 
 function share() {

@@ -365,30 +365,37 @@ output.addEventListener('keydown', event => {
         output.dispatchEvent(new Event('change'))
 })
 
-function opt(selected_words) {
-    const words = Object.fromEntries([...new Set(selected_words.map(([c, w]) => c))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
-    return selected_words.map(([c, w]) => words[c][0])  // Place holder pending implementation
+function find_best_word(phrase_words, index, candidate_words) {
+    const probs = candidate_words.map(word => Math.random())  // Place holder pending implementation
+    return candidate_words[probs.reduce((argmax, prob, i) => prob > probs[argmax] ? i : argmax, 0)]
 }
 
-function optimize_part(part_selects) {
-    const optimized = opt(part_selects.map(select => [select.name, select.value]))
-    part_selects.forEach((select, i) => {
-        select.value = optimized[i]
-        select.dispatchEvent(new Event('change'))
+function optimize_phrase_impl(words) {
+    const all_words = Object.fromEntries([...new Set(words.map(([c, w]) => c))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
+    words.map(([char, word], index) => [char, index])
+         .sort((a, b) => proto_selects[a[0]].length - proto_selects[b[0]].length)
+         .forEach(([char, index]) => words[index] = find_best_word(words, index, all_words[char]))
+    return words
+}
+
+function optimize_phrase(selects) {
+    optimize_phrase_impl(selects.map(select => [select.name, select.value])).forEach((word, i) => {
+        selects[i].value = word
+        selects[i].dispatchEvent(new Event('change'))
     })
-    part_selects.length = 0
+    selects.length = 0
 }
 
 function optimize() {
     const start_time = performance.now()
-    const part_selects = []
+    const selects = []
     main.querySelectorAll('.word > div').forEach(word => {
         for (const select of word.children)
             if (select.name in morse)
-                part_selects.push(select)
+                selects.push(select)
             else
-                optimize_part(part_selects)
-        optimize_part(part_selects)
+                optimize_phrase(selects)
+        optimize_phrase(selects)
     })
     main.dispatchEvent(new Event('change'))
     console.log(`optimize took ${performance.now() - start_time | 0} ms.`)

@@ -153,7 +153,7 @@ const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iP
 const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')
 Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))).sort(([,a], [,b]) => a.localeCompare(b)))
-const selects = {}
+const proto_selects = {}
 let morse_words_types
 let min_count = Infinity
 let max_count = 0
@@ -175,7 +175,7 @@ function make_hash() {
 function update_output(text, push=true) {
     try {
         if (typeof text == 'string')
-            output.value = text
+            output.dataset.prev_value = output.value = text
         else if (!push)
             history.replaceState(history.state, '', '#' + make_hash())
         if (push) {
@@ -189,8 +189,8 @@ function update_output(text, push=true) {
 }
 
 addEventListener('pagehide', () => update_output(null, false))
-main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => remove_final_makaf(select.value)).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
-checkboxes.addEventListener('change', () => {if (ready) {rebuild = true; build_selects(); rebuild = false}})
+main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
+checkboxes.addEventListener('change', () => {if (ready) build_selects()})
 
 addEventListener('copy', event => {
     /* Augment regular copy with:
@@ -228,8 +228,7 @@ function partial_match(dict_word, word_parts) {
     return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
-function select_option(option) {
-    const select = option.closest('select')
+function select_option(select, option) {
     if (legacy_select || !select.matches(':open')) {
         option.selected = true
         select.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {skip_push: true}}))
@@ -238,6 +237,7 @@ function select_option(option) {
 }
 
 function paste_input(text='', focus=true, push=true, word=main) {
+    const start_time = performance.now()
     if (!main.querySelector('.word'))
         return
     text = norm(text)
@@ -246,12 +246,12 @@ function paste_input(text='', focus=true, push=true, word=main) {
         if (!text.match(alefbet_regex))
             return
         text = remove_final_makaf(norm_hyphen(text))
-        const len = select.options.length
+        const len = select.length
         const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
         for (let i = 1; i <= len; i++) {
-            const option = select.options[(index + i) % len]
+            const option = select[(index + i) % len]
             if (option.value.startsWith(text)) {
-                select_option(option)
+                select_option(select, option)
                 return true
             }
         }
@@ -260,9 +260,9 @@ function paste_input(text='', focus=true, push=true, word=main) {
             return
         const word_parts = get_word_parts(text)
         for (let i = 1; i <= len; i++) {
-            const option = select.options[(index + i) % len]
+            const option = select[(index + i) % len]
             if (partial_match(option.value, word_parts)) {
-                select_option(option)
+                select_option(select, option)
                 return true
             }
         }
@@ -295,6 +295,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         update_output()
     if (focus)
         main.querySelector('input').focus()
+    console.log(`paste_input took ${performance.now() - start_time | 0} ms.`)
     return true
 }
 
@@ -311,27 +312,31 @@ addEventListener('paste', event => {
     } catch {}
 })
 
+function find_option(select, value) {
+    return [...select].find(opt => opt.value == value)
+}
+
+function add_option(select, option) {
+    select.add(option, 0)
+    if (select.dataset.old_index)
+        select.dataset.old_index = +select.dataset.old_index + 1
+    if (select.dataset.last_index)
+        select.dataset.last_index = +select.dataset.last_index + 1
+    if (select.name != joker && ![...proto_selects[select.name]].some(opt => opt.value == option.value))
+        proto_selects[select.name].add(option.cloneNode(true), 0)
+    return option
+}
+
 function paste_output(text='', focus=true, push=true) {
+    const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
-    const prev_words = [...main.querySelectorAll('.word > div')].filter(selectors => [...selectors.children].some(select => select.length > 1)).map(selectors => [...selectors.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+    const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1)).map(div => [...div.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     const norm_text = norm(text)
     paste_input(norm_text.replace(hebrew_block_quotes_regex, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '').replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
     main.querySelectorAll('select').forEach((select, i) => {
         const makafless = remove_final_makaf(output_words[i])
-        let option = [...select.options].find(opt => remove_final_makaf(opt.value) == makafless)
-        if (!option) {
-            option = document.createElement('option')
-            option.textContent = output_words[i]
-            select.prepend(option)
-            if (select.dataset.old_index)
-                select.dataset.old_index = +select.dataset.old_index + 1
-            if (select.dataset.last_index)
-                select.dataset.last_index = +select.dataset.last_index + 1
-            if (select.name != joker && ![...selects[select.name].options].some(opt => remove_final_makaf(opt.value) == makafless))
-                selects[select.name].prepend(option.cloneNode(true))
-        }
-        option.selected = true
+        ;(find_option(select, makafless) || add_option(select, new Option(output_words[i], makafless != output_words[i] ? makafless : undefined))).selected = true
         select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
@@ -343,14 +348,51 @@ function paste_output(text='', focus=true, push=true) {
         const first_word = main.querySelector('.word')
         ;(first_word.firstChild.value ? add_word() : first_word).firstChild.focus()
     }
+    console.log(`paste_output+paste_input took ${performance.now() - start_time | 0} ms.`)
 }
 
-output.addEventListener('change', () => paste_output(output.value, false))
+output.addEventListener('change', () => {
+    if (output.value != (output.dataset.prev_value ?? '')) {
+        output.dataset.prev_value = output.value
+        paste_output(output.value, false)
+    }
+})
 
 output.addEventListener('keydown', event => {
-    if (event.key == 'Enter' && (event.ctrlKey && !is_mac || event.metaKey && is_mac))
-        paste_output(output.value, false)
+    if ((event.key == 'Enter' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)
+        || event.key == 'Tab' && event.shiftKey && !event.ctrlKey && !event.metaKey)
+        && !event.altKey && !event.getModifierState?.('AltGraph'))
+        output.dispatchEvent(new Event('change'))
 })
+
+function opt(selected_words) {
+    const words = Object.fromEntries([...new Set(selected_words.map(([c, w]) => c))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
+    return selected_words.map(([c, w]) => words[c][0])  // Place holder pending implementation
+}
+
+function optimize_part(part_selects) {
+    const optimized = opt(part_selects.map(select => [select.name, select.value]))
+    part_selects.forEach((select, i) => {
+        select.value = optimized[i]
+        select.dispatchEvent(new Event('change'))
+    })
+    part_selects.length = 0
+}
+
+function optimize() {
+    const start_time = performance.now()
+    const part_selects = []
+    main.querySelectorAll('.word > div').forEach(word => {
+        for (const select of word.children)
+            if (select.name in morse)
+                part_selects.push(select)
+            else
+                optimize_part(part_selects)
+        optimize_part(part_selects)
+    })
+    main.dispatchEvent(new Event('change'))
+    console.log(`optimize took ${performance.now() - start_time | 0} ms.`)
+}
 
 function share() {
     navigator.share?.({url: location, text: output.value, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(location)
@@ -393,7 +435,98 @@ function add_word(line=main.lastChild, current, before) {
     const word = line.insertBefore(document.createElement('div'), before ? current : current?.nextElementSibling)
     word.className = 'word'
     const input = word.appendChild(document.createElement('input'))
-    const selectors = word.appendChild(document.createElement('div'))
+    const select_container = word.appendChild(document.createElement('div'))
+
+    input.addEventListener('blur', blur)
+
+    input.addEventListener('change', e => {
+        if (input.value == (input.dataset.prev_value ?? '') && !rebuild)
+            return
+        input.dataset.prev_value = input.value
+        const prev_chars = [...select_container.children].map(select => select.name)
+        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => char in proto_selects)
+        const prev_len = prev_chars.length
+        const len = chars.length
+        const min_len = Math.min(len, prev_len)
+        let start = 0
+        let rev = 0
+        while (start < min_len && chars[start] == prev_chars[start])
+            start++
+        while (rev < min_len - start && chars[len - 1 - rev] == prev_chars[prev_len - 1 - rev])
+            rev++
+        for (let i = 0; i < prev_len - len; i++)
+            select_container.children[start].remove()
+
+        chars.forEach((char, i) => {
+            if ((i < start || i >= len - rev) && !rebuild)
+                return
+            const select = proto_selects[char].cloneNode(true)
+
+            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('default'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
+
+            select.addEventListener('change', () => {
+                select.classList.remove('default')
+                if (select.dataset.last_index != select.selectedIndex) {
+                    select.dataset.old_index = select.dataset.last_index || ''
+                    select.dataset.last_index = select.selectedIndex
+                }
+                if (select.name != joker) {
+                    const options = [...proto_selects[select.name]]
+                    const option = options[select.selectedIndex]
+                    options.forEach(opt => opt.defaultSelected = false)
+                    option.defaultSelected = true
+                }
+            })
+
+            select.addEventListener('keydown', event => {
+                if (event.ctrlKey && is_mac || event.metaKey && !is_mac)
+                    return
+                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
+                const line = word.parentElement
+                if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
+                    select.classList.remove('default')
+                    if (event.key == 'Enter')  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
+                        select.showPicker?.()
+                } else if (!is_alt)
+                    if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                        event.preventDefault()
+                        select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
+                    } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                        event.preventDefault()
+                        const all_selects = main.querySelectorAll('select')
+                        all_selects[([...all_selects].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selects.length) % all_selects.length].focus()
+                    } else if (!event.ctrlKey && !event.metaKey)
+                        if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
+                            event.preventDefault()
+                            const len = select.length
+                            const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
+                            for (let i = 1; i <= len; i++) {
+                                const option = select[(index + (event.key == '-' ? i : -i) + len) % len]
+                                if (option.value.match(middle_makaf_regex)) {
+                                    select_option(select, option)
+                                    break
+                                }
+                            }
+                        } else if (event.key == 'Backspace' && select.dataset.old_index) {
+                            event.preventDefault()
+                            select_option(select, select[select.dataset.old_index])
+                        } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
+                            add_word(line)
+            })
+
+            if (i >= start && i < len - rev)
+                select.classList.add('default')
+            else if (rebuild)
+                (find_option(select, select_container.children[i].value) || add_option(select, select_container.children[i].cloneNode(true))).selected = true
+
+            if (i >= start && select_container.childElementCount < len)
+                select_container.insertBefore(select, select_container.children[i]);
+            else
+                select_container.children[i].replaceWith(select)
+
+            legacy_select = getComputedStyle(select).appearance != 'base-select'
+        })
+    })
 
     input.addEventListener('keydown', event => {
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
@@ -403,10 +536,9 @@ function add_word(line=main.lastChild, current, before) {
         const is_mod = is_ctrl || is_alt
         let line = word.parentElement
         const line_had_text = input.value.trim() || line.childElementCount > 1
-        if (event.key == 'Tab' && !event.shiftKey && !is_mod && input.value.trim() && !input.nextElementSibling.firstChild) {
+        if (event.key == 'Tab' && !event.shiftKey && !is_mod)
             input.dispatchEvent(new Event('change'))
-            input.dataset.skip_change = 1
-        } else if ((event.key == 'End' || event.key == 'Home' || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey && !is_alt)
+        else if ((event.key == 'End' || event.key == 'Home' || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey && !is_alt)
             if (['End', 'ArrowDown'].includes(event.key)) {
                 if (event.key == 'End' && is_ctrl)
                     line = main.lastChild
@@ -420,9 +552,7 @@ function add_word(line=main.lastChild, current, before) {
                 elem.focus()
                 elem.selectionEnd = 0
             }
-        else if (event.key == 'Enter' && (!line_had_text || is_ctrl) && !is_alt)
-            input.dispatchEvent(new Event('change', {bubbles: true}))
-        else if ((['Enter', ' '].includes(event.key) || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey) && !is_mod
+        else if ((event.key == ' ' || event.key == 'Enter' && line_had_text || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey) && !is_mod
             || (event.key == 'ArrowLeft' && input.selectionStart == input.value.length
             || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) && !event.metaKey) {
@@ -496,91 +626,6 @@ function add_word(line=main.lastChild, current, before) {
         }
     })
 
-    input.addEventListener('change', () => {
-        if (input.dataset.skip_change) {
-            delete input.dataset.skip_change
-            return
-        }
-        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => char in selects)
-        chars.forEach((char, i) => {
-            const current = selectors.children[i]
-            if (current?.name == char && !rebuild)
-                return
-            const select = selects[char].cloneNode(true)
-            select.classList.add('default')
-            select.name = char
-            if (char == joker)
-                select.style.backgroundColor = error_color
-            else if (select.length == 1)
-                select.style.backgroundColor = single_color
-            else if (select.length <= rare_count && max_count > rare_count)
-                select.style.backgroundColor = rare_color
-            else if (select.length <= medium_count && min_count <= rare_count && max_count > medium_count)
-                select.style.backgroundColor = medium_color
-
-            select.addEventListener('change', () => {
-                select.classList.remove('default')
-                if (select.dataset.last_index != select.selectedIndex) {
-                    select.dataset.old_index = select.dataset.last_index || ''
-                    select.dataset.last_index = select.selectedIndex
-                }
-                if (select.name != joker) {
-                    const options = [...selects[select.name].options]
-                    const option = options[select.selectedIndex]
-                    options.forEach(opt => opt.defaultSelected = false)
-                    option.defaultSelected = true
-                }
-            })
-
-            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('default'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
-
-            select.addEventListener('keydown', event => {
-                if (event.ctrlKey && is_mac || event.metaKey && !is_mac)
-                    return
-                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
-                const line = word.parentElement
-                if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
-                    select.classList.remove('default')
-                    if (event.key == 'Enter')  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
-                        select.showPicker?.()
-                } else if (!is_alt)
-                    if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
-                        event.preventDefault()
-                        select_option(select.options[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
-                    } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
-                        event.preventDefault()
-                        const all_selectors = main.querySelectorAll('select')
-                        all_selectors[([...all_selectors].indexOf(select) + (event.key == 'ArrowLeft' ? 1 : -1) + all_selectors.length) % all_selectors.length].focus()
-                    } else if (!event.ctrlKey && !event.metaKey)
-                        if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
-                            event.preventDefault()
-                            const len = select.options.length
-                            const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
-                            for (let i = 1; i <= len; i++) {
-                                const option = select.options[(index + (event.key == '-' ? i : -i) + len) % len]
-                                if (option.value.match(middle_makaf_regex)) {
-                                    select_option(option)
-                                    break
-                                }
-                            }
-                        } else if (event.key == 'Backspace' && select.dataset.old_index) {
-                            event.preventDefault()
-                            select_option(select.options[select.dataset.old_index])
-                        } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
-                            add_word(line)
-            })
-
-            if (current)
-                current.replaceWith(select)
-            else
-                selectors.appendChild(select)
-            legacy_select = getComputedStyle(select).appearance != 'base-select'
-        })
-        while (selectors.childElementCount > chars.length)
-            selectors.lastChild.remove()
-    })
-
-    input.addEventListener('blur', blur)
     recent_input = new WeakRef(word.firstChild)
     return word
 }
@@ -625,7 +670,9 @@ function add_dagesh(word) {
 }
 
 function build_selects(focus=false) {
+    const start_time = performance.now()
     ready = false
+    rebuild = true
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
     prep_declensions2.forEach(word => {
@@ -679,15 +726,20 @@ function build_selects(focus=false) {
 
         if (!allow_shva_na.checked)
             morse_words[char] = morse_words[char].filter(word => !word.match(shva_na_regex) && !word.match(conj_mwe_regex))
+        morse_words[char] = morse_words[char].filter(word => !word.match(` |${makaf}$`) || !morse_words[char].includes(remove_final_makaf(word.replaceAll(' ', makaf))))
         if (!morse_words[char][0])
             morse_words[char].shift()
-        if (!morse_words[char].slice(-1)[0])
-            morse_words[char].pop()
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
-        selects[char] = document.createElement('select')
-        morse_words[char].filter(word => !word.match(` |${makaf}$`) || !morse_words[char].includes(remove_final_makaf(word.replaceAll(' ', makaf)))).forEach(word => selects[char].appendChild(document.createElement(word ? 'option' : 'hr')).textContent = word.replaceAll(' ', makaf))
-        const len = selects[char].length
+        if (!morse_words[char].slice(-1)[0])
+            morse_words[char].pop()
+        proto_selects[char] = document.createElement('select')
+        morse_words[char].forEach(word => {
+            word = word.replaceAll(' ', makaf)
+            const makafless = remove_final_makaf(word)
+            proto_selects[char].appendChild(word ? new Option(word, makafless != word ? makafless : undefined) : document.createElement('hr'))
+        })
+        const len = proto_selects[char].length
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)
         total_count += len
@@ -696,19 +748,36 @@ function build_selects(focus=false) {
     console.log({total_count})
 
     for (const char of special) {
-        selects[char] = document.createElement('select')
-        selects[char].appendChild(document.createElement('option')).textContent = char
+        proto_selects[char] = document.createElement('select')
+        proto_selects[char].add(new Option(char))
     }
 
     if (!main.querySelector('.line'))
         add_line().firstChild.firstChild.focus()
 
+    Object.entries(proto_selects).forEach(([char, select]) => {
+        select.name = char
+        if (char == joker)
+            select.style.backgroundColor = error_color
+        else if (select.length == 1)
+            select.style.backgroundColor = single_color
+        else if (select.length <= rare_count && max_count > rare_count)
+            select.style.backgroundColor = rare_color
+        else if (select.length <= medium_count && min_count <= rare_count && max_count > medium_count)
+            select.style.backgroundColor = medium_color
+    })
+
     ready = true
+    console.log(`build_selects took ${performance.now() - start_time | 0} ms.`)
     paste_hash(false, focus)
+    rebuild = false
     //save_words(morse_words)
 }
 
+const fetch_start_time = performance.now()
 fetch('morse.json').then(response => response.json()).then(json => {
     morse_words_types = json
+    console.log(`fetch took ${performance.now() - fetch_start_time | 0} ms.`)
     build_selects(true)
+    console.log(`Startup took ${performance.now() - fetch_start_time | 0} ms.`)
 })

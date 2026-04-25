@@ -10,7 +10,7 @@ const pages = {
     "me/": {title: "על אודותיי", alt: "About me", author: "eyalgruss", skip: true},
 
     "site/": {title: "אודות אסופה ואתר אלו", alt: "About this collection and website"},
-    "resen": {title: "רֶסֶן – כתב עת מקוון", alt: "Resen - online journal"},
+    "resen": {title: "רֶסֶן – כתב עת מקוון", alt: "Resen – online journal"},
     "longword": {title: "המילה הפלינדרומית הארוכה בעברית", alt: "Longest palindromic Hebrew word", kw: ["computational", "palindrome", "record"]},
     "squares": {title: "ריבועי הקסם הגדולים בעברית", alt: "Largest magic squares in Hebrew", kw: ["2d 3d", "computational", "hebrew cheatery", "palindrome", "record"]},
     "double": {title: "פלינדרום קפוא־כפול", alt: "Doubly-frozen palindrome", kw: ["cipher", "hebrew cheatery", "new constraint", "palindrome"]},
@@ -61,7 +61,7 @@ const pages = {
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "computational", "data available"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "computational", "new constraint"], with: "yaeltsabari"},
     "tarefet": {title: "טַרֶפֶת אותיות", alt: "Tarefet (anagram game)", kw: ["interactive"], with: "yaeltsabari"},
-    "morse/": {title: "עַלִּיזָה בַּתָּא – שִׁירִים מִן הַשְּׁבִי", alt: "Alice in crypts", kw: ["cipher", "new constraint", "poem", "tool"], skip: true},
+    "morse/": {title: "עַלִּיזָה בַּתָּא – שִׁירִים מִן הַשְּׁבִי", alt: "Alice in crypts – ballads midst captivity", kw: ["cipher", "new constraint", "poem", "tool"], skip: true},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
     "together/": {title: "הכי כיף ביחד", alt: "Most fun together", kw: ["combinatorial", "interactive", "live code", "visual"], wip: true},

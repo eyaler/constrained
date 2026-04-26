@@ -373,31 +373,48 @@ function optimize_word(phrase_words, index, candidate_words) {
 }
 
 function optimize_phrase(words) {
-    const all_words = Object.fromEntries([...new Set(words.map(([c, w]) => c))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
-    words.map(([char, word], index) => [char, index])
+    const all_words = Object.fromEntries([...new Set(words.map(w => w[0]))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
+    words.map(([char, word, adjustable], index) => [char, word, adjustable, index])
          .sort((a, b) => proto_selects[a[0]].length - proto_selects[b[0]].length)
-         .forEach(([char, index]) => words[index] = optimize_word(words, index, all_words[char]))
+         .forEach(([char, word, adjustable, index]) => words[index] = adjustable ? optimize_word(words, index, all_words[char]) : word)
     return words
 }
 
-function suggest_phrase(selects) {
-    optimize_phrase(selects.map(select => [select.name, select.value])).forEach((word, i) => {
-        selects[i].value = word
-        selects[i].dispatchEvent(new Event('change'))
+function suggest_phrase(selects, indices) {
+    optimize_phrase(selects.map((select, i) => [select.name, select.value, !indices.length || indices.includes(i)])).forEach((word, i) => {
+        if (!indices.length || indices.includes(i)) {
+            selects[i].value = word
+            selects[i].dispatchEvent(new Event('change'))
+        }
     })
     selects.length = 0
+    indices.length = 0
 }
+
+suggest_button.addEventListener('pointerdown', event => {
+    if (!event.button) {
+        const ae = document.activeElement
+        if (ae.tagName == 'INPUT' && main.contains(ae))
+            event.preventDefault()
+    }
+})
 
 function suggest() {
     const start_time = performance.now()
     const selects = []
-    main.querySelectorAll('.word > div').forEach(word => {
-        for (const select of word.children)
-            if (select.name in morse)
+    const ae = document.activeElement
+    const is_selection = ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart
+    const indices = []
+    ;(is_selection ? [ae.nextElementSibling] : main.querySelectorAll('.word > div')).forEach(word => {
+        ;[...word.children].forEach((select, i) => {
+            if (select.name in morse) {
+                if (i >= ae.selectionStart && i < ae.selectionEnd)
+                    indices.push(selects.length)
                 selects.push(select)
-            else
-                suggest_phrase(selects)
-        suggest_phrase(selects)
+            } else
+                suggest_phrase(selects, indices)
+        })
+        suggest_phrase(selects, indices)
     })
     main.dispatchEvent(new Event('change'))
     console.log(`suggest took ${performance.now() - start_time | 0} ms.`)
@@ -523,15 +540,15 @@ function add_word(line=main.lastChild, current, before) {
                             add_word(line)
             })
 
+            const prev_select = select_container.children[i]
             if (i >= start && i < len - rev)
                 select.classList.add('default')
             else if (rebuild)
-                (find_option(select, select_container.children[i].value) || add_option(select, select_container.children[i].cloneNode(true))).selected = true
-
+                (find_option(select, prev_select.value) || add_option(select, prev_select.selectedOptions[0].cloneNode(true))).selected = true
             if (i >= start && select_container.childElementCount < len)
-                select_container.insertBefore(select, select_container.children[i]);
+                select_container.insertBefore(select, prev_select);
             else
-                select_container.children[i].replaceWith(select)
+                prev_select.replaceWith(select)
 
             legacy_select = getComputedStyle(select).appearance != 'base-select'
         })

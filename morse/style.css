@@ -81,6 +81,17 @@ main:not(:has(.word)) ~ #output {
     white-space: pre-line;
 }
 
+#overlay {
+    background: none;
+    border: none;
+    outline: none;
+}
+
+#overlay::backdrop {
+    background: #0005;
+    cursor: wait;
+}
+
 #robot {
     display: inline-block;
 }
@@ -91,15 +102,4 @@ main:not(:has(.word)) ~ #output {
 
 .thinking {
     animation: 1s linear infinite spin;
-}
-
-#overlay {
-    background: none;
-    border: none;
-    outline: none;
-}
-
-#overlay::backdrop {
-    background: #0005;
-    cursor: wait;
 }

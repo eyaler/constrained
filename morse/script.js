@@ -8,6 +8,8 @@ const limit = 0
 const declension_suffixes = ['הּ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
 const prep_declensions1 = new Set('אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמָּדָהּ', 'עִמְּךָ')
 const prep_declensions2 = new Set('בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן')
+const model_id = 'eyaler/neodictabert-bilingual-onnx'
+const model_quant = 'int8'
 const num_tokens_for_empty = 1
 
 // These override Morse:
@@ -161,7 +163,7 @@ const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [v, k]))
 const proto_selects = {}
-let morse_words_types, homographs, min_count, max_count, total_count
+let morse_words_types, homographs
 let last_hash, legacy_select, ready, rebuild, recent_input
 let ort, session, tokenizer
 
@@ -411,7 +413,7 @@ async function download_model(url) {
     return blob.arrayBuffer()
 }
 
-async function load_model(model_id='eyaler/neodictabert-bilingual-onnx') {
+async function load_model(model_id, model_quant) {
     try {
         const start_time = performance.now()
         if (!tokenizer) {
@@ -422,7 +424,7 @@ async function load_model(model_id='eyaler/neodictabert-bilingual-onnx') {
         }
         ort = await import('https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/esm/ort.min.js')
         ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/'
-        session = await ort.InferenceSession.create(await download_model(`https://huggingface.co/${model_id}/resolve/main/model_int8.onnx`))
+        session = await ort.InferenceSession.create(await download_model(`https://huggingface.co/${model_id}/resolve/main/model${model_quant ? '_' + model_quant : ''}.onnx`))
         console.log(`load_model+download_model took ${performance.now() - start_time | 0} ms.`)
     } catch (error) {
         console.error(error)
@@ -436,14 +438,11 @@ async function tokenize(words, num_tokens=1) {
 
 async function optimize_word(phrase_words, index, candidate_tokens) {
     const lengths = Object.keys(candidate_tokens).map(Number)
-
     const prefix = await tokenize([tokenizer.config.cls_token, ...phrase_words.slice(0, index)], num_tokens_for_empty)
     const suffix = await tokenize([...phrase_words.slice(index + 1), tokenizer.config.sep_token], num_tokens_for_empty)
-    const mask_id = (await tokenize([tokenizer.config.mask_token])).ids[0]
-    const pad_id = tokenizer.config.pad_token_id || 0
-
+    const mask_id = tokenizer.token_to_id(tokenizer.config.mask_token)
+    const pad_id = tokenizer.token_to_id(tokenizer.config.pad_token)
     const batch_size = lengths.length
-
     const sequences = []
     let max_len = 0
 
@@ -468,8 +467,7 @@ async function optimize_word(phrase_words, index, candidate_tokens) {
     const data = logits.data
     const vocab_size = logits.dims[2]
     const target_index = prefix.ids.length
-
-    const candidate_results = []
+    const results = []
 
     for (let b = 0; b < batch_size; b++) {
         const len = lengths[b]
@@ -478,26 +476,17 @@ async function optimize_word(phrase_words, index, candidate_tokens) {
         for (const candidate of candidate_tokens[len]) {
             let sum = 0
             for (let i = 0; i < len; i++) {
-                const token_offset = batch_offset + ((target_index + i) * vocab_size)
+                const token_offset = batch_offset + (target_index+i)*vocab_size
                 sum += data[token_offset + candidate.ids[i]]
             }
-            candidate_results.push({
+            results.push({
                 word: candidate.word,
-                num_tokens: len,
                 score: sum / len
             })
         }
     }
 
-    candidate_results.sort((a, b) => b.score - a.score)
-    const best_word = candidate_results[0]?.word
-
-    const display_tokens = [...prefix.tokens, `[MASK]*[${lengths.join(',')}]`, ...suffix.tokens]
-    console.log(index, display_tokens, best_word)
-    console.log(`batch_size: ${batch_size}`)
-    console.table(candidate_results.slice(0, 10))
-
-    return best_word
+    return results.sort((a, b) => b.score - a.score)[0]?.word
 }
 
 async function optimize_phrase(words) {
@@ -542,7 +531,7 @@ async function suggest() {
     const ae = document.activeElement
     overlay.showModal()
     if (!tokenizer || !session)
-        await load_model()
+        await load_model(model_id, model_quant)
     if (session) {
         const start_time = performance.now()
         const selects = []
@@ -881,9 +870,9 @@ function build_selects(focus=false) {
 
     const seen = {}
     homographs = new Set()
-    min_count = Infinity
-    max_count = 0
-    total_count = 0
+    let min_count = Infinity
+    let max_count = 0
+    let total_count = 0
 
     Object.entries(reverse_morse).forEach(([code, char]) => {
         if (!morse_words[char])

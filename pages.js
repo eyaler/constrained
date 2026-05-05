@@ -567,7 +567,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
             const prefix = '.contents > p:not(.'
             const rules = css.cssRules
             let found
-            for (let i = rules.length - 1; i >= 0; i--)
+            for (let i = 0; i < rules.length; i++)
                 if (found = rules[i].selectorText?.slice(prefix.length, -1) == this.id.replace(/^kw/, '')) {
                     css.deleteRule(i)
                     break

@@ -61,11 +61,16 @@ main:not(:has(.word)) ~ #output {
     border-width: 1px;
 }
 
+.word select:focus {
+    outline-style: auto;
+    outline-width: 1px;
+}
+
 .word select + select {
     margin-inline-start: 1px;
 }
 
-.default:not(:has(:only-child)) {
+.untouched:not(:has(:only-child)) {
     color: blue;
 }
 

@@ -338,7 +338,7 @@ function paste_output(text='', focus=true, push=true) {
     const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
-                                                                .map(div => [...div.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+                                                                .map(div => [...div.children].map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
     const norm_text = norm(text)
     const ae1 = document.activeElement
     paste_input(norm_text.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
@@ -352,8 +352,8 @@ function paste_output(text='', focus=true, push=true) {
         ;(find_option(select, trailless) || add_option(select, new Option(output_words[i], trailless != output_words[i] ? trailless : undefined))).selected = true
         select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
-        if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
-            select.classList.add('default')
+        if (prev_select?.untouched && prev_select.name == select.name && prev_select.value == select.value)
+            select.classList.add('untouched')
     })
     update_output(text, push)
     const ae2 = document.activeElement
@@ -393,7 +393,7 @@ function randomize() {
         if (select.name in morse) {
             select.selectedIndex = Math.random() * select.length | 0
             update_index(select)
-            select.classList.add('default')
+            select.classList.add('untouched')
         }
     main.dispatchEvent(new Event('change'))
 }
@@ -517,7 +517,7 @@ async function suggest_phrase(selects, indices) {
         if (adjustable[i] && word) {
             selects[i].value = word
             selects[i].dispatchEvent(new Event('change'))
-            selects[i].classList.add('default')
+            selects[i].classList.add('untouched')
         }
     })
     selects.length = 0
@@ -535,11 +535,21 @@ async function suggest() {
         await load_model(model_id, model_quant)
     if (session) {
         const start_time = performance.now()
-        const selects = []
-        const is_selection = ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart
         const indices = []
-        for (const word of is_selection ? [ae.nextElementSibling] : main.querySelectorAll('.word > div')) {
-            for (const [i, select] of [...word.children].entries())
+        let divs = main.querySelectorAll('.word > div')
+        if (main.contains(ae))
+            if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart)
+                divs = [ae.nextElementSibling]
+            else {
+                const select = ae.closest('select')
+                if (select) {
+                    divs = [select.parentElement]
+                    indices.push([...divs[0].children].indexOf(select))
+                }
+            }
+        const selects = []
+        for (const div of divs) {
+            for (const [i, select] of [...div.children].entries())
                 if (select.name in morse) {
                     if (i >= ae.selectionStart && i < ae.selectionEnd)
                         indices.push(selects.length)
@@ -563,7 +573,7 @@ overlay.addEventListener('keydown', event => {  // For Safari: https://bugs.webk
 function keep_focus(event) {
     if (!event.button) {
         const ae = document.activeElement
-        if (ae.tagName == 'INPUT' && main.contains(ae))
+        if (main.contains(ae) && (ae.tagName == 'INPUT' || ae.closest('select')))
             event.preventDefault()
     }
 }
@@ -640,10 +650,10 @@ function add_word(line=main.lastChild, current, before) {
                 return
             const select = proto_selects[char].cloneNode(true)
 
-            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('default'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
+            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('untouched'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
 
             select.addEventListener('change', () => {
-                select.classList.remove('default')
+                select.classList.remove('untouched')
                 update_index(select)
                 if (select.name != joker) {
                     const options = [...proto_selects[select.name]]
@@ -659,7 +669,7 @@ function add_word(line=main.lastChild, current, before) {
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
                 if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
-                    select.classList.remove('default')
+                    select.classList.remove('untouched')
                     if (event.key == 'Enter')  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
                         select.showPicker?.()
                 } else if (!is_alt)
@@ -691,7 +701,7 @@ function add_word(line=main.lastChild, current, before) {
 
             const prev_select = select_container.children[i]
             if (i >= start && i < len - rev)
-                select.classList.add('default')
+                select.classList.add('untouched')
             else if (rebuild)
                 (find_option(select, prev_select.value) || add_option(select, prev_select.selectedOptions[0].cloneNode(true))).selected = true
             if (i >= start && select_container.childElementCount < len)
@@ -822,10 +832,22 @@ function save_words(morse_words) {
 }
 
 addEventListener('keydown', event => {
-    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph')
-        && event.target.selectionStart != event.target.selectionEnd) {  // Remove selection
-        const caret = event.target.selectionDirection == 'forward' ? event.target.selectionEnd : event.target.selectionStart
-        event.target.setSelectionRange(caret, caret)
+    if (event.shiftKey || event.altKey || event.getModifierState?.('AltGraph'))
+        return
+    const elem = event.target
+    if (event.key == 'Escape' && !event.ctrlKey && !event.metaKey && elem.selectionStart != elem.selectionEnd) {  // Remove selection
+        const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
+        elem.setSelectionRange(caret, caret)
+    } else if (event.key == ' ' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)) {
+        event.preventDefault()
+        let caret
+        if (elem.tagName == 'INPUT' && elem.selectionEnd == elem.selectionStart && elem.value.trim() && main.contains(elem)) {
+            caret = elem.selectionEnd
+            elem.select()
+        }
+        suggest()
+        if (caret != null)
+            elem.setSelectionRange(caret, caret)
     }
 })
 

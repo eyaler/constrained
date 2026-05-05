@@ -63,10 +63,10 @@
         </div>
         <div id="buttons">
             <button onclick="paste_input()" title="Clear">נקה</button>
-            <button id="paste_input_button" onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
+            <button id="paste_input_button" onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input [Ctrl+V]" aria-keyshortcuts="Control+V">נקה והדבק כקלט</button>
             <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
-            <button onclick="randomize()" onpointerdown="keep_focus(event)" title="Randomize">הגרל</button>
-            <button onclick="suggest()" onpointerdown="keep_focus(event)" title="Suggest words for selected/all letters">הצע&nbsp;<span id="robot">&#x1f916;</span></button>
+            <button onclick="randomize()" onpointerdown="keep_focus(event)" title="Randomize all">הגרל הכול</button>
+            <button onclick="suggest()" onpointerdown="keep_focus(event)" title="Suggest words for selected/all letters [Ctrl+Space]" aria-keyshortcuts="Control+Space">הצע&nbsp;<span id="robot">&#x1f916;</span></button>
             <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
             <button onclick="navigator.clipboard.writeText(output.value)" title="Copy output">העתק פלט</button>
             <button id="share_button" onclick="share()" title="Share">שתף</button>

@@ -530,6 +530,7 @@ async function suggest() {
     robot.classList.add('thinking')
     const ae = document.activeElement
     overlay.showModal()
+    await globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
     if (!tokenizer || !session)
         await load_model(model_id, model_quant)
     if (session) {

@@ -51,7 +51,7 @@
             event.preventDefault()
             addEventListener('wheel', e => e.preventDefault())
             document.documentElement.style.touchAction = 'none'
-            const vv = window.visualViewport
+            const vv = visualViewport
             const rect = dot.getBoundingClientRect()
             const ox = scrollX + rect.left + rect.width/2
             const oy = scrollY + rect.top + rect.height/2

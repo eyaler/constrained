@@ -6,14 +6,17 @@ const rare_count = 700
 const medium_count = 2000
 const limit = 0
 const declension_suffixes = ['הּ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
-const prep_declensions1 = ['אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמָּדָהּ', 'עִמְּךָ']
-const prep_declensions2 = ['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן']
-let special = ',.*'  // Overrides Morse
-const default_sep = '.'  // Overrides Morse
-const joker = '*'  // Overrides Morse
+const prep_declensions1 = new Set('אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמָּדָהּ', 'עִמְּךָ')
+const prep_declensions2 = new Set('בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן')
+const num_tokens_for_empty = 1
+
+// These override Morse:
+let special = ',.*'
+const default_sep = '.'
+const joker = '*'
+
 const dit = '·'
 const dah = '-'
-
 const dit_dah = dit + dah
 const makaf = '\u05be'
 const space_makaf_class = `[ ${makaf}]`
@@ -26,6 +29,7 @@ const patah = '\u05b7'
 const kamats = '\u05b8'
 const a_vowel = hataf_patah + patah + kamats
 const good_nikud = hirik + a_vowel
+const allowed_nikud = good_nikud + shva + dots
 const bad_nikud = '\u05b1\u05b3\u05b5\u05b6\u05b9\u05ba\u05bb\u05c7'
 const hebrew_block = '\u05b0-\u05ea'
 const hebrew_block_quotes = hebrew_block + '\'"'
@@ -49,8 +53,10 @@ const whitespace_regex = RegExp('[ \t\xa0]+', 'g')
 const newline_regex = RegExp('\\s*\n\\s*', 'g')
 
 const space_hyphen_regex = RegExp('[ -]', 'g')
+const nonfinal_space_makaf_regex = RegExp(`${space_makaf_class}.`)
+const space_final_makaf_regex = RegExp(` |${makaf}$`)
 const middle_makaf_regex = RegExp(`.${makaf}.`)
-const final_makaf_regex = RegExp(`(?<=[${hebrew_block}])${makaf}$`)
+const trailing_makaf_regex = RegExp(`(?<=[${hebrew_block}])${makaf}$`)
 const word_parts_regex = RegExp(`\\p{L}[\\p{M}${makaf}'"]*`, 'gu')
 const alefbet_regex = RegExp(alefbet_class)
 
@@ -61,7 +67,8 @@ const fix_space_regex = RegExp(`\t? (?=[${punct}])|(?<=[${punct}])\t`, 'g')
 const hirik_regex = RegExp(hirik, 'g')
 const a_vowel_regex = RegExp(`[${a_vowel}]`, 'g')
 const nikud_regex = RegExp(`[${good_nikud}]`)
-const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${good_nikud}][${dots}]*){2}`)
+const allowed_nikud_regex = RegExp(`[${allowed_nikud}]`, 'g')
+const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${good_nikud}${shva}][${dots}]*){2}`)
 
 const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2} \\p{L}`, 'u')
 const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
@@ -151,14 +158,12 @@ const dont_show = 'äöšü'
 
 const is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
 const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')
-Object.entries(morse).filter(([k, v]) => v.match(non_morse_regex)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
-const reverse_morse = Object.fromEntries(Object.entries(Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]))).sort(([,a], [,b]) => a.localeCompare(b)))
+Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
+const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [v, k]))
 const proto_selects = {}
-let morse_words_types
-let min_count = Infinity
-let max_count = 0
-let total_count = 0
+let morse_words_types, homographs, min_count, max_count, total_count
 let last_hash, legacy_select, ready, rebuild, recent_input
+let ort, session, tokenizer
 
 function join_lines(join_words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -190,7 +195,7 @@ function update_output(text, push=true) {
 
 addEventListener('pagehide', () => update_output(null, false))
 main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
-checkboxes.addEventListener('change', () => {if (ready) build_selects()})
+checkboxes.addEventListener('change', e => {if (e.target != allow_homographs && ready) build_selects()})
 
 addEventListener('copy', event => {
     /* Augment regular copy with:
@@ -213,8 +218,8 @@ function norm_hyphen(text) {
     return text.replace(space_hyphen_regex, makaf)
 }
 
-function remove_final_makaf(text='') {
-    return text.replace(final_makaf_regex, '')
+function remove_trailing_makaf(text='') {
+    return text.replace(trailing_makaf_regex, '')
 }
 
 function get_word_parts(word) {
@@ -243,9 +248,9 @@ function paste_input(text='', focus=true, push=true, word=main) {
     text = norm(text)
     const select = word.closest('select')
     if (select) {
-        if (!text.match(alefbet_regex))
+        if (!alefbet_regex.test(text))
             return
-        text = remove_final_makaf(norm_hyphen(text))
+        text = remove_trailing_makaf(norm_hyphen(text))
         const len = select.length
         const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
         for (let i = 1; i <= len; i++) {
@@ -269,7 +274,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         return
     }
 
-    if (word.tagName == 'INPUT' && !text.match(/\s/))
+    if (word.tagName == 'INPUT' && !/\s/.test(text))
         return
     while (!word.classList.contains('word'))
         word = word.querySelector('.word') || word.parentElement
@@ -330,24 +335,33 @@ function add_option(select, option) {
 function paste_output(text='', focus=true, push=true) {
     const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
-    const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1)).map(div => [...div.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
+    const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
+                                                                .map(div => [...div.children].map(select => ({name: select.name, value: select.value, default: select.classList.contains('default')})))
     const norm_text = norm(text)
-    paste_input(norm_text.replace(hebrew_block_quotes_regex, m => m.match(nikud_regex) && !m.match(bad_nikud_regex) ? m : joker).replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '').replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker).replace(non_punct_regex, '').replace(sep_regex, ' ').replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
+    const ae1 = document.activeElement
+    paste_input(norm_text.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
+                         .replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '')
+                         .replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker)
+                         .replace(non_punct_regex, '').replace(sep_regex, ' ')
+                         .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
     main.querySelectorAll('select').forEach((select, i) => {
-        const makafless = remove_final_makaf(output_words[i])
-        ;(find_option(select, makafless) || add_option(select, new Option(output_words[i], makafless != output_words[i] ? makafless : undefined))).selected = true
+        const trailless = remove_trailing_makaf(output_words[i])
+        ;(find_option(select, trailless) || add_option(select, new Option(output_words[i], trailless != output_words[i] ? trailless : undefined))).selected = true
         select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
         if (prev_select?.default && prev_select.name == select.name && prev_select.value == select.value)
             select.classList.add('default')
     })
     update_output(text, push)
+    const ae2 = document.activeElement
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    if (focus) {
+    const ae3 = document.activeElement
+    if (focus || ae2 != ae1) {
         const first_word = main.querySelector('.word')
         ;(first_word.firstChild.value ? add_word() : first_word).firstChild.focus()
-    }
+    } else if (ae3 != ae2)  // In Safari and iOS selection steals the focus
+        ae2.focus()
     console.log(`paste_output+paste_input took ${performance.now() - start_time | 0} ms.`)
 }
 
@@ -365,59 +379,203 @@ output.addEventListener('keydown', event => {
         output.dispatchEvent(new Event('change'))
 })
 
-function optimize_word(phrase_words, index, candidate_words) {
-    if (candidate_words.length == 1)
-        return candidate_words[0]
-    const probs = candidate_words.map(word => Math.random())  // Place holder pending implementation
-    return candidate_words[probs.reduce((argmax, prob, i) => prob > probs[argmax] ? i : argmax, 0)]
+function update_index(select) {
+    if (select.dataset.last_index != select.selectedIndex) {
+        select.dataset.old_index = select.dataset.last_index || ''
+        select.dataset.last_index = select.selectedIndex
+    }
 }
 
-function optimize_phrase(words) {
-    const all_words = Object.fromEntries([...new Set(words.map(w => w[0]))].map(c => [c, [...proto_selects[c]].map(opt => opt.value)]))
-    words.map(([char, word, adjustable], index) => [char, word, adjustable, index])
-         .sort((a, b) => proto_selects[a[0]].length - proto_selects[b[0]].length)
-         .forEach(([char, word, adjustable, index]) => words[index] = adjustable ? optimize_word(words, index, all_words[char]) : word)
-    return words
+function randomize() {
+    for (const select of main.querySelectorAll('.word select'))
+        if (select.name in morse) {
+            select.selectedIndex = Math.random() * select.length | 0
+            update_index(select)
+            select.classList.add('default')
+        }
+    main.dispatchEvent(new Event('change'))
 }
 
-function suggest_phrase(selects, indices) {
-    optimize_phrase(selects.map((select, i) => [select.name, select.value, !indices.length || indices.includes(i)])).forEach((word, i) => {
-        if (!indices.length || indices.includes(i)) {
+async function download_model(url) {
+    const cache = await caches.open('onnx')
+    let blob = await cache.match(url)
+    if (!blob) {
+        const start_time = performance.now()
+        const res = await fetch(url)
+        if (!res.ok)
+            throw new Error(`Download model failed: ${res.status} ${res.statusText}`)
+        blob = await res.blob()
+        console.log(`download_model took ${performance.now() - start_time | 0} ms.`)
+        cache.put(url, new Response(blob)).catch(e => console.warn(e.message))
+    }
+    return blob.arrayBuffer()
+}
+
+async function load_model(model_id='eyaler/neodictabert-bilingual-onnx') {
+    try {
+        const start_time = performance.now()
+        if (!tokenizer) {
+            const {Tokenizer} = await import('https://cdn.jsdelivr.net/npm/@huggingface/tokenizers')
+            const tokenizer_json = await fetch(`https://huggingface.co/${model_id}/resolve/main/tokenizer.json`).then(r => r.json())
+            const tokenizer_config = await fetch(`https://huggingface.co/${model_id}/resolve/main/tokenizer_config.json`).then(r => r.json())
+            tokenizer = new Tokenizer(tokenizer_json, tokenizer_config)
+        }
+        ort = await import('https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/esm/ort.min.js')
+        ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/'
+        session = await ort.InferenceSession.create(await download_model(`https://huggingface.co/${model_id}/resolve/main/model_int8.onnx`))
+        console.log(`load_model+download_model took ${performance.now() - start_time | 0} ms.`)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function tokenize(words, num_tokens=1) {
+    const mask = `${tokenizer.config.mask_token} `.repeat(num_tokens).trim()
+    return await tokenizer.encode(words.map(w => w == null ? mask : w).join(' ').replaceAll(makaf, ' '), {add_special_tokens: false})
+}
+
+async function optimize_word(phrase_words, index, candidate_tokens) {
+    const lengths = Object.keys(candidate_tokens).map(Number)
+
+    const prefix = await tokenize([tokenizer.config.cls_token, ...phrase_words.slice(0, index)], num_tokens_for_empty)
+    const suffix = await tokenize([...phrase_words.slice(index + 1), tokenizer.config.sep_token], num_tokens_for_empty)
+    const mask_id = (await tokenize([tokenizer.config.mask_token])).ids[0]
+    const pad_id = tokenizer.config.pad_token_id || 0
+
+    const batch_size = lengths.length
+
+    const sequences = []
+    let max_len = 0
+
+    for (const len of lengths) {
+        const seq = [...prefix.ids, ...Array(len).fill(mask_id), ...suffix.ids]
+        if (seq.length > max_len) max_len = seq.length
+        sequences.push({len, seq})
+    }
+
+    const flat_ids = []
+    const flat_mask = []
+
+    for (const {seq} of sequences) {
+        const pad_len = max_len - seq.length
+        flat_ids.push(...seq, ...Array(pad_len).fill(pad_id))
+        flat_mask.push(...Array(seq.length).fill(1), ...Array(pad_len).fill(0))
+    }
+
+    const input_ids = new ort.Tensor('int64', BigInt64Array.from(flat_ids, BigInt), [batch_size, max_len])
+    const attention_mask = new ort.Tensor('int64', BigInt64Array.from(flat_mask, BigInt), [batch_size, max_len])
+    const logits = (await session.run({input_ids, attention_mask, token_type_ids: attention_mask})).logits  // Note: token_type_ids is ignored
+    const data = logits.data
+    const vocab_size = logits.dims[2]
+    const target_index = prefix.ids.length
+
+    const candidate_results = []
+
+    for (let b = 0; b < batch_size; b++) {
+        const len = lengths[b]
+        const batch_offset = b * max_len * vocab_size
+
+        for (const candidate of candidate_tokens[len]) {
+            let sum = 0
+            for (let i = 0; i < len; i++) {
+                const token_offset = batch_offset + ((target_index + i) * vocab_size)
+                sum += data[token_offset + candidate.ids[i]]
+            }
+            candidate_results.push({
+                word: candidate.word,
+                num_tokens: len,
+                score: sum / len
+            })
+        }
+    }
+
+    candidate_results.sort((a, b) => b.score - a.score)
+    const best_word = candidate_results[0]?.word
+
+    const display_tokens = [...prefix.tokens, `[MASK]*[${lengths.join(',')}]`, ...suffix.tokens]
+    console.log(index, display_tokens, best_word)
+    console.log(`batch_size: ${batch_size}`)
+    console.table(candidate_results.slice(0, 10))
+
+    return best_word
+}
+
+async function optimize_phrase(words) {
+    const out_words = words.map(x => x[1])
+    const opt_words = words.filter(x => x[0])
+    const all_tokens = {}
+    for (const char of new Set(opt_words.map(x => x[0]))) {
+        all_tokens[char] = {}
+        for (const {value: word} of proto_selects[char]) {
+            if (!allow_homographs.checked && homographs.has(word))
+                continue
+            const ids = await tokenizer.encode(word.replaceAll(makaf, ' '), {add_special_tokens: false}).ids
+            const len = ids.length
+            if (!all_tokens[char][len])
+                all_tokens[char][len] = []
+            all_tokens[char][len].push({word, ids})
+        }
+    }
+    for (const [char, w, i] of opt_words.reverse())
+        if (Object.keys(all_tokens[char]).length)
+            out_words[i] = await optimize_word(out_words, i, all_tokens[char])
+    return out_words
+}
+
+async function suggest_phrase(selects, indices) {
+    const adjustable = selects.map((select, i) => proto_selects[select.name].length > 1 && (!indices.length || indices.includes(i)))
+    ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, adjustable[i] ? null : select.value, i]))).forEach((word, i) => {
+        if (adjustable[i] && word) {
             selects[i].value = word
             selects[i].dispatchEvent(new Event('change'))
+            selects[i].classList.add('default')
         }
     })
     selects.length = 0
     indices.length = 0
 }
 
-suggest_button.addEventListener('pointerdown', event => {
+async function suggest() {
+    if (robot.classList.contains('thinking'))
+        return
+    robot.classList.add('thinking')
+    const ae = document.activeElement
+    overlay.showModal()
+    if (!tokenizer || !session)
+        await load_model()
+    if (session) {
+        const start_time = performance.now()
+        const selects = []
+        const is_selection = ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart
+        const indices = []
+        for (const word of is_selection ? [ae.nextElementSibling] : main.querySelectorAll('.word > div')) {
+            for (const [i, select] of [...word.children].entries())
+                if (select.name in morse) {
+                    if (i >= ae.selectionStart && i < ae.selectionEnd)
+                        indices.push(selects.length)
+                    selects.push(select)
+                } else
+                    await suggest_phrase(selects, indices)
+            await suggest_phrase(selects, indices)
+        }
+        main.dispatchEvent(new Event('change'))
+        console.log(`suggest took ${performance.now() - start_time | 0} ms.`)
+    }
+    robot.classList.remove('thinking')
+    overlay.close()
+}
+
+overlay.addEventListener('keydown', event => {  // For Safari: https://bugs.webkit.org/show_bug.cgi?id=284592
+    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph'))
+        event.preventDefault()
+})
+
+function keep_focus(event) {
     if (!event.button) {
         const ae = document.activeElement
         if (ae.tagName == 'INPUT' && main.contains(ae))
             event.preventDefault()
     }
-})
-
-function suggest() {
-    const start_time = performance.now()
-    const selects = []
-    const ae = document.activeElement
-    const is_selection = ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart
-    const indices = []
-    ;(is_selection ? [ae.nextElementSibling] : main.querySelectorAll('.word > div')).forEach(word => {
-        ;[...word.children].forEach((select, i) => {
-            if (select.name in morse) {
-                if (i >= ae.selectionStart && i < ae.selectionEnd)
-                    indices.push(selects.length)
-                selects.push(select)
-            } else
-                suggest_phrase(selects, indices)
-        })
-        suggest_phrase(selects, indices)
-    })
-    main.dispatchEvent(new Event('change'))
-    console.log(`suggest took ${performance.now() - start_time | 0} ms.`)
 }
 
 function share() {
@@ -442,9 +600,13 @@ function remove_word(input) {
 }
 
 function blur(event) {
+    if (event.relatedTarget?.id == 'overlay')
+        return
     const input = event.currentTarget
-    if (!remove_word(input) && input.value.match(/\s/))
-        input.value = input.value.replace(/\s+/g, '')
+    setTimeout(() => {  // In Chrome, element removal triggers a blur event before the removal, and if our blur handler itself removes the element in transit, the original remove would then fail. This covers edge cases outside the normal flow, such as popstate. See: https://stackoverflow.com/a/22934552/664456
+        if (!remove_word(input) && /\s/.test(input.value))
+            input.value = input.value.replace(/\s+/g, '')
+    })
 }
 
 addEventListener('focus', () => {
@@ -465,7 +627,7 @@ function add_word(line=main.lastChild, current, before) {
 
     input.addEventListener('blur', blur)
 
-    input.addEventListener('change', e => {
+    input.addEventListener('change', () => {
         if (input.value == (input.dataset.prev_value ?? '') && !rebuild)
             return
         input.dataset.prev_value = input.value
@@ -492,10 +654,7 @@ function add_word(line=main.lastChild, current, before) {
 
             select.addEventListener('change', () => {
                 select.classList.remove('default')
-                if (select.dataset.last_index != select.selectedIndex) {
-                    select.dataset.old_index = select.dataset.last_index || ''
-                    select.dataset.last_index = select.selectedIndex
-                }
+                update_index(select)
                 if (select.name != joker) {
                     const options = [...proto_selects[select.name]]
                     const option = options[select.selectedIndex]
@@ -528,7 +687,7 @@ function add_word(line=main.lastChild, current, before) {
                             const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
                             for (let i = 1; i <= len; i++) {
                                 const option = select[(index + (event.key == '-' ? i : -i) + len) % len]
-                                if (option.value.match(middle_makaf_regex)) {
+                                if (middle_makaf_regex.test(option.value)) {
                                     select_option(select, option)
                                     break
                                 }
@@ -562,8 +721,8 @@ function add_word(line=main.lastChild, current, before) {
         const is_mod = is_ctrl || is_alt
         let line = word.parentElement
         const line_had_text = input.value.trim() || line.childElementCount > 1
-        if (event.key == 'Tab' && !event.shiftKey && !is_mod)
-            input.dispatchEvent(new Event('change'))
+        if (event.key == 'Tab' && !event.shiftKey && !is_mod || event.key == 'Enter' && is_ctrl)  // Only in Firefox Ctrl+Enter natively triggers a change event for input elements
+            input.dispatchEvent(new Event('change', {bubbles: event.key == 'Enter'}))
         else if ((event.key == 'End' || event.key == 'Home' || ['ArrowDown', 'ArrowUp'].includes(event.key) && is_ctrl) && !event.shiftKey && !is_alt)
             if (['End', 'ArrowDown'].includes(event.key)) {
                 if (event.key == 'End' && is_ctrl)
@@ -616,15 +775,15 @@ function add_word(line=main.lastChild, current, before) {
                 } else
                     elem = word.previousElementSibling
             else if (['Enter', 'ArrowDown'].includes(event.key) || event.key == 'ArrowLeft' && !word.nextElementSibling) {
-                let cr
+                let skip_lf
                 if (event.key == 'Enter') {
                     const new_line = add_line(line)
                     if (!event.shiftKey) {
-                        cr = input.value.trim() && input.selectionStart || word.previousElementSibling
+                        skip_lf = (!input.value.trim() || !input.selectionStart) && !word.previousElementSibling
                         let line_words = [...line.children]
                         line_words = line_words.slice(line_words.indexOf(word) + (input.value.trim() && !!input.selectionStart || !input.value.trim() && !word.previousElementSibling))
                         if (line_words.length) {
-                            input.removeEventListener('blur', blur)
+                            input.removeEventListener('blur', blur)  // Don't remove the focused input even if it's empty
                             new_line.replaceChildren(...line_words)
                             input.addEventListener('blur', blur)
                             if (!line.childElementCount)
@@ -633,7 +792,7 @@ function add_word(line=main.lastChild, current, before) {
                         }
                     }
                 }
-                if (event.key != 'Enter' || cr)
+                if (!skip_lf)
                    elem = (line.nextElementSibling || main.firstChild).firstChild
             } else if (event.key != ' ')
                 elem = word.nextElementSibling || main.firstChild.firstChild
@@ -683,10 +842,12 @@ addEventListener('keydown', event => {
 function paste_hash(pop, focus=false) {
     last_hash = decodeURIComponent(location.hash.slice(1))
     if (ready)
-        if (last_hash.match(/^\t./))
+        if (/^\t./.test(last_hash))
             paste_output(last_hash.slice(1), focus, false)
-        else if (pop)
-            paste_input('', focus, false)
+        else if (pop) {
+            const ae = document.activeElement
+            paste_input('', ae == document.body || main.contains(ae), false)
+        }
 }
 
 function add_dagesh(word) {
@@ -713,8 +874,16 @@ function build_selects(focus=false) {
     }
 
     function filter_declensions(words) {
-        return words.filter(word => word_types[word] != 1 || word.match(`${space_makaf_class}.`) || prep_declensions1.includes(word) || prep_declensions2.includes(word) || !declension_suffixes.some(suffix => word.endsWith(suffix)))
+        return words.filter(word => word_types[word] != 1 || nonfinal_space_makaf_regex.test(word)
+                            || prep_declensions1.has(word) || prep_declensions2.has(word)
+                            || !declension_suffixes.some(suffix => word.endsWith(suffix)))
     }
+
+    const seen = {}
+    homographs = new Set()
+    min_count = Infinity
+    max_count = 0
+    total_count = 0
 
     Object.entries(reverse_morse).forEach(([code, char]) => {
         if (!morse_words[char])
@@ -728,7 +897,7 @@ function build_selects(focus=false) {
            || code[0] == dah && add_bhkl.length
            || code[0] == dit && add_prep_m.checked)) {
             const tail_char = reverse_morse[code.slice(1)]
-            let words = Object.keys(morse_words_types[tail_char]).filter(word => !word.match(conj_mwe_regex))
+            let words = Object.keys(morse_words_types[tail_char]).filter(word => !conj_mwe_regex.test(word))
             if (!allow_declensions.checked)
                 words = filter_declensions(words)
             if (words.length) {
@@ -736,14 +905,15 @@ function build_selects(focus=false) {
                 if (code[0] == dah)
                     bhvkl.forEach(prefix => extend_words(char, words.flatMap(word => {
                         const result = []
-                        if (add_bvkl.includes(prefix) && (prefix == vav || word_types[word]) && word.match(hataf_patah_regex))
+                        if (add_bvkl.includes(prefix) && (prefix == vav || word_types[word]) && hataf_patah_regex.test(word))
                             result.push(prefix + patah + word)
-                        if (add_bhkl.includes(prefix) && word_types[word] == 2 && !word.match(skip_article_regex))
+                        if (add_bhkl.includes(prefix) && word_types[word] == 2 && !skip_article_regex.test(word))
                             result.push(prefix + (['הַר', 'עַם', 'פַּר'].includes(word) ? (word == 'פַּר' ? patah : kamats) + word.replace(patah, kamats) : ('ארע'.includes(word[0]) ? kamats : patah) + add_dagesh(word)))
                         return result
                     })))
                 else {
-                    add_bvkl.forEach(prefix => extend_words(char, words.filter(word => (prefix == vav && word[0] == yod || word_types[word]) && word.match(initial_shva_regex)).map(word => prefix + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace('(?<=^.)' + dagesh, '')))))
+                    add_bvkl.forEach(prefix => extend_words(char, words.filter(word => (prefix == vav && word[0] == yod || word_types[word]) && initial_shva_regex.test(word))
+                                                                       .map(word => prefix + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace('(?<=^.)' + dagesh, '')))))
                     if (add_prep_m)
                         extend_words(char, words.filter(word => word_types[word] && !'אהחער'.includes(word[0])).map(word => mem + hirik + add_dagesh(word)))
                 }
@@ -751,8 +921,8 @@ function build_selects(focus=false) {
         }
 
         if (!allow_shva_na.checked)
-            morse_words[char] = morse_words[char].filter(word => !word.match(shva_na_regex) && !word.match(conj_mwe_regex))
-        morse_words[char] = morse_words[char].filter(word => !word.match(` |${makaf}$`) || !morse_words[char].includes(remove_final_makaf(word.replaceAll(' ', makaf))))
+            morse_words[char] = morse_words[char].filter(word => !shva_na_regex.test(word) && !conj_mwe_regex.test(word))
+        morse_words[char] = morse_words[char].filter(word => !space_final_makaf_regex.test(word) || !morse_words[char].includes(remove_trailing_makaf(word.replaceAll(' ', makaf))))
         if (!morse_words[char][0])
             morse_words[char].shift()
         if (limit)
@@ -760,11 +930,25 @@ function build_selects(focus=false) {
         if (!morse_words[char].slice(-1)[0])
             morse_words[char].pop()
         proto_selects[char] = document.createElement('select')
-        morse_words[char].forEach(word => {
+        const this_seen = {}
+        for (let word of morse_words[char]) {
             word = word.replaceAll(' ', makaf)
-            const makafless = remove_final_makaf(word)
-            proto_selects[char].appendChild(word ? new Option(word, makafless != word ? makafless : undefined) : document.createElement('hr'))
-        })
+            const trailless = remove_trailing_makaf(word)
+            proto_selects[char].appendChild(word ? new Option(word, trailless != word ? trailless : undefined) : document.createElement('hr'))
+            if (!word)
+                continue
+            const nikudless = trailless.replaceAll(makaf, ' ').replace(allowed_nikud_regex, '')
+            if (seen[nikudless]) {
+                homographs.add(trailless)
+                while (seen[nikudless].length)
+                    homographs.add(seen[nikudless].pop())
+            } else {
+                if (!this_seen[nikudless])
+                    this_seen[nikudless] = []
+                this_seen[nikudless].push(trailless)
+            }
+        }
+        Object.assign(seen, this_seen)
         const len = proto_selects[char].length
         min_count = Math.min(min_count, len)
         max_count = Math.max(max_count, len)
@@ -800,10 +984,10 @@ function build_selects(focus=false) {
     //save_words(morse_words)
 }
 
-const fetch_start_time = performance.now()
+const global_start_time = performance.now()
 fetch('morse.json').then(response => response.json()).then(json => {
     morse_words_types = json
-    console.log(`fetch took ${performance.now() - fetch_start_time | 0} ms.`)
+    console.log(`Loading dictionary took ${performance.now() - global_start_time | 0} ms.`)
     build_selects(true)
-    console.log(`Startup took ${performance.now() - fetch_start_time | 0} ms.`)
+    console.log(`Startup took ${performance.now() - global_start_time | 0} ms.`)
 })

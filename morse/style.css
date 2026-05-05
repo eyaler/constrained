@@ -80,3 +80,26 @@ main:not(:has(.word)) ~ #output {
     width: 100%;
     white-space: pre-line;
 }
+
+#robot {
+    display: inline-block;
+}
+
+@keyframes spin {
+   100% { transform: rotate(1turn) }
+}
+
+.thinking {
+    animation: 1s linear infinite spin;
+}
+
+#overlay {
+    background: none;
+    border: none;
+    outline: none;
+}
+
+#overlay::backdrop {
+    background: #0005;
+    cursor: wait;
+}

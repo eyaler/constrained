@@ -177,7 +177,7 @@ tr {
 }
 
 tr:target {
-    animation: var(--tables_frag_dur) target paused;
+    animation: var(--tables_frag_dur) paused target;
 }
 
 @media (forced-colors: active) {

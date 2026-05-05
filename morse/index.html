@@ -56,12 +56,17 @@
                 <input id="allow_shva_na" type="checkbox" autocomplete="off">
                 <span>שווא נע</span>
             </label>
+            <label>
+                <input id="allow_homographs" type="checkbox" autocomplete="off">
+                <span>הצע הומוגרפים</span>
+            </label>
         </div>
         <div id="buttons">
             <button onclick="paste_input()" title="Clear">נקה</button>
             <button id="paste_input_button" onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input">נקה והדבק כקלט</button>
             <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
-            <button id="suggest_button" onclick="suggest()" title="Suggest words for selected/all letters">הצע&nbsp;&#x1f916;</button>
+            <button onclick="randomize()" onpointerdown="keep_focus(event)" title="Randomize">הגרל</button>
+            <button onclick="suggest()" onpointerdown="keep_focus(event)" title="Suggest words for selected/all letters">הצע&nbsp;<span id="robot">&#x1f916;</span></button>
             <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
             <button onclick="navigator.clipboard.writeText(output.value)" title="Copy output">העתק פלט</button>
             <button id="share_button" onclick="share()" title="Share">שתף</button>
@@ -69,6 +74,7 @@
     </div>
     <main id="main"></main>
     <textarea id="output" autocomplete="off" autocorrect="off"></textarea>
+    <dialog id="overlay" closedby="none"></dialog>
     <script src="script.js"></script>
 </body>
 </html>

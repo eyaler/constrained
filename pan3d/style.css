@@ -90,7 +90,7 @@
 }
 
 [data-cube] + div > div {
-    animation: calc(var(--cube_dur) * var(--cube_dur_factor)) var(--cube_timing) var(--cube) infinite;
+    animation: calc(var(--cube_dur) * var(--cube_dur_factor)) var(--cube_timing) infinite var(--cube);
     aspect-ratio: 1;
     rotate: -.7 .6 -.08 24deg;
     transform-style: preserve-3d;
@@ -169,7 +169,7 @@
 }
 
 [data-cube] + div .char > span {
-    animation: calc(var(--cube_dur) * var(--cube_dur_factor)) var(--cube_timing) var(--cube_counter) infinite;
+    animation: calc(var(--cube_dur) * var(--cube_dur_factor)) var(--cube_timing) infinite var(--cube_counter);
     font-size: 5em;
     text-shadow: 0 0 .2em var(--fg_highlight);
     transition: font-size var(--cube_trans);

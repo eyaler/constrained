@@ -175,8 +175,8 @@ const collator = Intl.Collator(document.documentElement.lang, {numeric: true})
 
 function reorder(list_of_strings, lang='', reverse_issues=default_reverse_issues_kw, labels=kw_labels) {
     return [...new Set(list_of_strings)].map(String).sort((a, b) => {
-        const a_is_issue = !!a.match(/^\d+$/)
-        const b_is_issue = !!b.match(/^\d+$/)
+        const a_is_issue = /^\d+$/.test(a)
+        const b_is_issue = /^\d+$/.test(b)
         if (!lang) {
             a = labels[a] ?? a
             b = labels[b] ?? b
@@ -494,6 +494,7 @@ function get_kw_label(kw, lang='') {
 
 function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw, reorder_contents=default_reorder_contents, new_tab_for_social=default_new_tab_for_social) {
     const page = get_page()
+    const pp = pages[page]
     const lang = get_lang()
     const [all_keywords, all_keywords_stats] = get_all_keywords(lang, reverse_issues_kw, page)
     const titles = get_set_titles(page, lang)
@@ -525,7 +526,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         keywords = all_keywords
     } else {
         add_nav_element(nav, url, index_title, 'back', -diff, shortcuts.back)
-        keywords = reorder(pages[page].kw, lang, reverse_issues_kw)
+        keywords = reorder(pp.kw, lang, reverse_issues_kw)
     }
 
     let url_kw = sanitize(decodeURIComponent(location.hash))
@@ -564,9 +565,10 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
         function kw_handler() {
             const on = this.classList.toggle('on')
             const prefix = '.contents > p:not(.'
+            const rules = css.cssRules
             let found
-            for (const i in css.cssRules)
-                if (found = css.cssRules[i].selectorText?.slice(prefix.length, -1) == this.id.replace(/^kw/, '')) {
+            for (let i = rules.length - 1; i >= 0; i--)
+                if (found = rules[i].selectorText?.slice(prefix.length, -1) == this.id.replace(/^kw/, '')) {
                     css.deleteRule(i)
                     break
                 }
@@ -641,10 +643,10 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const en_title = lang == 'en' ? titles.label : titles.alt
     const h1 = document.createElement('h1')
     h1.id = 'h1'
-    if (pages[page].logo) {
+    if (pp.logo) {
         const img = new Image()
         img.alt = titles.label
-        img.src = pages[page].logo
+        img.src = pp.logo
         h1.appendChild(img)
         h1.title = en_title ?? titles.label
     } else {
@@ -656,7 +658,7 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
     const desc = []
     if (en_title)
         desc.push(en_title)
-    if (pages[page].author || pages[page].authors || pages[page].by || pages[page].trans || pages[page].translation || pages[page].translator || pages[page].translators || pages[page].colab || pages[page].colabs || pages[page].collab || pages[page].collabs || pages[page].collaboration || pages[page].collaborator || pages[page].collaborators || pages[page].with) {
+    if (pp.author || pp.authors || pp.by || pp.trans || pp.translation || pp.translator || pp.translators || pp.colab || pp.colabs || pp.collab || pp.collabs || pp.collaboration || pp.collaborator || pp.collaborators || pp.with) {
         const current_authors = get_make_author(page, lang, header, new_tab_for_social)[lang != 'en' | 0].join(', ')
         if (current_authors)
             desc.push(current_authors)
@@ -685,9 +687,10 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_for_social) {
     page ??= get_page()
     lang ??= get_lang()
-    const translators = merge(pages[page].trans, pages[page].translation, pages[page].translator, pages[page].translators)
-    const collaborators = merge(pages[page].colab, pages[page].colabs, pages[page].collab, pages[page].collabs, pages[page].collaboration, pages[page].collaborator, pages[page].collaborators, pages[page].with)
-    let keys = [...new Set(merge(pages[page].author, pages[page].authors, pages[page].by, translators, collaborators))]
+    const pp = pages[page]
+    const translators = merge(pp.trans, pp.translation, pp.translator, pp.translators)
+    const collaborators = merge(pp.colab, pp.colabs, pp.collab, pp.collabs, pp.collaboration, pp.collaborator, pp.collaborators, pp.with)
+    let keys = [...new Set(merge(pp.author, pp.authors, pp.by, translators, collaborators))]
     if (elem && authors && !keys.length)
         keys = Object.keys(authors).slice(0, 1)
     const all_names = []

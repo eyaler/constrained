@@ -159,7 +159,7 @@ article {
 }
 
 .reveal {
-    animation: var(--anim_dur) step-end reveal forwards;
+    animation: var(--anim_dur) step-end forwards reveal;
 }
 
 #reverse_button {

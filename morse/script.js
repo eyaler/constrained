@@ -44,6 +44,7 @@ const kaf = 'כ'
 const lamed = 'ל'
 const mem = 'מ'
 const bhvkl = [bet, he, vav, kaf, lamed]
+const ylmnr_shva = '[ילמנר]' + shva
 
 if (!special.includes(default_sep))
     special += default_sep
@@ -76,7 +77,7 @@ const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2} \\p{L}`, 'u')
 const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
 const hataf_patah_regex = RegExp('^[אהחע]' + hataf_patah)
 const initial_shva_regex = RegExp(`^.[${dots}]?${shva}`)
-const shva_na_regex = RegExp(`(?:^|${space_makaf_class})(?:[ילמנר]${shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]*${shva}ךָ| ${vav}${shva}(\\p{L}\\p{M}*){2}`, 'u')
+const shva_na_regex = RegExp(`(?:^|${space_makaf_class})(?:${ylmnr_shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]?${shva}ךָ|${shva}${ylmnr_shva}${alefbet_class}(?!$[{dots}]*(${shva}|${space_makaf_class}|$))| ${vav}${shva}(\\p{L}\\p{M}*){2}`, 'u')
 
 const morse_regex = RegExp(`[${dit_dah}]+`, 'g')
 const non_morse_regex = RegExp(`[^${dit_dah}]`)

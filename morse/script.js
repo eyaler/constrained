@@ -433,7 +433,7 @@ async function load_model(model_id, model_quant) {
 }
 
 async function tokenize(words, num_tokens=1) {
-    const mask = `${tokenizer.config.mask_token} `.repeat(num_tokens).trim()
+    const mask = Array(num_tokens).fill(tokenizer.config.mask_token).join(' ')
     return await tokenizer.encode(words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' '), {add_special_tokens: false})
 }
 

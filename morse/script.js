@@ -434,7 +434,7 @@ async function load_model(model_id, model_quant) {
 
 async function tokenize(words, num_tokens=1) {
     const mask = `${tokenizer.config.mask_token} `.repeat(num_tokens).trim()
-    return await tokenizer.encode(words.map(w => w == null ? mask : w).join(' ').replaceAll(makaf, ' '), {add_special_tokens: false})
+    return await tokenizer.encode(words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' '), {add_special_tokens: false})
 }
 
 async function optimize_word(phrase_words, index, candidate_tokens) {
@@ -449,14 +449,13 @@ async function optimize_word(phrase_words, index, candidate_tokens) {
 
     for (const len of lengths) {
         const seq = [...prefix.ids, ...Array(len).fill(mask_id), ...suffix.ids]
-        if (seq.length > max_len) max_len = seq.length
-        sequences.push({len, seq})
+        max_len = Math.max(max_len, seq.length)
+        sequences.push(seq)
     }
 
     const flat_ids = []
     const flat_mask = []
-
-    for (const {seq} of sequences) {
+    for (const seq of sequences) {
         const pad_len = max_len - seq.length
         flat_ids.push(...seq, ...Array(pad_len).fill(pad_id))
         flat_mask.push(...Array(seq.length).fill(1), ...Array(pad_len).fill(0))
@@ -506,7 +505,7 @@ async function optimize_phrase(words) {
             all_tokens[char][len].push({word, ids})
         }
     }
-    for (const [char, w, i] of opt_words.reverse())
+    for (const [char, w, i] of opt_words.reverse())  // Traversing from end the start so the current mask is always followed by a proper word (if another mask follows, the current token can resolve to a word part, the model assuming it can be continued by the following)
         if (Object.keys(all_tokens[char]).length)
             out_words[i] = await optimize_word(out_words, i, all_tokens[char])
     return out_words

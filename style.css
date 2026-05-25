@@ -336,6 +336,7 @@ button, [id^=kw_] {
     font-size: inherit;
     letter-spacing: initial;
     text-decoration: none;
+    unicode-bidi: plaintext;
 }
 
 .persistent {

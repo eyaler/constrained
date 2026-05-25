@@ -5,12 +5,16 @@ const medium_color = '#ffcccc'
 const rare_count = 700
 const medium_count = 2000
 const limit = 0
-const declension_suffixes = ['הּ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
-const prep_declensions1 = new Set('אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמָּדָהּ', 'עִמְּךָ')
-const prep_declensions2 = new Set('בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן')
-const model_id = 'eyaler/neodictabert-bilingual-onnx'
-const model_quant = 'int8'
-const num_tokens_for_empty = 1
+const possessive_suffixes = ['הּ', 'הָ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
+const prepositions1 = new Set('אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדָהּ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמְּךָ')
+const prepositions2 = new Set('בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן')
+const model_id = 'onnx-community/HalleluBERT_large-ONNX'
+const model_device = navigator.gpu ? 'webgpu' : 'wasm'
+const model_quant = model_device == 'wasm' ? 'int8' : 'fp32'
+console.log(model_id, model_device, model_quant)
+const mask_lstrip = false
+const model_max_length = 512
+const masks_for_missing_word = 2
 
 // These override Morse:
 let special = ',.*'
@@ -23,7 +27,8 @@ const dit_dah = dit + dah
 const makaf = '\u05be'
 const space_makaf_class = `[ ${makaf}]`
 const dagesh = '\u05bc'
-const dots = dagesh + '\u05c1\u05c2'
+const shindots = '\u05c1\u05c2'
+const dots = dagesh + shindots
 const shva = '\u05b0'
 const hirik = '\u05b4'
 const hataf_patah = '\u05b2'
@@ -72,6 +77,8 @@ const a_vowel_regex = RegExp(`[${a_vowel}]`, 'g')
 const nikud_regex = RegExp(`[${good_nikud}]`)
 const allowed_nikud_regex = RegExp(`[${allowed_nikud}]`, 'g')
 const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${good_nikud}${shva}][${dots}]*){2}`)
+const wrong_order_nikud_regex = RegExp(`([${good_nikud}])([${dots}]*)`, 'g')
+const wrong_order_dots_regex = RegExp(`([${shindots}])(${dagesh})`, 'g')
 
 const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2} \\p{L}`, 'u')
 const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
@@ -85,7 +92,9 @@ const non_code_regex = RegExp(`[^\\s${special}${dit_dah}]+`, 'g')
 
 const sep_string = `(?<=[^\\s${punct}])[${default_sep}] (?= *[^\\s${punct}])`
 const sep_regex = RegExp(sep_string, 'g')
-const split_regex = RegExp(`${sep_string}|\\s+|(?=[${special}])|(?<=[${special}])`, 'g')
+const split_string = `${sep_string}\\s*|\\s+|(?=[${special}])|(?<=[${special}])`
+const split_regex = RegExp(`${split_string}`)
+const partition_regex = RegExp(`(${split_string})`)
 
 const final_regex = RegExp(`(?<=[${hebrew_block_quotes}])[כמנפצ](?![א-ת${joker}])`, 'g')
 const non_text_regex = RegExp(`[^\\s${special}${hebrew_block_quotes}-]+|(?<![${hebrew_block}])["-]|"(?!${alefbet_class})`, 'g')
@@ -164,16 +173,16 @@ const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [v, k]))
 const proto_selects = {}
-let morse_words_types, homographs
+let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
-let ort, session, tokenizer
+let model, tokenizer
 
-function join_lines(join_words, sep='') {
-    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(join_words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
+function join_lines(words, sep='') {
+    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
 }
 
 function join_inputs() {
-    return join_lines(word => word.firstChild.value)
+    return join_lines(word => word.firstChild.value.trim())
 }
 
 function make_hash() {
@@ -198,7 +207,18 @@ function update_output(text, push=true) {
 
 addEventListener('pagehide', () => update_output(null, false))
 main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
-checkboxes.addEventListener('change', e => {if (e.target != allow_homographs && ready) build_selects()})
+checkboxes.addEventListener('change', event => {
+    if (event.target == remember)
+        if (remember.checked)
+            checkboxes.querySelectorAll('input').forEach(input => localStorage['morse_' + input.id] = input.checked)
+        else
+            localStorage.removeItem('morse_remember')
+    else {
+        if (remember.checked)
+            localStorage['morse_' + event.target.id] = event.target.checked
+        build_selects()
+    }
+})
 
 addEventListener('copy', event => {
     /* Augment regular copy with:
@@ -207,17 +227,22 @@ addEventListener('copy', event => {
        3. Otherwise when no selection - Copy all input
     */
     const ae = document.activeElement
-    if ((event.target.selectionStart == event.target.selectionEnd || ae.closest('select')) && (ae == output || main.contains(ae))) {
+    if ((event.target.selectionStart == event.target.selectionEnd || ae.closest('select')) && ([output, document.body].includes(ae) || main.contains(ae))) {
         event.preventDefault()
         event.clipboardData.setData('text/plain', ae == output || ae.closest('select') ? ae.value : join_inputs())
     }
 })
 
+function measure(name, start_time) {
+    console.log(`${name} took ${((performance.now()-start_time) / 1000).toLocaleString(undefined, {maximumFractionDigits: 1})}s.`)
+}
+
 function norm(text) {
+    text = text.replace(wrong_order_nikud_regex, '$2$1').replace(wrong_order_dots_regex, '$2$1')
     return text.trim().replace(whitespace_regex, ' ').replace(newline_regex, '\n').replaceAll('\u05f3', "'").replaceAll('\u05f4', '"').replaceAll('\u2011', '-')
 }
 
-function norm_hyphen(text) {
+function to_makaf(text) {
     return text.replace(space_hyphen_regex, makaf)
 }
 
@@ -253,7 +278,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
     if (select) {
         if (!alefbet_regex.test(text))
             return
-        text = remove_trailing_makaf(norm_hyphen(text))
+        text = remove_trailing_makaf(to_makaf(text))
         const len = select.length
         const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
         for (let i = 1; i <= len; i++) {
@@ -303,7 +328,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         update_output()
     if (focus)
         main.querySelector('input').focus()
-    console.log(`paste_input took ${performance.now() - start_time | 0} ms.`)
+    measure('paste_input', start_time)
     return true
 }
 
@@ -315,7 +340,7 @@ addEventListener('paste', event => {
     */
     const ae = document.activeElement
     try {
-        if (ae != output && (ae != document.body && !controls.contains(ae) || !join_inputs()) && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae))
+        if (ae != output && (main.contains(ae) || !join_inputs()) && paste_input(event.clipboardData.getData('text/plain'), ae == document.body, true, ae))
             event.preventDefault()
     } catch {}
 })
@@ -347,7 +372,7 @@ function paste_output(text='', focus=true, push=true) {
                          .replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker)
                          .replace(non_punct_regex, '').replace(sep_regex, ' ')
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
-    const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(norm_hyphen)
+    const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(to_makaf)
     main.querySelectorAll('select').forEach((select, i) => {
         const trailless = remove_trailing_makaf(output_words[i])
         ;(find_option(select, trailless) || add_option(select, new Option(output_words[i], trailless != output_words[i] ? trailless : undefined))).selected = true
@@ -362,10 +387,10 @@ function paste_output(text='', focus=true, push=true) {
     const ae3 = document.activeElement
     if (focus || ae2 != ae1) {
         const first_word = main.querySelector('.word')
-        ;(first_word.firstChild.value ? add_word() : first_word).firstChild.focus()
+        ;(first_word.firstChild.value.trim() ? add_word() : first_word).firstChild.focus()
     } else if (ae3 != ae2)  // In Safari and iOS selection steals the focus
         ae2.focus()
-    console.log(`paste_output+paste_input took ${performance.now() - start_time | 0} ms.`)
+    measure('paste_output+paste_input', start_time)
 }
 
 output.addEventListener('change', () => {
@@ -380,6 +405,34 @@ output.addEventListener('keydown', event => {
         || event.key == 'Tab' && event.shiftKey && !event.ctrlKey && !event.metaKey)
         && !event.altKey && !event.getModifierState?.('AltGraph'))
         output.dispatchEvent(new Event('change'))
+})
+
+output.addEventListener('selectionchange', () => {
+    let text = output.value
+    let start = output.selectionStart
+    let end = output.selectionEnd
+    let start_word, end_word
+    if (end > start && text == output.dataset.prev_value) {
+        text = text.slice(0, start) + '\x01' + text.slice(start, end) + '\x02' + text.slice(end)
+        let norm_text = norm(text).replace(non_text_regex, m => m.replace(/[^\x01\x02]/g, ''))
+        start = norm_text.indexOf('\x01')
+        norm_text = norm_text.slice(0, start) + norm_text.slice(start + 1)
+        end = norm_text.indexOf('\x02')
+        norm_text = norm_text.slice(0, end) + norm_text.slice(end + 1)
+        const parts = norm_text.split(partition_regex)
+        let pos = 0
+        for (let i = 0; i < parts.length; i++) {
+            const pos_end = pos + parts[i].length
+            if (start >= pos && start < pos_end)
+                start_word = (i+1) / 2 | 0
+            if (end > pos && end <= pos_end) {
+                end_word = i / 2 | 0
+                break
+            }
+            pos = pos_end
+        }
+    }
+    main.querySelectorAll('select').forEach((select, i) => select.classList.toggle('selected', i >= start_word && i <= end_word))
 })
 
 function update_index(select) {
@@ -399,124 +452,229 @@ function randomize() {
     main.dispatchEvent(new Event('change'))
 }
 
-async function download_model(url) {
-    const cache = await caches.open('onnx')
-    let blob = await cache.match(url)
-    if (!blob) {
-        const start_time = performance.now()
-        const res = await fetch(url)
-        if (!res.ok)
-            throw new Error(`Download model failed: ${res.status} ${res.statusText}`)
-        blob = await res.blob()
-        console.log(`download_model took ${performance.now() - start_time | 0} ms.`)
-        cache.put(url, new Response(blob)).catch(e => console.warn(e.message))
-    }
-    return blob.arrayBuffer()
+function diff(text, prev_text) {
+    const prev_len = prev_text.length
+    const len = text.length
+    const min_len = Math.min(len, prev_len)
+    let fwd = 0
+    let rev = 0
+    while (fwd < min_len && text[fwd] == prev_text[fwd])
+        fwd++
+    while (rev < min_len - fwd && text[len - 1 - rev] == prev_text[prev_len - 1 - rev])
+        rev++
+    return [fwd, len - rev, prev_len - len]
 }
 
-async function load_model(model_id, model_quant) {
+async function load_model(model_id, model_quant, model_device) {
     try {
         const start_time = performance.now()
+        const {AutoTokenizer, AutoModel} = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers')
         if (!tokenizer) {
-            const {Tokenizer} = await import('https://cdn.jsdelivr.net/npm/@huggingface/tokenizers')
-            const tokenizer_json = await fetch(`https://huggingface.co/${model_id}/resolve/main/tokenizer.json`).then(r => r.json())
-            const tokenizer_config = await fetch(`https://huggingface.co/${model_id}/resolve/main/tokenizer_config.json`).then(r => r.json())
-            tokenizer = new Tokenizer(tokenizer_json, tokenizer_config)
+            tokenizer = await AutoTokenizer.from_pretrained(model_id)
+            tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = mask_lstrip
         }
-        ort = await import('https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/esm/ort.min.js')
-        ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/'
-        session = await ort.InferenceSession.create(await download_model(`https://huggingface.co/${model_id}/resolve/main/model${model_quant ? '_' + model_quant : ''}.onnx`))
-        console.log(`load_model+download_model took ${performance.now() - start_time | 0} ms.`)
+        if (!model)
+            model = await AutoModel.from_pretrained(model_id, {device: model_device, dtype: model_quant})
+        measure('load_model', start_time)
     } catch (error) {
         console.error(error)
     }
 }
 
-async function tokenize(words, num_tokens=1) {
-    const mask = Array(num_tokens).fill(tokenizer.config.mask_token).join(' ')
-    return await tokenizer.encode(words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' '), {add_special_tokens: false})
+function make_phrase_part(words, num_masks=masks_for_missing_word) {
+    const mask = tokenizer.mask_token.repeat(num_masks)
+    const part = words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' ')
+    if (part)
+        return ' ' + part
+    return ''
 }
 
-async function optimize_word(phrase_words, index, candidate_tokens) {
-    const lengths = Object.keys(candidate_tokens).map(Number)
-    const prefix = await tokenize([tokenizer.config.cls_token, ...phrase_words.slice(0, index)], num_tokens_for_empty)
-    const suffix = await tokenize([...phrase_words.slice(index + 1), tokenizer.config.sep_token], num_tokens_for_empty)
-    const mask_id = tokenizer.token_to_id(tokenizer.config.mask_token)
-    const pad_id = tokenizer.token_to_id(tokenizer.config.pad_token)
-    const batch_size = lengths.length
-    const sequences = []
-    let max_len = 0
+async function optimize_word(phrase_words, index, candidates) {
+    /* Based on: PET with Multi Masks
+       Schick and Schütze (2021)
+       https://arxiv.org/abs/2009.07118
+       https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
+    */
+    let prefix = make_phrase_part(phrase_words.slice(0, index))
+    const suffix = make_phrase_part(phrase_words.slice(index + 1))
+    if (!mask_lstrip && prefix.startsWith(' ' + tokenizer.mask_token))
+        prefix = prefix.slice(1)
+    const mask_start = tokenizer.encode(prefix).length - 1
 
-    for (const len of lengths) {
-        const seq = [...prefix.ids, ...Array(len).fill(mask_id), ...suffix.ids]
-        max_len = Math.max(max_len, seq.length)
-        sequences.push(seq)
-    }
+    let lengths = Object.keys(candidates).map(Number).sort((a, b) => a - b)
+    const sequences = lengths.map(len => `${prefix}${tokenizer.mask_token.repeat(len)}${suffix}`)
+    const tokens = tokenizer(sequences, {model_max_length: model_max_length || tokenizer.model_max_length, padding: true, truncation: true})
+    const Tensor = tokens.input_ids.constructor
 
-    const flat_ids = []
-    const flat_mask = []
-    for (const seq of sequences) {
-        const pad_len = max_len - seq.length
-        flat_ids.push(...seq, ...Array(pad_len).fill(pad_id))
-        flat_mask.push(...Array(seq.length).fill(1), ...Array(pad_len).fill(0))
-    }
+    let left_masks = [...lengths]
+    let batch_available_masks = lengths.map(len => [...Array(len).keys()])
+    let batch_size = lengths.length
+    let active_rows = batch_size
+    const initial_batch_size = batch_size
 
-    const input_ids = new ort.Tensor('int64', BigInt64Array.from(flat_ids, BigInt), [batch_size, max_len])
-    const attention_mask = new ort.Tensor('int64', BigInt64Array.from(flat_mask, BigInt), [batch_size, max_len])
-    const logits = (await session.run({input_ids, attention_mask, token_type_ids: attention_mask})).logits  // Note: token_type_ids is ignored
-    const data = logits.data
-    const vocab_size = logits.dims[2]
-    const target_index = prefix.ids.length
-    const results = []
+    const log_sum_exp = new Float32Array(lengths[batch_size - 1])
+    let joint_log_probs = new Float32Array(batch_size)
+    let best_words = Array(batch_size)
 
-    for (let b = 0; b < batch_size; b++) {
-        const len = lengths[b]
-        const batch_offset = b * max_len * vocab_size
+    const active_candidates = structuredClone(candidates)
 
-        for (const candidate of candidate_tokens[len]) {
-            let sum = 0
-            for (let i = 0; i < len; i++) {
-                const token_offset = batch_offset + (target_index+i)*vocab_size
-                sum += data[token_offset + candidate.ids[i]]
+    let best_completed_prob = -Infinity
+    let best_completed_word, logits
+
+    try {
+        while (true) {
+            ;({logits} = await model(tokens))
+            const data = logits.data
+            const seq_length = logits.dims[1]
+            const vocab_size = logits.dims[2]
+
+            for (let b = 0; b < batch_size; b++) {
+                const len = lengths[b]
+                if (!left_masks[b])
+                    continue
+
+                const seq_offset = b*seq_length + mask_start
+                const available_masks = batch_available_masks[b]
+
+                if (initial_batch_size > 1 || left_masks[b] > 1)
+                    for (let m_idx = 0; m_idx < available_masks.length; m_idx++) {
+                        const i = available_masks[m_idx]
+                        const flat_offset = (seq_offset+i) * vocab_size
+                        const logits_slice = data.subarray(flat_offset, flat_offset + vocab_size)
+
+                        let max = -Infinity
+                        for (let j = 0; j < vocab_size; j++)
+                            if (logits_slice[j] > max)
+                                max = logits_slice[j]
+
+                        let sum_exp = 0
+                        for (let j = 0; j < vocab_size; j++)
+                            sum_exp += Math.exp(logits_slice[j] - max)
+
+                        log_sum_exp[i] = max + Math.log(sum_exp)
+                    }
+                else
+                    log_sum_exp[available_masks[0]] = 0
+
+                let best_prob = -Infinity
+                let best_word_idx, best_rel_pos, best_mask_idx
+
+                for (let m_idx = 0; m_idx < available_masks.length; m_idx++) {
+                    const rel_pos = available_masks[m_idx]
+                    const active_list = active_candidates[len]
+
+                    for (let w_idx = 0; w_idx < active_list.length; w_idx++) {
+                        const target_token_id = active_list[w_idx][1][rel_pos]
+                        const prob = data[(seq_offset+rel_pos)*vocab_size + target_token_id] - log_sum_exp[rel_pos]
+
+                        if (prob > best_prob) {
+                            best_prob = prob
+                            best_word_idx = w_idx
+                            best_rel_pos = rel_pos
+                            best_mask_idx = m_idx
+                        }
+                    }
+                }
+
+                joint_log_probs[b] += best_prob
+
+                if (joint_log_probs[b] <= best_completed_prob) {
+                    left_masks[b] = 0
+                    active_rows--
+                    continue
+                }
+
+                best_words[b] = active_candidates[len][best_word_idx]
+                const best_token_id = best_words[b][1][best_rel_pos]
+
+                tokens.input_ids.data[seq_offset + available_masks[best_mask_idx]] = BigInt(best_token_id)
+                available_masks.splice(best_mask_idx, 1)
+                left_masks[b]--
+
+                if (!left_masks[b]) {
+                    active_rows--
+                    if (joint_log_probs[b] > best_completed_prob) {
+                        best_completed_prob = joint_log_probs[b]
+                        best_completed_word = best_words[b][0]
+                    }
+                }
+
+                active_candidates[len] = active_candidates[len].filter(c => c[1][best_rel_pos] == best_token_id)
+
+                if (initial_batch_size == 1 && active_candidates[len].length == 1)
+                    return best_words[b][0]
             }
-            results.push({
-                word: candidate.word,
-                score: sum / len
-            })
-        }
-    }
 
-    return results.sort((a, b) => b.score - a.score)[0]?.word
+            if (!active_rows)
+                return best_completed_word
+
+            if (active_rows < batch_size) {
+                const new_input_data = new BigInt64Array(active_rows * seq_length)
+                const new_attention_data = new BigInt64Array(active_rows * seq_length)
+
+                let dest_b = 0
+                for (let b = 0; b < batch_size; b++)
+                    if (left_masks[b]) {
+                        new_input_data.set(tokens.input_ids.data.subarray(b * seq_length, (b + 1) * seq_length), dest_b * seq_length)
+                        new_attention_data.set(tokens.attention_mask.data.subarray(b * seq_length, (b + 1) * seq_length), dest_b * seq_length)
+                        joint_log_probs[dest_b++] = joint_log_probs[b]
+                    }
+
+                tokens.input_ids.dispose()
+                tokens.attention_mask.dispose()
+                tokens.input_ids = new Tensor('int64', new_input_data, [active_rows, seq_length])
+                tokens.attention_mask = new Tensor('int64', new_attention_data, [active_rows, seq_length])
+
+                lengths = lengths.filter((_, b) => left_masks[b])
+                batch_available_masks = batch_available_masks.filter((_, b) => left_masks[b])
+                best_words = best_words.filter((_, b) => left_masks[b])
+                left_masks = left_masks.filter(m => m)
+                joint_log_probs = joint_log_probs.subarray(0, active_rows)
+                batch_size = active_rows
+            }
+
+            logits.dispose()
+        }
+    } finally {
+        tokens.input_ids.dispose()
+        tokens.attention_mask.dispose()
+        logits?.dispose()
+    }
 }
 
 async function optimize_phrase(words) {
     const out_words = words.map(x => x[1])
     const opt_words = words.filter(x => x[0])
     const all_tokens = {}
+
     for (const char of new Set(opt_words.map(x => x[0]))) {
         all_tokens[char] = {}
-        for (const {value: word} of proto_selects[char]) {
-            if (!allow_homographs.checked && homographs.has(word))
-                continue
-            const ids = await tokenizer.encode(word.replaceAll(makaf, ' '), {add_special_tokens: false}).ids
-            const len = ids.length
+        const char_words = [...proto_selects[char]].map(select => select.value)
+        const all_ids = tokenizer(char_words.map(word => ' ' + word.replaceAll(makaf, ' ')), {add_special_tokens: false, return_attention_mask: false, return_tensor: false}).input_ids
+        for (let i = 0; i < char_words.length; i++) {
+            const len = all_ids[i].length
             if (!all_tokens[char][len])
                 all_tokens[char][len] = []
-            all_tokens[char][len].push({word, ids})
+            all_tokens[char][len].push([char_words[i], all_ids[i]])
         }
     }
-    for (const [char, w, i] of opt_words.reverse())  // Traversing from end the start so the current mask is always followed by a proper word (if another mask follows, the current token can resolve to a word part, the model assuming it can be continued by the following)
+
+    for (const [char, w, i] of opt_words)
         if (Object.keys(all_tokens[char]).length)
             out_words[i] = await optimize_word(out_words, i, all_tokens[char])
     return out_words
 }
 
-async function suggest_phrase(selects, indices) {
+async function suggest_phrase(selects, indices, rewrite) {
     const adjustable = selects.map((select, i) => proto_selects[select.name].length > 1 && (!indices.length || indices.includes(i)))
-    ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, adjustable[i] ? null : select.value, i]))).forEach((word, i) => {
+    for (let i = 0; i <= adjustable.length; i++)
+        if (adjustable[i])
+            selects[i].classList.add('thinking')
+    ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
         if (adjustable[i] && word) {
             selects[i].value = word
             selects[i].dispatchEvent(new Event('change'))
+            selects[i].classList.remove('thinking')
             selects[i].classList.add('untouched')
         }
     })
@@ -524,42 +682,60 @@ async function suggest_phrase(selects, indices) {
     indices.length = 0
 }
 
-async function suggest() {
+async function suggest(rewrite) {
+    const robot = buttons.querySelectorAll('.robot')[rewrite | 0]
     if (robot.classList.contains('thinking'))
         return
     robot.classList.add('thinking')
     const ae = document.activeElement
     overlay.showModal()
     await globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
-    if (!tokenizer || !session)
-        await load_model(model_id, model_quant)
-    if (session) {
-        const start_time = performance.now()
-        const indices = []
-        let divs = main.querySelectorAll('.word > div')
-        if (main.contains(ae))
-            if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart)
-                divs = [ae.nextElementSibling]
+    if (output.value.trim()) {
+        if (!tokenizer || !model)
+            await load_model(model_id, model_quant, model_device)
+        if (tokenizer && model) {
+            const start_time = performance.now()
+            const indices = []
+            let output_selection, start, end
+            let divs = main.querySelectorAll('.word > div:has(.selected)')
+            if (divs.length)
+                output_selection = true
             else {
-                const select = ae.closest('select')
-                if (select) {
-                    divs = [select.parentElement]
-                    indices.push([...divs[0].children].indexOf(select))
-                }
+                divs = main.querySelectorAll('.word > div')
+                if (main.contains(ae))
+                    if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart) {
+                        divs = [ae.nextElementSibling]
+                        start = ae.selectionStart
+                        end = ae.selectionEnd
+                    } else {
+                        const select = ae.closest('select')
+                        if (select) {
+                            divs = [select.parentElement]
+                            indices.push([...divs[0].children].indexOf(select))
+                        }
+                    }
             }
-        const selects = []
-        for (const div of divs) {
-            for (const [i, select] of [...div.children].entries())
-                if (select.name in morse) {
-                    if (i >= ae.selectionStart && i < ae.selectionEnd)
-                        indices.push(selects.length)
-                    selects.push(select)
-                } else
-                    await suggest_phrase(selects, indices)
-            await suggest_phrase(selects, indices)
+            const selects = []
+            for (const div of divs) {
+                for (const [i, select] of [...div.children].entries())
+                    if (select.name in morse) {
+                        if (i >= start && i < end || select.matches('.selected'))
+                            indices.push(selects.length)
+                        selects.push(select)
+                    } else
+                        await suggest_phrase(selects, indices, rewrite)
+                await suggest_phrase(selects, indices, rewrite)
+            }
+            const dir = output.selectionDirection
+            const prev_text = output.value
+            main.dispatchEvent(new Event('change'))
+            const text = output.value
+            if (output_selection && text != prev_text) {
+                const [head, tail] = diff(text, prev_text)
+                output.setSelectionRange(head, tail, dir)
+            }
+            measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
-        main.dispatchEvent(new Event('change'))
-        console.log(`suggest took ${performance.now() - start_time | 0} ms.`)
     }
     robot.classList.remove('thinking')
     overlay.close()
@@ -573,7 +749,7 @@ overlay.addEventListener('keydown', event => {  // For Safari: https://bugs.webk
 function keep_focus(event) {
     if (!event.button) {
         const ae = document.activeElement
-        if (main.contains(ae) && (ae.tagName == 'INPUT' || ae.closest('select')))
+        if (ae == output || main.contains(ae) && (ae.tagName == 'INPUT' || ae.closest('select')))
             event.preventDefault()
     }
 }
@@ -604,7 +780,7 @@ function blur(event) {
         return
     const input = event.currentTarget
     setTimeout(() => {  // In Chrome, element removal triggers a blur event before the removal, and if our blur handler itself removes the element in transit, the original remove would then fail. This covers edge cases outside the normal flow, such as popstate. See: https://stackoverflow.com/a/22934552/664456
-        if (!remove_word(input) && /\s/.test(input.value))
+        if (input.isConnected && !remove_word(input))
             input.value = input.value.replace(/\s+/g, '')
     })
 }
@@ -633,20 +809,12 @@ function add_word(line=main.lastChild, current, before) {
         input.dataset.prev_value = input.value
         const prev_chars = [...select_container.children].map(select => select.name)
         const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => char in proto_selects)
-        const prev_len = prev_chars.length
-        const len = chars.length
-        const min_len = Math.min(len, prev_len)
-        let start = 0
-        let rev = 0
-        while (start < min_len && chars[start] == prev_chars[start])
-            start++
-        while (rev < min_len - start && chars[len - 1 - rev] == prev_chars[prev_len - 1 - rev])
-            rev++
-        for (let i = 0; i < prev_len - len; i++)
-            select_container.children[start].remove()
+        const [head, tail, delta] = diff(chars, prev_chars)
+        for (let i = 0; i < delta; i++)
+            select_container.children[head].remove()
 
         chars.forEach((char, i) => {
-            if ((i < start || i >= len - rev) && !rebuild)
+            if ((i < head || i >= tail) && !rebuild)
                 return
             const select = proto_selects[char].cloneNode(true)
 
@@ -700,11 +868,11 @@ function add_word(line=main.lastChild, current, before) {
             })
 
             const prev_select = select_container.children[i]
-            if (i >= start && i < len - rev)
+            if (i >= head && i < tail)
                 select.classList.add('untouched')
             else if (rebuild)
                 (find_option(select, prev_select.value) || add_option(select, prev_select.selectedOptions[0].cloneNode(true))).selected = true
-            if (i >= start && select_container.childElementCount < len)
+            if (i >= head && select_container.childElementCount < chars.length)
                 select_container.insertBefore(select, prev_select);
             else
                 prev_select.replaceWith(select)
@@ -832,20 +1000,20 @@ function save_words(morse_words) {
 }
 
 addEventListener('keydown', event => {
-    if (event.shiftKey || event.altKey || event.getModifierState?.('AltGraph'))
+    if (event.altKey || event.getModifierState?.('AltGraph'))
         return
     const elem = event.target
-    if (event.key == 'Escape' && !event.ctrlKey && !event.metaKey && elem.selectionStart != elem.selectionEnd) {  // Remove selection
+    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && elem.selectionStart != elem.selectionEnd) {  // Remove selection
         const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
         elem.setSelectionRange(caret, caret)
     } else if (event.key == ' ' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)) {
         event.preventDefault()
         let caret
-        if (elem.tagName == 'INPUT' && elem.selectionEnd == elem.selectionStart && elem.value.trim() && main.contains(elem)) {
+        if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {
             caret = elem.selectionEnd
             elem.select()
         }
-        suggest()
+        suggest(event.shiftKey)
         if (caret != null)
             elem.setSelectionRange(caret, caret)
     }
@@ -872,23 +1040,23 @@ function build_selects(focus=false) {
     const start_time = performance.now()
     ready = false
     rebuild = true
+    const ae = document.activeElement
+    const {selectionStart, selectionEnd, selectionDirection} = ae
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
-    prep_declensions2.forEach(word => {
-        if (word_types[word] == 0)
+    prepositions2.forEach(word => {
+        if (!word_types[word])
             word_types[word] = 1
     })
 
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
 
-    function filter_declensions(words) {
+    function filter_possessive(words) {
         return words.filter(word => word_types[word] != 1 || nonfinal_space_makaf_regex.test(word)
-                            || prep_declensions1.has(word) || prep_declensions2.has(word)
-                            || !declension_suffixes.some(suffix => word.endsWith(suffix)))
+                            || prepositions1.has(word) || prepositions2.has(word)
+                            || !possessive_suffixes.some(suffix => word.endsWith(suffix)))
     }
 
-    const seen = {}
-    homographs = new Set()
     let min_count = Infinity
     let max_count = 0
     let total_count = 0
@@ -896,8 +1064,8 @@ function build_selects(focus=false) {
     Object.entries(reverse_morse).forEach(([code, char]) => {
         if (!morse_words[char])
             morse_words[char] = []
-        if (!allow_declensions.checked)
-            morse_words[char] = filter_declensions(morse_words[char])
+        if (!allow_possessive.checked)
+            morse_words[char] = filter_possessive(morse_words[char])
 
         const add_bvkl = [...bet.slice(0, add_prep_b.checked) + vav.slice(0, add_prep_v.checked) + kaf.slice(0, add_prep_k.checked) + lamed.slice(0, add_prep_l.checked)]
         const add_bhkl = [...bet.slice(0, add_article_b.checked) + he.slice(0, add_article_h.checked) + kaf.slice(0, add_article_k.checked) + lamed.slice(0, add_article_l.checked)]
@@ -906,8 +1074,8 @@ function build_selects(focus=false) {
            || code[0] == dit && add_prep_m.checked)) {
             const tail_char = reverse_morse[code.slice(1)]
             let words = Object.keys(morse_words_types[tail_char]).filter(word => !conj_mwe_regex.test(word))
-            if (!allow_declensions.checked)
-                words = filter_declensions(words)
+            if (!allow_possessive.checked)
+                words = filter_possessive(words)
             if (words.length) {
                 morse_words[char].push('')  // For <hr>
                 if (code[0] == dah)
@@ -929,24 +1097,6 @@ function build_selects(focus=false) {
             }
         }
 
-        const this_seen = {}
-        for (const word of morse_words[char]) {
-            if (!word)
-                continue
-            const trailless = remove_trailing_makaf(word.replaceAll(' ', makaf))
-            const nikudless = trailless.replace(allowed_nikud_regex, '')
-            if (seen[nikudless]) {
-                homographs.add(trailless)
-                while (seen[nikudless].length)
-                    homographs.add(seen[nikudless].pop())
-            } else {
-                if (!this_seen[nikudless])
-                    this_seen[nikudless] = []
-                this_seen[nikudless].push(trailless)
-            }
-        }
-        Object.assign(seen, this_seen)
-
         if (!allow_shva_na.checked)
             morse_words[char] = morse_words[char].filter(word => !shva_na_regex.test(word) && !conj_mwe_regex.test(word))
         morse_words[char] = morse_words[char].filter(word => !space_final_makaf_regex.test(word) || !morse_words[char].includes(remove_trailing_makaf(word.replaceAll(' ', makaf))))
@@ -954,7 +1104,7 @@ function build_selects(focus=false) {
             morse_words[char].shift()
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
-        if (!morse_words[char].slice(-1)[0])
+        if (!morse_words[char][morse_words[char].length - 1])
             morse_words[char].pop()
         proto_selects[char] = document.createElement('select')
         for (let word of morse_words[char]) {
@@ -991,16 +1141,20 @@ function build_selects(focus=false) {
     })
 
     ready = true
-    console.log(`build_selects took ${performance.now() - start_time | 0} ms.`)
+    measure('build_selects', start_time)
     paste_hash(false, focus)
+    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
+        ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     rebuild = false
-    //save_words(morse_words)
 }
 
 const global_start_time = performance.now()
 fetch('morse.json').then(response => response.json()).then(json => {
     morse_words_types = json
-    console.log(`Loading dictionary took ${performance.now() - global_start_time | 0} ms.`)
+    measure('Loading dictionary', global_start_time)
+    if (localStorage.morse_remember == 'true')
+        checkboxes.querySelectorAll('input').forEach(input => input.checked = localStorage['morse_' + input.id] == 'true')
     build_selects(true)
-    console.log(`Startup took ${performance.now() - global_start_time | 0} ms.`)
+    measure('Startup', global_start_time)
+    //save_words(morse_words)
 })

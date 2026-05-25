@@ -170,7 +170,7 @@
         const anagrams = all_anagrams.filter(anagram => [...norm(anagram.split(',')[0])].sort().join('') == [...norm(anagram.split(',')[1])].sort().join(''))
         console.log(all_anagrams.length, anagrams.length, new Set(anagrams.map(x => [...norm(x)].sort().join(''))).size)
         const match = location.search.slice(1).match(/(?<=^|&)\d+$/)?.[0]
-        let index = ((match ?? localStorage['tarefet']) | 0) % anagrams.length
+        let index = ((match ?? localStorage.tarefet) | 0) % anagrams.length
 
         let [values, answer] = anagrams[index].split(',')
         values = [...norm(values)]
@@ -237,7 +237,7 @@
                 clue3?.hide()
                 if (!a) {
                     index = (index+1) % anagrams.length
-                    localStorage['tarefet'] = index
+                    localStorage.tarefet = index
                     let lang = ''
                     if (typeof get_lang == 'function') {
                         lang = get_lang()

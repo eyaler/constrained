@@ -444,7 +444,7 @@ function update_index(select) {
 
 function randomize() {
     for (const select of main.querySelectorAll('.word select'))
-        if (select.name in morse) {
+        if (select.name in morse && select.length) {
             select.selectedIndex = Math.random() * select.length | 0
             update_index(select)
             select.classList.add('untouched')
@@ -718,7 +718,7 @@ async function suggest(rewrite) {
             const selects = []
             for (const div of divs) {
                 for (const [i, select] of [...div.children].entries())
-                    if (select.name in morse) {
+                    if (select.name in morse && select.length) {
                         if (i >= start && i < end || select.matches('.selected'))
                             indices.push(selects.length)
                         selects.push(select)
@@ -808,7 +808,7 @@ function add_word(line=main.lastChild, current, before) {
             return
         input.dataset.prev_value = input.value
         const prev_chars = [...select_container.children].map(select => select.name)
-        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => char in proto_selects)
+        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => proto_selects[char]?.length)
         const [head, tail, delta] = diff(chars, prev_chars)
         for (let i = 0; i < delta; i++)
             select_container.children[head].remove()
@@ -1030,8 +1030,8 @@ function paste_hash(pop, focus=false) {
         }
 }
 
-function add_dagesh(word) {
-    if ('אהחערכפ'.includes(word[0]) || word[1] == dagesh)
+function add_dagesh(word, bk) {
+    if (!bk && 'אהחערכפ'.includes(word[0]) || bk && !(bet + kaf).includes(word[0]) || word[1] == dagesh)
         return word
     return word[0] + dagesh + word.slice(1)
 }
@@ -1082,14 +1082,14 @@ function build_selects(focus=false) {
                     bhvkl.forEach(prefix => morse_words[char] = morse_words[char].concat(words.flatMap(word => {
                         const result = []
                         if (add_bvkl.includes(prefix) && (prefix == vav || word_types[word]) && hataf_patah_regex.test(word))
-                            result.push(prefix + patah + word)
+                            result.push(add_dagesh(prefix, true) + patah + word)
                         if (add_bhkl.includes(prefix) && word_types[word] == 2 && !skip_article_regex.test(word))
-                            result.push(prefix + (['הַר', 'עַם', 'פַּר'].includes(word) ? (word == 'פַּר' ? patah : kamats) + word.replace(patah, kamats) : ('ארע'.includes(word[0]) ? kamats : patah) + add_dagesh(word)))
+                            result.push(add_dagesh(prefix, true) + (['הַר', 'עַם', 'פַּר'].includes(word) ? (word == 'פַּר' ? patah : kamats) + word.replace(patah, kamats) : ('ארע'.includes(word[0]) ? kamats : patah) + add_dagesh(word)))
                         return result
                     })))
                 else {
                     add_bvkl.forEach(prefix => morse_words[char] = morse_words[char].concat(words.filter(word => (prefix == vav && word[0] == yod || word_types[word]) && initial_shva_regex.test(word))
-                                                                       .map(word => prefix + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace('(?<=^.)' + dagesh, '')))))
+                                                                       .map(word => add_dagesh(prefix, true) + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace('(?<=^.)' + dagesh, '')))))
                     if (add_prep_m)
                         morse_words[char] = morse_words[char].concat(words.filter(word => word_types[word] && !'אהחער'.includes(word[0])).map(word => mem + hirik + add_dagesh(word)))
                 }
@@ -1099,13 +1099,17 @@ function build_selects(focus=false) {
 
         if (!allow_shva_na.checked)
             morse_words[char] = morse_words[char].filter(word => !shva_na_regex.test(word) && !conj_mwe_regex.test(word))
+        if (!allow_nonacronyms.checked)
+            morse_words[char] = morse_words[char].filter(word => !word || word.startsWith(char))
         morse_words[char] = morse_words[char].filter(word => !space_final_makaf_regex.test(word) || !morse_words[char].includes(remove_trailing_makaf(word.replaceAll(' ', makaf))))
+
         if (!morse_words[char][0])
             morse_words[char].shift()
         if (limit)
             morse_words[char] = morse_words[char].slice(0, limit)  // May be off by one due to <hr>
         if (!morse_words[char][morse_words[char].length - 1])
             morse_words[char].pop()
+
         proto_selects[char] = document.createElement('select')
         for (let word of morse_words[char]) {
             word = word.replaceAll(' ', makaf)

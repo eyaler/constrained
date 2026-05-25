@@ -84,6 +84,8 @@ main:has(~ :is(#output:focus-visible, #overlay:open)) .word select.selected {
 }
 
 #output {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='4' stroke-dasharray='6 2 2 2 2 2 2 6'/%3e%3c/svg%3e");
+    border: none;
     box-sizing: border-box;
     display: block;
     field-sizing: content;

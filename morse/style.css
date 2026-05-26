@@ -127,8 +127,7 @@ span.thinking {
 
 #about {
     overscroll-behavior: none;
-    padding: none;
-    width: min-content;
+    max-width: min(60ch, 100%);
 }
 
 #about > button {
@@ -147,7 +146,8 @@ span.thinking {
 }
 
 #about > div {
-    padding: 1em;
+    padding-bottom: 1em;
+    padding-inline: 2em;
 }
 
 #about :is(h1, h2) {
@@ -159,14 +159,11 @@ span.thinking {
 }
 
 #about .tables {
-    column-gap: 1.5em;
+    gap: 1.5em;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-}
-
-#about :is(td, th) {
-    padding-inline: .5em;
-    text-align: start;
+    margin-block: 1.5em 2.5em;
 }
 
 #about :is(table, td, th) {
@@ -175,6 +172,16 @@ span.thinking {
     text-wrap: nowrap;
 }
 
-#about td:nth-child(3n-1) {
+#about :is(td, th) {
+    padding-inline: .5em;
+    text-align: start;
+}
+
+#about td:nth-child(2n) {
     letter-spacing: 50%;
+    width: 7ch;
+}
+
+#about td:last-child {
+    width: 9ch;
 }

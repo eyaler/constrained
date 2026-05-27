@@ -5,9 +5,11 @@ const medium_color = '#ffcccc'
 const rare_count = 700
 const medium_count = 2000
 const limit = 0
+
 const possessive_suffixes = ['הּ', 'הָ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
 const prepositions1 = new Set('אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדָהּ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמְּךָ')
 const prepositions2 = new Set('בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן')
+
 const model_id = 'onnx-community/HalleluBERT_large-ONNX'
 const model_device = navigator.gpu ? 'webgpu' : 'wasm'
 const model_quant = model_device == 'wasm' ? 'int8' : 'fp32'
@@ -465,6 +467,10 @@ function diff(text, prev_text) {
     return [fwd, len - rev, prev_len - len]
 }
 
+async function yield() {
+    globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
+}
+
 async function load_model(model_id, model_quant, model_device) {
     try {
         const start_time = performance.now()
@@ -523,6 +529,7 @@ async function optimize_word(phrase_words, index, candidates) {
 
     try {
         while (true) {
+            await yield()
             ;({logits} = await model(tokens))
             const data = logits.data
             const seq_length = logits.dims[1]
@@ -689,7 +696,7 @@ async function suggest(rewrite) {
     robot.classList.add('thinking')
     const ae = document.activeElement
     overlay.showModal()
-    await globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
+    await yield()
     if (output.value.trim()) {
         if (!tokenizer || !model)
             await load_model(model_id, model_quant, model_device)

@@ -697,6 +697,7 @@ async function suggest(rewrite) {
     const ae = document.activeElement
     overlay.showModal()
     await yield()
+
     if (output.value.trim()) {
         if (!tokenizer || !model)
             await load_model(model_id, model_quant, model_device)

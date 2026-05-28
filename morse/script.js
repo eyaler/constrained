@@ -448,6 +448,9 @@ function update_index(select) {
 }
 
 function randomize() {
+    const ae = document.activeElement
+    if (ae == output || ae.tagName == 'INPUT' && main.contains(ae))
+        ae.dispatchEvent(new Event('change'))
     for (const select of main.querySelectorAll('.word select'))
         if (select.name in morse && select.length) {
             select.selectedIndex = Math.random() * select.length | 0

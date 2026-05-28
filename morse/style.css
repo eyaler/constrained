@@ -8,6 +8,12 @@
     font-family: Alef, Arial, sans-serif;
 }
 
+body {
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
 #controls > div {
     display: flex;
     flex-wrap: wrap;

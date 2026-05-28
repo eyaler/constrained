@@ -167,9 +167,13 @@ const morse = {
 
 const dont_show = 'äöšü'
 
-const is_mac = navigator.platform.startsWith('Mac') || navigator.platform.startsWith('iP')
+const is_ios = navigator.platform.startsWith('iP')
+const is_mac = navigator.platform.startsWith('Mac') || is_ios
 const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')
-const is_mobile = navigator.userAgent.includes('Android') || navigator.platform.startsWith('iP')
+const is_mobile = navigator.userAgent.includes('Android') || is_ios
+
+if (is_ios)
+    document.querySelector('meta[name=viewport]').content = 'width=device-width, initial-scale=1, maximum-scale=1'
 
 const model_device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
 const model_quant = model_device == 'wasm' ? 'int8' : 'fp32'

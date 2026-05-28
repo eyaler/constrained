@@ -39,7 +39,7 @@ main:not(:has(.word)) ~ #output {
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
-    margin-block: 2em;
+    margin-block: 2.5em;
 }
 
 .word {

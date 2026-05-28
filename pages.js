@@ -161,7 +161,7 @@ const default_show_author = true
 
 let author_pages_folder = ''
 author_pages_folder = author_pages_folder.replace(/^[./]+|[./]+$/g, '')
-const global_is_mac = navigator.platform.startsWith('Mac') || navigator.platform == 'iPhone'
+const global_is_mac = navigator.platform.startsWith('Mac') || navigator.platform.startsWith('iP')
 
 
 function get_lang() {

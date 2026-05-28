@@ -71,7 +71,7 @@ main:not(:has(.word)) ~ #output {
     outline-width: 1px;
 }
 
-main:has(~ :is(#output:focus-visible, #overlay:open)) .word select.selected {
+main:has(~ :is(#output:focus-visible, #overlay:modal)) .word select.selected {
     filter: invert(.9) var(--shadow,);
 }
 
@@ -130,7 +130,7 @@ span.thinking {
     max-width: min(60ch, 100%);
 }
 
-#about > button {
+#about > #close {
     border: none;
     display: block;
     height: 2em;
@@ -139,6 +139,13 @@ span.thinking {
     top: 0;
     translate: -1em -1em;
     width: 2em;
+}
+
+#about > #en_button {
+    border: none;
+    inset-inline-start: .5em;
+    position: absolute;
+    top: .5em;
 }
 
 #about > button:not(:hover) {
@@ -152,6 +159,14 @@ span.thinking {
 
 #about :is(h1, h2) {
     text-align: center;
+}
+
+#about h2 {
+    margin-bottom: 2em;
+}
+
+#en {
+    margin-top: 4em;
 }
 
 #about p {

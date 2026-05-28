@@ -82,16 +82,16 @@
     <textarea id="output" autocomplete="off" autocorrect="off"></textarea>
     <dialog id="overlay" closedby="none"></dialog>
     <dialog id="about" closedby="any" onclick="if (event.target == this) this.close()" tabindex="-1">  <!-- Fix for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1934522 -->
-        <button onclick="this.parentElement.close()" tabindex="-1">x</button>
+        <button id="close" onclick="this.parentElement.close()">x</button>
+        <button id="en_button" onclick="en.scrollIntoView()">en</button>
         <div>
             <h1>עַלִּיזָה בַּתָּא</h1>
             <h2>שִׁירִים מִן הַשְּׁבִי</h2>
-            <br>
             <p>
                 כלי־תומך־יצירתיות לכתיבה תחת אילוץ מנמוניקת־מורס.
                 אותיות האלף־בית מיוצגות על ידי מילים שניקודן תואם לקוד המורס העברי של האותיות.
-                קו מיוצג על ידי תנועת A המסומנת בפתח, חטף־פתח או קמץ גדול, ונקודה מיוצגת על ידי תנועת I המסומנת בחיריק.
-                שאר התנועות אסורות, למעט שוואים, אשר לפי המהדרין מותרים רק נחים.
+                קו מיוצג על ידי תנועת A המסומנת בפַתח, חֲטף־פתח או קָמָץ גָדול, ונקודה מיוצגת על ידי תנועת I המסומנת בחִירִיק.
+                שאר התנועות אסורות למעט שְוואים, אשר לפי המהדרין מותרים רק כאשר הגייתם נחה.
             </p>
             <p>
                 בשיטת הזיכרון, או המנמוניקה, <a href="https://www.amutakesher.org.il/_Uploads/dbsAttachedFiles/mors2018.pdf" target="_blank">המקורית</a> (אך לא בעבודה זו) האות המקודדת גם מופיעה בראש המילה המזכירה אותה:
@@ -185,6 +185,20 @@
             <p>
                 העבודה נוצרה בהשראת אליזבט צורקוב.
             </p>
+            <div id="en" dir="ltr">
+                <h1>Alice in crypts</h1>
+                <h2>ballads midst captivity</h2>
+                <p>
+                    A creativity support tool for writing under a Morse mnemonic constraint.
+                    The Hebrew letters are represented by words whose diacritics correspond to the Hebrew Morse code of the letters.
+                    A dash is represented by an A vowel marked with Patah, Hataf Patah or Kamats Gadol, and a dot is represented by the I vowel marked with Hirik.
+                    Other vowel diacritics are forbidden except for Shva, which in strict mode are permitted only when they have zero realization.
+                    Unlike the original mnemonic system, in this work the encoded letter is not required to begin its corresponding mnemonic word.
+                </p>
+                <p>
+                    This work was inspired by Elizabeth Tsurkov.
+                </p>
+            </div>
         </div>
     </dialog>
     <script src="script.js"></script>

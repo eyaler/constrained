@@ -193,16 +193,42 @@ span.thinking {
     text-wrap: nowrap;
 }
 
-#about :is(td, th) {
+#about .tables :is(td, th) {
     padding-inline: .5em;
     text-align: start;
 }
 
-#about td:nth-child(2n) {
+#about .tables td:nth-child(2n) {
     letter-spacing: 50%;
     width: 7ch;
 }
 
-#about td:last-child {
+#about .tables td:last-child {
     width: 9ch;
+}
+
+#about #quadrivium {
+    border: none;
+    margin-inline: auto;
+}
+
+#about #quadrivium th {
+    font-weight: normal;
+    unicode-bidi: plaintext;
+}
+
+#about #quadrivium th:empty {
+    border: none;
+}
+
+#about #quadrivium td {
+    width: 8.5em;
+}
+
+#about #quadrivium :is(td, p) {
+    text-align: center;
+}
+
+#about #quadrivium [rowspan] > div {
+    writing-mode: sideways-lr;
 }

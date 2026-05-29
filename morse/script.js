@@ -215,7 +215,20 @@ function update_output(text, push=true) {
 }
 
 addEventListener('pagehide', () => update_output(null, false))
-main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !e.detail?.skip_push))
+
+main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
+
+function change_output_with_selection() {
+    const dir = output.selectionDirection
+    const prev_text = output.value
+    main.dispatchEvent(new Event('change'))
+    const text = output.value
+    if (main.querySelector('.selected') && text != prev_text) {
+        const [head, tail] = diff(text, prev_text)
+        output.setSelectionRange(head, tail, dir)
+    }
+}
+
 checkboxes.addEventListener('change', event => {
     if (event.target == remember)
         if (remember.checked)
@@ -358,15 +371,24 @@ function find_option(select, value) {
     return [...select].find(opt => opt.value == value)
 }
 
-function add_option(select, option) {
-    select.add(option, 0)
-    if (select.dataset.old_index)
-        select.dataset.old_index = +select.dataset.old_index + 1
-    if (select.dataset.last_index)
-        select.dataset.last_index = +select.dataset.last_index + 1
-    if (select.name != joker && ![...proto_selects[select.name]].some(opt => opt.value == option.value))
-        proto_selects[select.name].add(option.cloneNode(true), 0)
-    return option
+function make_option(text, value) {
+    return new Option(text, value != text ? value : undefined)
+}
+
+function find_add_select_option(select, word, prev_option) {
+    const trailless = remove_trailing_makaf(word)
+    let option = find_option(select, trailless)
+    if (!option) {
+        option = prev_option?.cloneNode(true) || make_option(word, trailless)
+        select.add(option, 0)
+        if (select.dataset.old_index)
+            select.dataset.old_index = +select.dataset.old_index + 1
+        if (select.dataset.last_index)
+            select.dataset.last_index = +select.dataset.last_index + 1
+        if (select.name != joker && !find_option(proto_selects[select.name], option.value))
+            proto_selects[select.name].add(option.cloneNode(true), 0)
+    }
+    option.selected = true
 }
 
 function paste_output(text='', focus=true, push=true) {
@@ -383,8 +405,7 @@ function paste_output(text='', focus=true, push=true) {
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(to_makaf)
     main.querySelectorAll('select').forEach((select, i) => {
-        const trailless = remove_trailing_makaf(output_words[i])
-        ;(find_option(select, trailless) || add_option(select, new Option(output_words[i], trailless != output_words[i] ? trailless : undefined))).selected = true
+        find_add_select_option(select, output_words[i])
         select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
         if (prev_select?.untouched && prev_select.name == select.name && prev_select.value == select.value)
@@ -451,17 +472,28 @@ function update_index(select) {
     }
 }
 
-function randomize() {
-    const ae = document.activeElement
-    if (ae == output || ae.tagName == 'INPUT' && main.contains(ae))
-        ae.dispatchEvent(new Event('change'))
-    for (const select of main.querySelectorAll('.word select'))
-        if (select.name in morse && select.length) {
-            select.selectedIndex = Math.random() * select.length | 0
-            update_index(select)
-            select.classList.add('untouched')
-        }
-    main.dispatchEvent(new Event('change'))
+function get_selected(ae) {
+    const indices = []
+    let start, end, all
+    let divs = ae == output ? main.querySelectorAll('.word > div:has(.selected)') : []
+    if (!divs.length) {
+        divs = main.querySelectorAll('.word > div')
+        if (main.contains(ae))
+            if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart) {
+                divs = [ae.nextElementSibling]
+                start = ae.selectionStart
+                end = ae.selectionEnd
+            } else {
+                const select = ae.closest('select')
+                if (select) {
+                    divs = [select.parentElement]
+                    indices.push([...divs[0].children].indexOf(select))
+                }
+            }
+        else
+            all = true
+    }
+    return [start, end, divs, indices, all]
 }
 
 function diff(text, prev_text) {
@@ -475,6 +507,25 @@ function diff(text, prev_text) {
     while (rev < min_len - fwd && text[len - 1 - rev] == prev_text[prev_len - 1 - rev])
         rev++
     return [fwd, len - rev, prev_len - len]
+}
+
+function randomize() {
+    const start_time = performance.now()
+    const ae = document.activeElement
+    if (ae == output || ae.tagName == 'INPUT' && main.contains(ae))
+        ae.dispatchEvent(new Event('change'))
+    const [start, end, divs, indices, all] = get_selected(ae)
+    for (const div of divs)
+        for (let i = 0; i < div.childElementCount; i++) {
+            const select = div.children[i]
+            if (select.name in morse && select.length > 1 && (all || i >= start && i < end || ae == output && select.matches('.selected') || indices.includes(i))) {
+                select.selectedIndex = Math.random() * select.length | 0
+                update_index(select)
+                select.classList.add('untouched')
+            }
+        }
+    change_output_with_selection()
+    measure('randomize', start_time)
 }
 
 async function yield() {
@@ -652,6 +703,8 @@ async function optimize_word(phrase_words, index, candidates) {
 
             logits.dispose()
         }
+    } catch (err) {
+        console.error(err)
     } finally {
         tokens.input_ids.dispose()
         tokens.attention_mask.dispose()
@@ -689,10 +742,9 @@ async function suggest_phrase(selects, indices, rewrite) {
             selects[i].classList.add('thinking')
     ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
         if (adjustable[i] && word) {
-            selects[i].value = word
+            find_add_select_option(selects[i], word)
             selects[i].dispatchEvent(new Event('change'))
-            selects[i].classList.remove('thinking')
-            selects[i].classList.add('untouched')
+            selects[i].classList.replace('thinking', 'untouched')
         }
     })
     selects.length = 0
@@ -713,45 +765,21 @@ async function suggest(rewrite) {
             await load_model(model_id, model_quant, model_device)
         if (tokenizer && model) {
             const start_time = performance.now()
-            const indices = []
-            let output_selection, start, end
-            let divs = main.querySelectorAll('.word > div:has(.selected)')
-            if (divs.length)
-                output_selection = true
-            else {
-                divs = main.querySelectorAll('.word > div')
-                if (main.contains(ae))
-                    if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart) {
-                        divs = [ae.nextElementSibling]
-                        start = ae.selectionStart
-                        end = ae.selectionEnd
-                    } else {
-                        const select = ae.closest('select')
-                        if (select) {
-                            divs = [select.parentElement]
-                            indices.push([...divs[0].children].indexOf(select))
-                        }
-                    }
-            }
+            const [start, end, divs, indices] = get_selected(ae)
             const selects = []
             for (const div of divs) {
-                for (const [i, select] of [...div.children].entries())
+                for (let i = 0; i < div.childElementCount; i++) {
+                    const select = div.children[i]
                     if (select.name in morse && select.length) {
-                        if (i >= start && i < end || select.matches('.selected'))
+                        if (i >= start && i < end || ae == output && select.matches('.selected'))
                             indices.push(selects.length)
                         selects.push(select)
                     } else
                         await suggest_phrase(selects, indices, rewrite)
+                }
                 await suggest_phrase(selects, indices, rewrite)
             }
-            const dir = output.selectionDirection
-            const prev_text = output.value
-            main.dispatchEvent(new Event('change'))
-            const text = output.value
-            if (output_selection && text != prev_text) {
-                const [head, tail] = diff(text, prev_text)
-                output.setSelectionRange(head, tail, dir)
-            }
+            change_output_with_selection()
             measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
     }
@@ -822,7 +850,7 @@ function add_word(line=main.lastChild, current, before) {
     input.addEventListener('blur', blur)
 
     input.addEventListener('change', () => {
-        if (input.value == (input.dataset.prev_value ?? '') && !rebuild)
+        if (!rebuild && input.value == (input.dataset.prev_value ?? ''))
             return
         input.dataset.prev_value = input.value
         const prev_chars = [...select_container.children].map(select => select.name)
@@ -889,7 +917,7 @@ function add_word(line=main.lastChild, current, before) {
             if (i >= head && i < tail)
                 select.classList.add('untouched')
             else if (rebuild)
-                (find_option(select, prev_select.value) || add_option(select, prev_select.selectedOptions[0].cloneNode(true))).selected = true
+                find_add_select_option(select, prev_select.value, prev_select.selectedOptions[0])
             if (i >= head && select_container.childElementCount < chars.length)
                 select_container.insertBefore(select, prev_select);
             else
@@ -1026,7 +1054,15 @@ addEventListener('keydown', event => {
         elem.setSelectionRange(caret, caret)
     } else if (event.key == ' ' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)) {
         event.preventDefault()
-        suggest(event.shiftKey)
+        let caret
+        if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {
+            caret = elem.selectionEnd
+            elem.select()
+        }
+        suggest(event.shiftKey).then(() => {
+            if (caret != null)
+                elem.setSelectionRange(caret, caret)
+        })
     }
 })
 
@@ -1125,7 +1161,7 @@ function build_selects(focus=false) {
         for (let word of morse_words[char]) {
             word = word.replaceAll(' ', makaf)
             const trailless = remove_trailing_makaf(word)
-            proto_selects[char].appendChild(word ? new Option(word, trailless != word ? trailless : undefined) : document.createElement('hr'))
+            proto_selects[char].appendChild(word ? make_option(word, trailless) : document.createElement('hr'))
         }
         const len = proto_selects[char].length
         min_count = Math.min(min_count, len)

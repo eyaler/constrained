@@ -69,7 +69,7 @@
             <button onclick="paste_input()" title="Clear">נקה</button>
             <button id="paste_input_button" onclick="navigator.clipboard.readText().then(paste_input)" title="Clear and paste as input [Ctrl+V]" aria-keyshortcuts="Control+V">נקה והדבק כקלט</button>
             <button onclick="navigator.clipboard.readText().then(paste_output)" title="Clear and paste as output">נקה והדבק כפלט</button>
-            <button onclick="randomize()" onpointerdown="keep_focus(event)" title="Randomize all">הגרל הכול</button>
+            <button onclick="randomize()" onpointerdown="keep_focus(event)" title="Randomize words for all/selected letters/words">הגרל</button>
             <button onclick="suggest()" onpointerdown="keep_focus(event)" title="Suggest words for all/selected letters/words,&NewLine;initialized with blank masks [Ctrl+Space]" aria-keyshortcuts="Control+Space">הצע&nbsp;<span class="robot">&#x1f916;&#xfe0f;</span></button>
             <button onclick="suggest(true)" onpointerdown="keep_focus(event)" title="Rewrite words for all/selected letters/words,&NewLine;initialized with current values [Ctrl+Shift+Space]" aria-keyshortcuts="Control+Shift+Space">שכתב&nbsp;<span class="robot">&#x1f916;&#xfe0e;</span></button>
             <button onclick="navigator.clipboard.writeText(join_inputs())" title="Copy input">העתק קלט</button>
@@ -216,7 +216,7 @@
                         </td>
                         <td>
                             <p>מקרית</p>
-                            <button title="Randomize all" aria-disabled="true">הגרל הכול</button>
+                            <button title="Randomize words" aria-disabled="true">הגרל</button>
                             <p>Aleatoric</p>
                         </td>
                     </tr>

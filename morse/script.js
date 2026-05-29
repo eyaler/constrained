@@ -1026,14 +1026,7 @@ addEventListener('keydown', event => {
         elem.setSelectionRange(caret, caret)
     } else if (event.key == ' ' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)) {
         event.preventDefault()
-        let caret
-        if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {
-            caret = elem.selectionEnd
-            elem.select()
-        }
         suggest(event.shiftKey)
-        if (caret != null)
-            elem.setSelectionRange(caret, caret)
     }
 })
 

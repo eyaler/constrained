@@ -558,10 +558,9 @@ function make_phrase_part(words, num_masks=masks_for_missing_word) {
 }
 
 async function optimize_word(phrase_words, index, candidates) {
-    /* Based on: PET with Multi Masks
-       Schick and Schütze (2021)
-       https://arxiv.org/abs/2009.07118
-       https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
+    /* Based on: PET with Multi Masks (max-first decoding),
+       in Schick and Schütze (2021), https://arxiv.org/abs/2009.07118
+       Code: https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
     */
     let prefix = make_phrase_part(phrase_words.slice(0, index))
     const suffix = make_phrase_part(phrase_words.slice(index + 1))

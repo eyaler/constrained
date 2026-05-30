@@ -11,8 +11,8 @@ const prepositions1 = new Set(['אַחֲרַיִךְ', 'אִתָּהּ', 'אִת
 const prepositions2 = new Set(['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן'])
 
 const model_id = 'eyaler/HalleluBERT_large-ONNX'
-const mask_lstrip = false
 const model_max_length = 512
+const mask_lstrip = false
 const masks_for_missing_word = 2
 
 // These override Morse:
@@ -177,7 +177,6 @@ if (is_ios)
 
 const model_device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
 const model_quant = model_device == 'wasm' ? 'int8' : 'fp16'
-console.log(model_id, model_device, model_quant)
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b, 'en')).map(([k, v]) => [v, k]))
@@ -544,6 +543,7 @@ async function load_model(model_id, model_quant, model_device) {
         if (!model)
             model = await AutoModel.from_pretrained(model_id, {device: model_device, dtype: model_quant})
         measure('load_model', start_time)
+        console.log({model_id, model_device, model_quant, mask_lstrip, masks_for_missing_word})
     } catch (error) {
         console.error(error)
     }
@@ -704,8 +704,8 @@ async function optimize_word(phrase_words, index, candidates) {
 
             logits.dispose()
         }
-    } catch (err) {
-        console.error(err)
+    } catch (error) {
+        console.error(error)
     } finally {
         tokens.input_ids.dispose()
         tokens.attention_mask.dispose()

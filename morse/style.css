@@ -175,7 +175,7 @@ span.thinking {
     margin-top: 4em;
 }
 
-#about p {
+#about div > p {
     text-align: justify;
 }
 

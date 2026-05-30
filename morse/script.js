@@ -10,7 +10,7 @@ const possessive_suffixes = ['הּ', 'הָ', 'יִךְ', 'ךָ', 'תָם', 'תָ
 const prepositions1 = new Set(['אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדָהּ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמְּךָ'])
 const prepositions2 = new Set(['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן'])
 
-const model_id = 'onnx-community/HalleluBERT_large-ONNX'
+const model_id = 'eyaler/HalleluBERT_large-ONNX'
 const mask_lstrip = false
 const model_max_length = 512
 const masks_for_missing_word = 2
@@ -176,11 +176,11 @@ if (is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
 
 const model_device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
-const model_quant = model_device == 'wasm' ? 'int8' : 'fp32'
+const model_quant = model_device == 'wasm' ? 'int8' : 'fp16'
 console.log(model_id, model_device, model_quant)
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
-const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [v, k]))
+const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b, 'en')).map(([k, v]) => [v, k]))
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
@@ -478,20 +478,21 @@ function get_selected(ae) {
     let divs = ae == output ? main.querySelectorAll('.word > div:has(.selected)') : []
     if (!divs.length) {
         divs = main.querySelectorAll('.word > div')
+        all = true
         if (main.contains(ae))
             if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart) {
                 divs = [ae.nextElementSibling]
                 start = ae.selectionStart
                 end = ae.selectionEnd
+                all = false
             } else {
                 const select = ae.closest('select')
                 if (select) {
                     divs = [select.parentElement]
                     indices.push([...divs[0].children].indexOf(select))
+                    all = false
                 }
             }
-        else
-            all = true
     }
     return [start, end, divs, indices, all]
 }

@@ -97,7 +97,7 @@ main:has(~ :is(#output:focus-visible, #overlay:modal)) .word select.selected {
     field-sizing: content;
     margin-top: 2em;
     min-height: 400px;
-    padding-inline: .5em;
+    padding: .5em;
     resize: vertical;
     white-space: pre-line;
     width: 100%;

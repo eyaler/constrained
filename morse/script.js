@@ -425,6 +425,10 @@ function paste_output(text='', focus=true, push=true) {
     measure('paste_output+paste_input', start_time)
 }
 
+function load_canon() {
+    paste_output('עֲדַיִן בִּבְנִיָּה', false, false)
+}
+
 output.addEventListener('change', () => {
     if (output.value != (output.dataset.prev_value ?? '')) {
         output.dataset.prev_value = output.value
@@ -810,6 +814,10 @@ function share() {
 if (!navigator.share) {
     share_button.textContent = 'העתק קישור לשיתוף'
     share_button.title = share_button.title.replace('Share', 'Copy shareable link')
+}
+
+function transmit() {
+    alert([...join_inputs()].map(c => morse[c] || ' ').join(' '))
 }
 
 function remove_word(input) {

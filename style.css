@@ -91,10 +91,6 @@ html {
     scroll-padding-block: 5rem 3rem;
 }
 
-:host(.root) {
-    display: block;
-}
-
 body, :host(.root) {
     font-size: var(--font_size);
     letter-spacing: var(--letter_spacing);
@@ -265,6 +261,10 @@ a {
     color: inherit;
     text-decoration-color: var(--fg_dim);
     text-underline-position: under;
+}
+
+:host(nav-wrapper) {
+    display: block;
 }
 
 nav * {

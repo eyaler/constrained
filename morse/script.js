@@ -212,6 +212,7 @@ function update_output(text, push=true) {
                 history.pushState(history.state, '', '#' + hash)
             }
         }
+        document.querySelector('nav-wrapper').shadowRoot.querySelector('.trans').hash = location.hash
     } catch {}
 }
 

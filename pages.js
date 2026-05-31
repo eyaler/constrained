@@ -776,7 +776,7 @@ function nav_wrapper() {
     const shadow = wrapper.attachShadow({mode: 'open'})
     const link = shadow.appendChild(document.createElement('link'))
     link.rel = 'stylesheet'
-    link.href = 'style.css'
+    link.href = `${get_page().endsWith('/') ? '../' : ''}style.css`
     make_header(shadow)
 }
 
@@ -855,10 +855,11 @@ function remove_diacritics(s) {
 
 
 addEventListener('keydown', event => {
+    const elem = event.target
     if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey && !event.getModifierState?.('AltGraph')
-        && event.target.selectionStart != event.target.selectionEnd) {  // Remove selection
-        const caret = event.target.selectionDirection == 'forward' ? event.target.selectionEnd : event.target.selectionStart
-        event.target.setSelectionRange(caret, caret)
+        && elem.selectionStart != elem.selectionEnd) {  // Remove selection
+        const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
+        elem.setSelectionRange(caret, caret)
     } else if (event.key == '~')
         document.body.classList.toggle('psycler')
 })

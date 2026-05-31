@@ -14,16 +14,21 @@ body {
     text-size-adjust: none;
 }
 
-#controls > div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-    margin-bottom: 2em;
+nav-wrapper {
+    background-color: Canvas;
+    margin-bottom: calc(var(--nav_pad_top) + var(--nav_pad_bottom) + 2*var(--nav_lh));
 }
 
 #controls:not(:has(~ main .word)),
 main:not(:has(.word)) ~ #output {
     display: none;
+}
+
+#controls > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-bottom: 2em;
 }
 
 #checkboxes {

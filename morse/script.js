@@ -1,3 +1,5 @@
+'use strict'
+
 const error_color = 'red'
 const single_color = 'white'
 const rare_color = '#ff9999'
@@ -528,7 +530,7 @@ function randomize() {
     measure('randomize', start_time)
 }
 
-async function yield() {
+async function update_main_thread() {
     globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
 }
 
@@ -590,7 +592,7 @@ async function optimize_word(phrase_words, index, candidates) {
 
     try {
         while (true) {
-            await yield()
+            await update_main_thread()
             ;({logits} = await model(tokens))
             const data = logits.data
             const seq_length = logits.dims[1]
@@ -758,7 +760,7 @@ async function suggest(rewrite) {
     robot.classList.add('thinking')
     const ae = document.activeElement
     overlay.showModal()
-    await yield()
+    await update_main_thread()
 
     if (output.value.trim()) {
         if (!tokenizer || !model)

@@ -776,8 +776,8 @@ function nav_wrapper() {
     const shadow = wrapper.attachShadow({mode: 'open'})
     const link = shadow.appendChild(document.createElement('link'))
     link.rel = 'stylesheet'
+    link.onload = () => make_header(shadow)
     link.href = `${get_page().endsWith('/') ? '../' : ''}style.css`
-    make_header(shadow)
 }
 
 

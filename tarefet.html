@@ -11,14 +11,6 @@
     <meta property="og:description" content="טַרֶפֶת אותיות">  <!-- og:description is required for WhatsApp to show og:image -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11/lib/p5.min.js"></script>
     <style>
-        nav-wrapper {
-            display: block;
-            font-size: var(--font_size);
-            letter-spacing: var(--letter_spacing);
-            padding-inline: var(--main_margin);
-            visibility: hidden;
-        }
-
         body {
             font-family: Alef, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
@@ -77,18 +69,10 @@
         }
     </style>
 </head>
-<body onload="const wrapper = document.querySelector('nav-wrapper'); if (wrapper) wrapper.style.visibility = 'visible'">
+<body onload="document.querySelector('nav-wrapper')?.style.setProperty('visibility', 'visible')">
     <script>
-        if (document.referrer.startsWith(location.href.split('/').slice(0, -2).join('/'))) {
-            customElements.define('nav-wrapper', class extends HTMLElement {})
-            const wrapper = document.body.appendChild(document.createElement('nav-wrapper'))
-            wrapper.classList.add('root')
-            const shadow = wrapper.attachShadow({mode: 'open'})
-            const link = shadow.appendChild(document.createElement('link'))
-            link.rel = 'stylesheet'
-            link.href = 'style.css'
-            make_header(shadow)
-        }
+        if (document.referrer.startsWith(location.href.split('/').slice(0, -2).join('/')))
+            nav_wrapper()
     </script>
 
     <header>

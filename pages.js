@@ -300,6 +300,91 @@ function merge(...lists) {
 }
 
 
+function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_for_social) {
+    page ??= get_page()
+    lang ??= get_lang()
+    const pp = pages[page]
+    const translators = merge(pp.trans, pp.translation, pp.translator, pp.translators)
+    const collaborators = merge(pp.colab, pp.colabs, pp.collab, pp.collabs, pp.collaboration, pp.collaborator, pp.collaborators, pp.with)
+    let keys = [...new Set(merge(pp.author, pp.authors, pp.by, translators, collaborators))]
+    if (elem && authors && !keys.length)
+        keys = Object.keys(authors).slice(0, 1)
+    const all_names = []
+    const all_alt_names = []
+    let have_with
+    keys.forEach(key => {
+        const author = authors[key]
+        const names = author?.name
+        let name = key
+
+        let h2
+        if (elem) {
+            h2 = document.createElement('h2')
+            h2.className = 'author'
+        }
+
+        let alt_name
+        if (names) {
+            name = names[lang] || names[''] || Object.values(names)[0] || name
+            alt_name = Object.entries(names).find(([k, v]) => k != lang && v)?.[1]
+            if (translators.includes(key) || collaborators.includes(key)) {
+                const alt_langs = Object.keys(ui).filter(k => k != lang)
+                if (alt_langs.length) {
+                    if (translators.includes(key))
+                        alt_name += ' ' + ui[alt_langs[0]].translator
+                    if (!have_with && collaborators.includes(key))
+                        alt_name = ui[alt_langs[0]].with + ' ' + alt_name
+                }
+            }
+            if (elem && alt_name && alt_name != name)
+                h2.title = alt_name
+        }
+        if (translators.includes(key))
+            name += ' ' + ui[lang].translator
+        if (!have_with && collaborators.includes(key)) {
+            name = ui[lang].with + ' ' + name
+            have_with = true
+        }
+
+        all_names.push(name)
+        all_alt_names.push(alt_name || name)
+
+        if (elem) {
+            const a = h2.appendChild(make_link('', name))
+            let url = key
+            if (author_pages_folder)
+                url = author_pages_folder + '/' + url
+            url = page2url(url, lang, page, key)
+            if (url != page)
+                fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) update_href(a, url, 'author')})
+
+            const networks = Object.keys(author || {}).filter(k => k != 'name' && k in social)
+            if (networks.length) {
+                const span = h2.appendChild(document.createElement('span'))
+                span.className = 'social'
+                networks.forEach(net => {
+                    if (span.innerHTML)
+                        span.innerHTML += ' '
+                    let prefix = ''
+                    if (!author[net].match(/[:/]/) && social[net].url)
+                        prefix = social[net].url
+                        if (!prefix.match(/:(?!\/\/)|[/=]$/))
+                            prefix += '/'
+                    if (!prefix.includes(':'))
+                        prefix = 'https://' + prefix
+                    if (author[net].match(/^([.@]|$)/))
+                        author[net] = key + author[net]
+                    const a = span.appendChild(make_link(prefix + author[net] + (social[net].suffix || ''), social[net].label, net, net[0].toUpperCase() + net.slice(1), new_tab_for_social))
+                    a.dataset.label = a.textContent
+                })
+            }
+            elem.appendChild(h2)
+        }
+    })
+    return [all_names, all_alt_names]
+}
+
+
 function make_contents(show_snippet=default_show_snippet, show_author=default_show_author, row_first=default_row_first) {
     const contents = get_page()
     const lang = get_lang()
@@ -684,88 +769,15 @@ function make_header(nav_only=false, reverse_issues_kw=default_reverse_issues_kw
 }
 
 
-function get_make_author(page, lang, elem, new_tab_for_social=default_new_tab_for_social) {
-    page ??= get_page()
-    lang ??= get_lang()
-    const pp = pages[page]
-    const translators = merge(pp.trans, pp.translation, pp.translator, pp.translators)
-    const collaborators = merge(pp.colab, pp.colabs, pp.collab, pp.collabs, pp.collaboration, pp.collaborator, pp.collaborators, pp.with)
-    let keys = [...new Set(merge(pp.author, pp.authors, pp.by, translators, collaborators))]
-    if (elem && authors && !keys.length)
-        keys = Object.keys(authors).slice(0, 1)
-    const all_names = []
-    const all_alt_names = []
-    let have_with
-    keys.forEach(key => {
-        const author = authors[key]
-        const names = author?.name
-        let name = key
-
-        let h2
-        if (elem) {
-            h2 = document.createElement('h2')
-            h2.className = 'author'
-        }
-
-        let alt_name
-        if (names) {
-            name = names[lang] || names[''] || Object.values(names)[0] || name
-            alt_name = Object.entries(names).find(([k, v]) => k != lang && v)?.[1]
-            if (translators.includes(key) || collaborators.includes(key)) {
-                const alt_langs = Object.keys(ui).filter(k => k != lang)
-                if (alt_langs.length) {
-                    if (translators.includes(key))
-                        alt_name += ' ' + ui[alt_langs[0]].translator
-                    if (!have_with && collaborators.includes(key))
-                        alt_name = ui[alt_langs[0]].with + ' ' + alt_name
-                }
-            }
-            if (elem && alt_name && alt_name != name)
-                h2.title = alt_name
-        }
-        if (translators.includes(key))
-            name += ' ' + ui[lang].translator
-        if (!have_with && collaborators.includes(key)) {
-            name = ui[lang].with + ' ' + name
-            have_with = true
-        }
-
-        all_names.push(name)
-        all_alt_names.push(alt_name || name)
-
-        if (elem) {
-            const a = h2.appendChild(make_link('', name))
-            let url = key
-            if (author_pages_folder)
-                url = author_pages_folder + '/' + url
-            url = page2url(url, lang, page, key)
-            if (url != page)
-                fetch(url, {method: 'HEAD'}).then(response => {if (response.ok) update_href(a, url, 'author')})
-
-            const networks = Object.keys(author || {}).filter(k => k != 'name' && k in social)
-            if (networks.length) {
-                const span = h2.appendChild(document.createElement('span'))
-                span.className = 'social'
-                networks.forEach(net => {
-                    if (span.innerHTML)
-                        span.innerHTML += ' '
-                    let prefix = ''
-                    if (!author[net].match(/[:/]/) && social[net].url)
-                        prefix = social[net].url
-                        if (!prefix.match(/:(?!\/\/)|[/=]$/))
-                            prefix += '/'
-                    if (!prefix.includes(':'))
-                        prefix = 'https://' + prefix
-                    if (author[net].match(/^([.@]|$)/))
-                        author[net] = key + author[net]
-                    const a = span.appendChild(make_link(prefix + author[net] + (social[net].suffix || ''), social[net].label, net, net[0].toUpperCase() + net.slice(1), new_tab_for_social))
-                    a.dataset.label = a.textContent
-                })
-            }
-            elem.appendChild(h2)
-        }
-    })
-    return [all_names, all_alt_names]
+function nav_wrapper() {
+    customElements.define('nav-wrapper', class extends HTMLElement {})
+    const wrapper = document.body.appendChild(document.createElement('nav-wrapper'))
+    wrapper.classList.add('root')
+    const shadow = wrapper.attachShadow({mode: 'open'})
+    const link = shadow.appendChild(document.createElement('link'))
+    link.rel = 'stylesheet'
+    link.href = 'style.css'
+    make_header(shadow)
 }
 
 

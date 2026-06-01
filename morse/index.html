@@ -83,11 +83,13 @@
     </div>
     <main id="main"></main>
     <textarea id="output" autocomplete="off" autocorrect="off"></textarea>
-    <dialog id="overlay" closedby="none"></dialog>
+    <dialog id="overlay" closedby="none" tabindex="-1">  <!-- Fix for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1934522 -->
+        <button onclick="event.preventDefault(); cancel = true" title="Cancel">בטל</button>
+    </dialog>
     <dialog id="about" closedby="any" onclick="if (event.target == this) this.close()" tabindex="-1">  <!-- Fix for Firefox issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1934522 -->
-        <button id="close" onclick="this.parentElement.close()">x</button>
-        <button id="en_button" onclick="en.scrollIntoView()">en</button>
         <div>
+            <button id="close" onclick="about.close()">x</button>
+            <button id="en_button" onclick="en.scrollIntoView()">en</button>
             <h1>עַלִּיזָה בַּתָּא</h1>
             <h2>שִׁירִים מִן הַשְּׁבִי</h2>
             <p>

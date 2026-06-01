@@ -505,6 +505,10 @@ nav[dir=rtl] ~ .contents {
     filter: var(--fg_filter);
 }
 
+:host(nav-wrapper) .trans::before {
+    filter: brightness(0);
+}
+
 figure {
     margin-inline: 0;
     width: 100%;

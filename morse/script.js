@@ -185,7 +185,7 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) =
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
-let model, tokenizer
+let model, tokenizer, cancel
 
 function join_lines(words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -569,6 +569,7 @@ async function optimize_word(phrase_words, index, candidates) {
        in Schick and Schütze (2021), https://arxiv.org/abs/2009.07118
        Code: https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
     */
+
     let prefix = make_phrase_part(phrase_words.slice(0, index))
     const suffix = make_phrase_part(phrase_words.slice(index + 1))
     if (!mask_lstrip && prefix.startsWith(' ' + tokenizer.mask_token))
@@ -596,7 +597,7 @@ async function optimize_word(phrase_words, index, candidates) {
     let best_completed_word, logits
 
     try {
-        while (true) {
+        while (!cancel) {
             await update_main_thread()
             ;({logits} = await model(tokens))
             const data = logits.data
@@ -725,6 +726,8 @@ async function optimize_phrase(words) {
     const all_tokens = {}
 
     for (const char of new Set(opt_words.map(x => x[0]))) {
+        if (cancel)
+            break
         all_tokens[char] = {}
         const char_words = [...proto_selects[char]].map(select => select.value)
         const all_ids = tokenizer(char_words.map(word => ' ' + word.replaceAll(makaf, ' ')), {add_special_tokens: false, return_attention_mask: false, return_tensor: false}).input_ids
@@ -737,7 +740,9 @@ async function optimize_phrase(words) {
     }
 
     for (const [char, w, i] of opt_words)
-        if (Object.keys(all_tokens[char]).length)
+        if (cancel)
+            break
+        else if (Object.keys(all_tokens[char]).length)
             out_words[i] = await optimize_word(out_words, i, all_tokens[char])
     return out_words
 }
@@ -748,10 +753,13 @@ async function suggest_phrase(selects, indices, rewrite) {
         if (adjustable[i])
             selects[i].classList.add('thinking')
     ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
-        if (adjustable[i] && word) {
-            find_add_select_option(selects[i], word)
-            selects[i].dispatchEvent(new Event('change'))
-            selects[i].classList.replace('thinking', 'untouched')
+        if (adjustable[i]) {
+            selects[i].classList.remove('thinking')
+            if (word) {
+                find_add_select_option(selects[i], word)
+                selects[i].dispatchEvent(new Event('change'))
+                selects[i].classList.add('untouched')
+            }
         }
     })
     selects.length = 0
@@ -776,6 +784,8 @@ async function suggest(rewrite) {
             const selects = []
             for (const div of divs) {
                 for (let i = 0; i < div.childElementCount; i++) {
+                    if (cancel)
+                        break
                     const select = div.children[i]
                     if (select.name in morse && select.length) {
                         if (i >= start && i < end || ae == output && select.matches('.selected'))
@@ -784,12 +794,16 @@ async function suggest(rewrite) {
                     } else
                         await suggest_phrase(selects, indices, rewrite)
                 }
+                if (cancel)
+                    break
                 await suggest_phrase(selects, indices, rewrite)
             }
             change_output_with_selection()
-            measure(rewrite ? 'rewrite' : 'suggest', start_time)
+            if (!cancel)
+                measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
     }
+    cancel = false
     robot.classList.remove('thinking')
     overlay.close()
 }

@@ -8,6 +8,10 @@
     font-family: Alef, Arial, sans-serif;
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: none;
@@ -102,6 +106,7 @@ main:has(~ :is(#output:focus-visible, #overlay:modal)) .word select.selected {
     field-sizing: content;
     margin-top: 2em;
     min-height: 400px;
+    outline-offset: -2px;
     padding: .5em;
     resize: vertical;
     white-space: pre-line;
@@ -117,6 +122,10 @@ main:has(~ :is(#output:focus-visible, #overlay:modal)) .word select.selected {
 #overlay::backdrop {
     background: #0005;
     cursor: wait;
+}
+
+#overlay button {
+    font-size: 200%;
 }
 
 .robot {
@@ -136,36 +145,43 @@ span.thinking {
     animation: 1s linear infinite spin;
 }
 
+dialog button:focus {
+    outline: auto;
+}
+
 #about {
+    max-width: min(65ch, 100%);
     overscroll-behavior: none;
-    max-width: min(60ch, 100%);
-}
-
-#about > #close {
-    border: none;
-    display: block;
-    height: 2em;
-    margin-inline-start: auto;
-    position: sticky;
-    top: 0;
-    translate: -1em -1em;
-    width: 2em;
-}
-
-#about > #en_button {
-    border: none;
-    inset-inline-start: .5em;
-    position: absolute;
-    top: .5em;
-}
-
-#about > button:not(:hover) {
-    background: transparent;
+    padding: 0;
 }
 
 #about > div {
-    padding-bottom: 1em;
-    padding-inline: 2em;
+    padding-bottom: 2em;
+    padding-inline: 3em;
+    padding-top: 1em;
+}
+
+#about > div > button {
+    height: 2em;
+    top: 1.2em;
+    width: 2em;
+}
+
+#about > div > button:not(:hover) {
+    background: transparent;
+}
+
+#about #close {
+    border: none;
+    display: block;
+    margin-inline-start: calc(100% + .8em);
+    position: sticky;
+}
+
+#about #en_button {
+    border: none;
+    inset-inline-start: 1em;
+    position: absolute;
 }
 
 #about :is(h1, h2) {

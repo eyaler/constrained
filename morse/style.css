@@ -145,7 +145,7 @@ span.thinking {
     animation: 1s linear infinite spin;
 }
 
-dialog button:focus {
+:is(#about > div, #overlay) > button:focus {
     outline: auto;
 }
 

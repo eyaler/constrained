@@ -12,11 +12,13 @@ const possessive_suffixes = ['הּ', 'הָ', 'יִךְ', 'ךָ', 'תָם', 'תָ
 const prepositions1 = new Set(['אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדָהּ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמְּךָ'])
 const prepositions2 = new Set(['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן'])
 
-const model_id = 'eyaler/HalleluBERT_large-ONNX'
-const model_max_length = 512
-const mask_lstrip = false
-const masks_for_missing_word = 2
-const temperature = 1
+const model_config = {
+    "id": "eyaler/HalleluBERT_large-ONNX",
+    "max_length": 512,
+    "mask_lstrip": false,
+    "masks_for_missing_word": 2,
+    "temperature": 1
+}
 
 // These override Morse:
 let special = ',.*'
@@ -178,11 +180,11 @@ const is_mobile = navigator.userAgent.includes('Android') || is_ios
 if (is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
 
-const model_device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
-const model_quant = model_device == 'wasm' ? 'int8' : 'fp16'
+model_config.device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
+model_config.dtype = model_config.device == 'wasm' ? 'int8' : 'fp16'
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
-const reverse_morse = Object.fromEntries(Object.entries(morse).sort(([a], [b]) => a.localeCompare(b, 'en')).map(([k, v]) => [v, k]))
+const reverse_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v]) => [v, k]))
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
@@ -540,24 +542,24 @@ async function update_main_thread() {
     globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
 }
 
-async function load_model(model_id, model_quant, model_device) {
+async function load_model(config) {
     try {
         const start_time = performance.now()
         const {AutoTokenizer, AutoModel} = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers')
         if (!tokenizer) {
-            tokenizer = await AutoTokenizer.from_pretrained(model_id)
-            tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = mask_lstrip
+            tokenizer = await AutoTokenizer.from_pretrained(config.id)
+            tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = config.mask_lstrip
         }
         if (!model)
-            model = await AutoModel.from_pretrained(model_id, {device: model_device, dtype: model_quant})
+            model = await AutoModel.from_pretrained(config.id, {device: config.device, dtype: config.dtype})
         measure('load_model', start_time)
-        console.log({model_id, model_device, model_quant, mask_lstrip, masks_for_missing_word, temperature})
+        console.log(config)
     } catch (error) {
         console.error(error)
     }
 }
 
-function make_phrase_part(words, num_masks=masks_for_missing_word) {
+function make_phrase_part(words, num_masks=model_config.masks_for_missing_word) {
     const mask = tokenizer.mask_token.repeat(num_masks)
     const part = words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' ')
     if (part)
@@ -573,13 +575,13 @@ async function optimize_word(phrase_words, index, candidates) {
 
     let prefix = make_phrase_part(phrase_words.slice(0, index))
     const suffix = make_phrase_part(phrase_words.slice(index + 1))
-    if (!mask_lstrip && prefix.startsWith(' ' + tokenizer.mask_token))
+    if (prefix.startsWith(' ' + tokenizer.mask_token))
         prefix = prefix.slice(1)
     const mask_start = tokenizer.encode(prefix).length - 1
 
     let lengths = Object.keys(candidates).map(Number).sort((a, b) => a - b)
     const sequences = lengths.map(len => `${prefix}${tokenizer.mask_token.repeat(len)}${suffix}`)
-    const tokens = tokenizer(sequences, {model_max_length: model_max_length || tokenizer.model_max_length, padding: true, truncation: true})
+    const tokens = tokenizer(sequences, {model_max_length: model_config.max_length || tokenizer.model_max_length, padding: true, truncation: true})
     const Tensor = tokens.input_ids.constructor
 
     let left_masks = [...lengths]
@@ -623,7 +625,7 @@ async function optimize_word(phrase_words, index, candidates) {
 
                         let max = -Infinity
                         for (let j = 0; j < vocab_size; j++) {
-                            logits_slice[j] /= temperature
+                            logits_slice[j] /= model_config.temperature
                             if (logits_slice[j] > max)
                                 max = logits_slice[j]
                         }
@@ -782,7 +784,7 @@ async function suggest(rewrite) {
 
     if (output.value.trim()) {
         if (!tokenizer || !model)
-            await load_model(model_id, model_quant, model_device)
+            await load_model(model_config)
         if (tokenizer && model) {
             const start_time = performance.now()
             const [start, end, divs, indices] = get_selected(ae)

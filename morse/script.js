@@ -16,6 +16,7 @@ const model_id = 'eyaler/HalleluBERT_large-ONNX'
 const model_max_length = 512
 const mask_lstrip = false
 const masks_for_missing_word = 2
+const temperature = 1
 
 // These override Morse:
 let special = ',.*'
@@ -550,7 +551,7 @@ async function load_model(model_id, model_quant, model_device) {
         if (!model)
             model = await AutoModel.from_pretrained(model_id, {device: model_device, dtype: model_quant})
         measure('load_model', start_time)
-        console.log({model_id, model_device, model_quant, mask_lstrip, masks_for_missing_word})
+        console.log({model_id, model_device, model_quant, mask_lstrip, masks_for_missing_word, temperature})
     } catch (error) {
         console.error(error)
     }
@@ -600,6 +601,8 @@ async function optimize_word(phrase_words, index, candidates) {
         while (!cancel) {
             await update_main_thread()
             ;({logits} = await model(tokens))
+            if (cancel)
+                break
             const data = logits.data
             const seq_length = logits.dims[1]
             const vocab_size = logits.dims[2]
@@ -619,9 +622,11 @@ async function optimize_word(phrase_words, index, candidates) {
                         const logits_slice = data.subarray(flat_offset, flat_offset + vocab_size)
 
                         let max = -Infinity
-                        for (let j = 0; j < vocab_size; j++)
+                        for (let j = 0; j < vocab_size; j++) {
+                            logits_slice[j] /= temperature
                             if (logits_slice[j] > max)
                                 max = logits_slice[j]
+                        }
 
                         let sum_exp = 0
                         for (let j = 0; j < vocab_size; j++)

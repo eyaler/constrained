@@ -61,8 +61,9 @@ if (!special.includes(joker))
     special += joker
 
 const final_punct_regex = RegExp('\\p{P}(?=\\p{P}*$)', 'gu')
-const whitespace_regex = RegExp('[ \t\xa0]+', 'g')
+const whitespace_regex = RegExp(`[\\p{Zs}\t]+`, 'gu')
 const newline_regex = RegExp('\\s*\n\\s*', 'g')
+const split_input_regex = RegExp('[ \\p{Pd}]+', 'u')
 
 const space_hyphen_regex = RegExp('[ -]', 'g')
 const nonfinal_space_makaf_regex = RegExp(`${space_makaf_class}.`)
@@ -97,7 +98,7 @@ const non_code_regex = RegExp(`[^\\s${special}${dit_dah}]+`, 'g')
 const sep_string = `(?<=[^\\s${punct}])[${default_sep}] (?= *[^\\s${punct}])`
 const sep_regex = RegExp(sep_string, 'g')
 const split_string = `${sep_string}\\s*|\\s+|(?=[${special}])|(?<=[${special}])`
-const split_regex = RegExp(`${split_string}`)
+const split_output_regex = RegExp(split_string)
 const partition_regex = RegExp(`(${split_string})`)
 
 const final_regex = RegExp(`(?<=[${hebrew_block_quotes}])[כמנפצ](?![א-ת${joker}])`, 'g')
@@ -344,7 +345,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
             line = add_line()
             word = line.firstChild
         }
-        text_line.split(' ').forEach((text_word, j) => {
+        text_line.split(split_input_regex).forEach((text_word, j) => {
             if (j)
                 word = add_word(line)
             word.firstChild.value = text_word
@@ -408,7 +409,7 @@ function paste_output(text='', focus=true, push=true) {
                          .replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker)
                          .replace(non_punct_regex, '').replace(sep_regex, ' ')
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
-    const output_words = norm_text.replace(non_text_regex, '').split(split_regex).map(to_makaf)
+    const output_words = norm_text.replace(non_text_regex, '').split(split_output_regex).map(to_makaf)
     main.querySelectorAll('select').forEach((select, i) => {
         find_add_select_option(select, output_words[i])
         select.dispatchEvent(new Event('change'))
@@ -559,27 +560,22 @@ async function load_model(config) {
     }
 }
 
-function make_phrase_part(words, num_masks=model_config.masks_for_missing_word) {
-    const mask = tokenizer.mask_token.repeat(num_masks)
-    const part = words.map(w => w ?? mask).join(' ').replaceAll(makaf, ' ')
-    if (part)
-        return ' ' + part
-    return ''
+function make_phrase_part(words, word_mask) {
+    return words.map(w => w ?? word_mask).join(' ').replaceAll(makaf, ' ')
 }
 
-async function optimize_word(phrase_words, index, candidates) {
+async function optimize_word(phrase_words, index, candidates_by_len) {
     /* Based on: PET with Multi Masks (max-first decoding),
        in Schick and Schütze (2021), https://arxiv.org/abs/2009.07118
        Code: https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
     */
 
-    let prefix = make_phrase_part(phrase_words.slice(0, index))
-    const suffix = make_phrase_part(phrase_words.slice(index + 1))
-    if (prefix.startsWith(' ' + tokenizer.mask_token))
-        prefix = prefix.slice(1)
+    const word_mask = tokenizer.mask_token.repeat(model_config.masks_for_missing_word)
+    const prefix = make_phrase_part(phrase_words.slice(0, index), word_mask)
+    const suffix = (' ' + make_phrase_part(phrase_words.slice(index + 1), word_mask)).trimEnd()
     const mask_start = tokenizer.encode(prefix).length - 1
 
-    let lengths = Object.keys(candidates).map(Number).sort((a, b) => a - b)
+    let lengths = Object.keys(candidates_by_len).map(Number).sort((a, b) => a - b)
     const sequences = lengths.map(len => `${prefix}${tokenizer.mask_token.repeat(len)}${suffix}`)
     const tokens = tokenizer(sequences, {model_max_length: model_config.max_length || tokenizer.model_max_length, padding: true, truncation: true})
     const Tensor = tokens.input_ids.constructor
@@ -594,7 +590,7 @@ async function optimize_word(phrase_words, index, candidates) {
     let joint_log_probs = new Float32Array(batch_size)
     let best_words = Array(batch_size)
 
-    const active_candidates = structuredClone(candidates)
+    const active_by_len = structuredClone(candidates_by_len)
 
     let best_completed_prob = -Infinity
     let best_completed_word, logits
@@ -639,15 +635,15 @@ async function optimize_word(phrase_words, index, candidates) {
                 else
                     log_sum_exp[available_masks[0]] = 0
 
+                const candidates_for_len = active_by_len[len]
                 let best_prob = -Infinity
                 let best_word_idx, best_rel_pos, best_mask_idx
 
                 for (let m_idx = 0; m_idx < available_masks.length; m_idx++) {
                     const rel_pos = available_masks[m_idx]
-                    const active_list = active_candidates[len]
 
-                    for (let w_idx = 0; w_idx < active_list.length; w_idx++) {
-                        const target_token_id = active_list[w_idx][1][rel_pos]
+                    for (let w_idx = 0; w_idx < candidates_for_len.length; w_idx++) {
+                        const target_token_id = candidates_for_len[w_idx][1][rel_pos]
                         const prob = data[(seq_offset+rel_pos)*vocab_size + target_token_id] - log_sum_exp[rel_pos]
 
                         if (prob > best_prob) {
@@ -667,7 +663,7 @@ async function optimize_word(phrase_words, index, candidates) {
                     continue
                 }
 
-                best_words[b] = active_candidates[len][best_word_idx]
+                best_words[b] = candidates_for_len[best_word_idx]
                 const best_token_id = best_words[b][1][best_rel_pos]
 
                 tokens.input_ids.data[seq_offset + available_masks[best_mask_idx]] = BigInt(best_token_id)
@@ -682,9 +678,9 @@ async function optimize_word(phrase_words, index, candidates) {
                     }
                 }
 
-                active_candidates[len] = active_candidates[len].filter(c => c[1][best_rel_pos] == best_token_id)
+                active_by_len[len] = candidates_for_len.filter(c => c[1][best_rel_pos] == best_token_id)
 
-                if (initial_batch_size == 1 && active_candidates[len].length == 1)
+                if (initial_batch_size == 1 && active_by_len[len].length == 1)
                     return best_words[b][0]
             }
 
@@ -857,7 +853,7 @@ function blur(event) {
     if (event.relatedTarget?.id == 'overlay')
         return
     const input = event.currentTarget
-    setTimeout(() => {  // In Chrome, element removal triggers a blur event before the removal, and if our blur handler itself removes the element in transit, the original remove would then fail. This covers edge cases outside the normal flow, such as popstate. See: https://stackoverflow.com/a/22934552/664456
+    setTimeout(() => {  // In Chrome, element removal triggers a blur event before the removal, and if our blur handler itself removes the element in transit, the original remove would then fail. This covers edge cases outside the normal flow, such as a cached page load. See: https://stackoverflow.com/a/22934552/664456
         if (input.isConnected && !remove_word(input))
             input.value = input.value.replace(/\s+/g, '')
     })
@@ -1098,12 +1094,12 @@ addEventListener('keydown', event => {
     }
 })
 
-function paste_hash(pop, focus=false) {
+function paste_hash(cached, focus=false) {
     last_hash = decodeURIComponent(location.hash.slice(1))
     if (ready)
         if (/^\t./.test(last_hash))
             paste_output(last_hash.slice(1), focus, false)
-        else if (pop) {
+        else if (cached) {
             const ae = document.activeElement
             paste_input('', ae == document.body || main.contains(ae), false)
         }

@@ -9,7 +9,7 @@
     <meta property="og:description" content="כתיבה אילוצית עברית">  <!-- og:description is required for WhatsApp to show og:image -->
     <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
 </head>
-<body onload="document.querySelector('nav-wrapper')?.style.setProperty('visibility', 'visible')" onpopstate="paste_hash(true)">
+<body onload="document.querySelector('nav-wrapper')?.style.setProperty('visibility', 'visible')" onpopstate="paste_hash(true)" onpageshow="if (event.persisted) paste_hash(true)">
     <script>nav_wrapper()</script>
     <div id="controls">
         <div id="checkboxes" onpointerdown="keep_focus(event)" title="שימו לב: הוספת/הסרת הסימון&NewLine;לא מבטיח הוספת/הסרת כל ההיקרויות">

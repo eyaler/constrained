@@ -974,6 +974,7 @@ function add_word(line=main.lastChild, current, before) {
         const is_ctrl = event.ctrlKey || event.metaKey
         const is_mod = is_ctrl || is_alt
         let line = word.parentElement
+        let is_del
         const line_had_text = input.value.trim() || line.childElementCount > 1
         if (event.key == 'Tab' && !event.shiftKey && !is_mod || event.key == 'Enter' && is_ctrl)  // Only in Firefox Ctrl+Enter natively triggers a change event for input elements
             input.dispatchEvent(new Event('change', {bubbles: event.key == 'Enter'}))
@@ -993,10 +994,11 @@ function add_word(line=main.lastChild, current, before) {
             }
         else if ((event.key == ' ' || event.key == 'Enter' && line_had_text || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey) && !is_mod
             || (event.key == 'ArrowLeft' && input.selectionStart == input.value.length
-            || (event.key == 'ArrowRight' || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling)) && !input.selectionEnd
+            || ['ArrowRight', 'Backspace'].includes(event.key) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) && !event.metaKey) {
             let elem
-            if (event.key == 'Delete') {
+            if (event.key == 'Delete' || event.key == 'Backspace' && !word.previousElementSibling && !line.previousElementSibling && (word.nextElementSibling || line.nextElementSibling) && !input.value.trim()) {
+                is_del = true
                 const next_word = word.nextElementSibling
                 elem = next_word || line.nextElementSibling.firstChild
                 const removed = remove_word(input)
@@ -1010,16 +1012,20 @@ function add_word(line=main.lastChild, current, before) {
                     else
                         input.dispatchEvent(new Event('change', {bubbles: true}))
                 }
-            } else if (event.key == 'Backspace' && input.value.trim() && !word.previousElementSibling) {
+            } else if (event.key == 'Backspace' && !word.previousElementSibling && line.previousElementSibling) {
+                if (!is_mod)
+                    input.removeEventListener('blur', blur)  // Don't remove the focused input even if it's empty
                 line.previousElementSibling.append(...line.children)
                 line.remove()
-                if (is_mod)
+                if (is_mod) {
                     elem = word.previousElementSibling
-                else {
+                    remove_word(input)
+                } else {
+                    input.addEventListener('blur', blur)
                     input.focus()
                     input.dispatchEvent(new Event('change', {bubbles: true}))
                 }
-            } else if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
+            } else if (['ArrowUp', 'ArrowRight'].includes(event.key) || event.key == 'Backspace' && (word.previousElementSibling || line.previousElementSibling))
                 if (event.key == 'ArrowUp' || !word.previousElementSibling) {
                     elem = line.previousElementSibling || main.lastChild
                     if (event.key == 'ArrowUp')
@@ -1048,14 +1054,15 @@ function add_word(line=main.lastChild, current, before) {
                 }
                 if (!skip_lf)
                    elem = (line.nextElementSibling || main.firstChild).firstChild
-            } else if (event.key != ' ')
-                elem = word.nextElementSibling || main.firstChild.firstChild
-            else if (input.value.trim())  // ' '
+            }
+            else if (event.key == ' ' && input.value.trim())
                 elem = add_word(line, word, !input.selectionStart)
+            else if (![' ', 'Backspace'].includes(event.key))
+                elem = word.nextElementSibling || main.firstChild.firstChild
 
             if (elem) {
                 elem.firstChild.focus()
-                if (['ArrowLeft', 'Enter', 'Delete'].includes(event.key))
+                if (['ArrowLeft', 'Enter'].includes(event.key) || is_del)
                     document.activeElement.selectionEnd = 0
                 else if (['ArrowRight', 'Backspace'].includes(event.key))
                     document.activeElement.selectionStart = document.activeElement.value.length

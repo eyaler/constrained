@@ -17,7 +17,10 @@ const model_config = {
     "max_length": 512,
     "mask_lstrip": false,
     "masks_for_missing_word": 2,
-    "temperature": 1
+    "temperature": 1,
+    "len_alpha": 0,
+    "token_order": "max",  // Can be "max" (default), "rtl"
+    "word_order": "rtl",  // Can be: "rtl" (default), "ltr", "rare"
 }
 
 // These override Morse:
@@ -181,9 +184,6 @@ const is_mobile = navigator.userAgent.includes('Android') || is_ios
 if (is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
 
-model_config.device = navigator.gpu && !is_mobile ? 'webgpu' : 'wasm'
-model_config.dtype = model_config.device == 'wasm' ? 'int8' : 'fp16'
-
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const reverse_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v]) => [v, k]))
 const proto_selects = {}
@@ -222,7 +222,7 @@ function update_output(text, push=true) {
 
 addEventListener('pagehide', () => update_output(null, false))
 
-main.addEventListener('change', e => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
+main.addEventListener('change', event => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
 
 function change_output_with_selection() {
     const dir = output.selectionDirection
@@ -539,22 +539,30 @@ function randomize() {
     measure('randomize', start_time)
 }
 
-async function update_main_thread() {
-    globalThis.scheduler?.yield?.() || new Promise(setTimeout)  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
+function update_main_thread() {
+    return globalThis.scheduler?.yield?.() || new Promise(r => setTimeout(r))  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
 }
 
-async function load_model(config) {
+async function load_model(config, override_cache) {
+    config.device = !is_mobile && (await navigator.gpu?.requestAdapter())?.features.has('shader-f16') ? 'webgpu' : 'wasm'
+    config.dtype = config.device == 'wasm' ? 'int8' : 'fp16'
+
     try {
         const start_time = performance.now()
         const {AutoTokenizer, AutoModel} = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers')
+        if (override_cache) {
+            await caches.delete('transformers-cache')
+            await model?.dispose()
+            tokenizer = model = null
+        }
         if (!tokenizer) {
             tokenizer = await AutoTokenizer.from_pretrained(config.id)
             tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = config.mask_lstrip
         }
         if (!model)
             model = await AutoModel.from_pretrained(config.id, {device: config.device, dtype: config.dtype})
-        measure('load_model', start_time)
         console.log(config)
+        measure('load_model', start_time)
     } catch (error) {
         console.error(error)
     }
@@ -599,8 +607,6 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
         while (!cancel) {
             await update_main_thread()
             ;({logits} = await model(tokens))
-            if (cancel)
-                break
             const data = logits.data
             const seq_length = logits.dims[1]
             const vocab_size = logits.dims[2]
@@ -610,11 +616,12 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
                 if (!left_masks[b])
                     continue
 
+                const num_masks = model_config.token_order == 'rtl' ? 1 : available_masks.length
                 const seq_offset = b*seq_length + mask_start
                 const available_masks = batch_available_masks[b]
 
-                if (initial_batch_size > 1 || left_masks[b] > 1)
-                    for (let m_idx = 0; m_idx < available_masks.length; m_idx++) {
+                if (model_config.temperature && (initial_batch_size > 1 || left_masks[b] > 1))
+                    for (let m_idx = 0; m_idx < num_masks; m_idx++) {
                         const i = available_masks[m_idx]
                         const flat_offset = (seq_offset+i) * vocab_size
                         const logits_slice = data.subarray(flat_offset, flat_offset + vocab_size)
@@ -635,15 +642,15 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
                 else
                     log_sum_exp[available_masks[0]] = 0
 
-                const candidates_for_len = active_by_len[len]
+                const active_for_len = active_by_len[len]
                 let best_prob = -Infinity
                 let best_word_idx, best_rel_pos, best_mask_idx
 
-                for (let m_idx = 0; m_idx < available_masks.length; m_idx++) {
+                for (let m_idx = 0; m_idx < num_masks; m_idx++) {
                     const rel_pos = available_masks[m_idx]
 
-                    for (let w_idx = 0; w_idx < candidates_for_len.length; w_idx++) {
-                        const target_token_id = candidates_for_len[w_idx][1][rel_pos]
+                    for (let w_idx = 0; w_idx < active_for_len.length; w_idx++) {
+                        const target_token_id = active_for_len[w_idx][1][rel_pos]
                         const prob = data[(seq_offset+rel_pos)*vocab_size + target_token_id] - log_sum_exp[rel_pos]
 
                         if (prob > best_prob) {
@@ -655,7 +662,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
                     }
                 }
 
-                joint_log_probs[b] += best_prob
+                joint_log_probs[b] += best_prob / len**model_config.len_alpha
 
                 if (joint_log_probs[b] <= best_completed_prob) {
                     left_masks[b] = 0
@@ -663,7 +670,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
                     continue
                 }
 
-                best_words[b] = candidates_for_len[best_word_idx]
+                best_words[b] = active_for_len[best_word_idx]
                 const best_token_id = best_words[b][1][best_rel_pos]
 
                 tokens.input_ids.data[seq_offset + available_masks[best_mask_idx]] = BigInt(best_token_id)
@@ -678,7 +685,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
                     }
                 }
 
-                active_by_len[len] = candidates_for_len.filter(c => c[1][best_rel_pos] == best_token_id)
+                active_by_len[len] = active_for_len.filter(c => c[1][best_rel_pos] == best_token_id)
 
                 if (initial_batch_size == 1 && active_by_len[len].length == 1)
                     return best_words[b][0]
@@ -742,6 +749,11 @@ async function optimize_phrase(words) {
         }
     }
 
+    if (model_config.word_order == 'ltr')
+        opt_words.reverse()
+    else if (model_config.word_order == 'rare')
+        opt_words.sort(([a], [b]) => proto_selects[a].length - proto_selects[b].length)
+
     for (const [char, w, i] of opt_words)
         if (cancel)
             break
@@ -769,7 +781,7 @@ async function suggest_phrase(selects, indices, rewrite) {
     indices.length = 0
 }
 
-async function suggest(rewrite) {
+async function suggest(rewrite, override_cache) {
     const robot = buttons.querySelectorAll('.robot')[rewrite | 0]
     if (robot.classList.contains('thinking'))
         return
@@ -779,8 +791,8 @@ async function suggest(rewrite) {
     await update_main_thread()
 
     if (output.value.trim()) {
-        if (!tokenizer || !model)
-            await load_model(model_config)
+        if (!tokenizer || !model || override_cache)
+            await load_model(model_config, override_cache)
         if (tokenizer && model) {
             const start_time = performance.now()
             const [start, end, divs, indices] = get_selected(ae)
@@ -806,9 +818,9 @@ async function suggest(rewrite) {
                 measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
     }
-    cancel = false
-    robot.classList.remove('thinking')
     overlay.close()
+    robot.classList.remove('thinking')
+    cancel = false
 }
 
 overlay.addEventListener('keydown', event => {  // For Safari: https://bugs.webkit.org/show_bug.cgi?id=284592

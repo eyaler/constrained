@@ -555,14 +555,16 @@ async function load_model(config, override_cache) {
             await model?.dispose()
             tokenizer = model = null
         }
-        if (!tokenizer) {
+        if (!tokenizer && !cancel) {
             tokenizer = await AutoTokenizer.from_pretrained(config.id)
             tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = config.mask_lstrip
         }
-        if (!model)
+        if (!model && !cancel)
             model = await AutoModel.from_pretrained(config.id, {device: config.device, dtype: config.dtype})
-        console.log(config)
-        measure('load_model', start_time)
+        if (tokenizer && model) {
+            console.log(config)
+            measure(`load_model (${override_cache ? 'downloaded' : 'cached'})`, start_time)
+        }
     } catch (error) {
         console.error(error)
     }
@@ -777,8 +779,7 @@ async function suggest_phrase(selects, indices, rewrite) {
             }
         }
     })
-    selects.length = 0
-    indices.length = 0
+    selects.length = indices.length = 0
 }
 
 async function suggest(rewrite, override_cache) {

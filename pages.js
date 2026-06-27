@@ -39,6 +39,7 @@ const pages = {
     "crown": {title: "כליל סונטות קומבינטורי", alt: "Combinatorial crown of sonnets", kw: ["combinatorial", "combined forms", "new constraint", "poem"]},
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
 
+    "mirror/": {title: "אמביגרמות מראָה", alt: "Mirror ambigrams", kw: ["2d 3d", "visual"], skip: true},
     "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "self-referral", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing"},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["computational", "interactive", "tool"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},

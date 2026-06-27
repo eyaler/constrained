@@ -189,7 +189,7 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
-let model, tokenizer, cancel
+let worker, cancel
 
 function join_lines(words, sep='') {
     return [...main.querySelectorAll('.line')].map(line => [...line.children].map(words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
@@ -539,228 +539,40 @@ function randomize() {
     measure('randomize', start_time)
 }
 
-function update_main_thread() {
-    return globalThis.scheduler?.yield?.() || new Promise(r => setTimeout(r))  // Force CSS update. See: https://web.dev/articles/optimize-long-tasks
-}
-
-async function load_model(config, override_cache) {
-    config.device = !is_mobile && (await navigator.gpu?.requestAdapter())?.features.has('shader-f16') ? 'webgpu' : 'wasm'
-    config.dtype = config.device == 'wasm' ? 'int8' : 'fp16'
-
-    try {
-        const start_time = performance.now()
-        const {AutoTokenizer, AutoModel} = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers')
-        if (override_cache) {
-            await caches.delete('transformers-cache')
-            await model?.dispose()
-            tokenizer = model = null
-        }
-        if (!tokenizer && !cancel) {
-            tokenizer = await AutoTokenizer.from_pretrained(config.id)
-            tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = config.mask_lstrip
-        }
-        if (!model && !cancel)
-            model = await AutoModel.from_pretrained(config.id, {device: config.device, dtype: config.dtype})
-        if (tokenizer && model) {
-            console.log(config)
-            measure(`load_model (${override_cache ? 'downloaded' : 'cached'})`, start_time)
-        }
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-function make_phrase_part(words, word_mask) {
-    return words.map(w => w ?? word_mask).join(' ').replaceAll(makaf, ' ')
-}
-
-async function optimize_word(phrase_words, index, candidates_by_len) {
-    /* Based on: PET with Multi Masks (max-first decoding),
-       in Schick and Schütze (2021), https://arxiv.org/abs/2009.07118
-       Code: https://github.com/timoschick/pet/blob/master/pet/task_helpers.py
-    */
-
-    const word_mask = tokenizer.mask_token.repeat(model_config.masks_for_missing_word)
-    const prefix = make_phrase_part(phrase_words.slice(0, index), word_mask)
-    const suffix = (' ' + make_phrase_part(phrase_words.slice(index + 1), word_mask)).trimEnd()
-    const mask_start = tokenizer.encode(prefix).length - 1
-
-    let lengths = Object.keys(candidates_by_len).map(Number).sort((a, b) => a - b)
-    const sequences = lengths.map(len => `${prefix}${tokenizer.mask_token.repeat(len)}${suffix}`)
-    const tokens = tokenizer(sequences, {model_max_length: model_config.max_length || tokenizer.model_max_length, padding: true, truncation: true})
-    const Tensor = tokens.input_ids.constructor
-
-    let left_masks = [...lengths]
-    let batch_available_masks = lengths.map(len => [...Array(len).keys()])
-    let batch_size = lengths.length
-    let active_rows = batch_size
-    const initial_batch_size = batch_size
-
-    const log_sum_exp = new Float32Array(lengths[batch_size - 1])
-    let joint_log_probs = new Float32Array(batch_size)
-    let best_words = Array(batch_size)
-
-    const active_by_len = structuredClone(candidates_by_len)
-
-    let best_completed_prob = -Infinity
-    let best_completed_word, logits
-
-    try {
-        while (!cancel) {
-            await update_main_thread()
-            ;({logits} = await model(tokens))
-            const data = logits.data
-            const seq_length = logits.dims[1]
-            const vocab_size = logits.dims[2]
-
-            for (let b = 0; b < batch_size; b++) {
-                const len = lengths[b]
-                if (!left_masks[b])
-                    continue
-
-                const available_masks = batch_available_masks[b]
-                const num_masks = model_config.token_order == 'rtl' ? 1 : available_masks.length
-                const seq_offset = b*seq_length + mask_start
-
-                if (model_config.temperature && (initial_batch_size > 1 || left_masks[b] > 1))
-                    for (let m_idx = 0; m_idx < num_masks; m_idx++) {
-                        const i = available_masks[m_idx]
-                        const flat_offset = (seq_offset+i) * vocab_size
-                        const logits_slice = data.subarray(flat_offset, flat_offset + vocab_size)
-
-                        let max = -Infinity
-                        for (let j = 0; j < vocab_size; j++) {
-                            logits_slice[j] /= model_config.temperature
-                            if (logits_slice[j] > max)
-                                max = logits_slice[j]
-                        }
-
-                        let sum_exp = 0
-                        for (let j = 0; j < vocab_size; j++)
-                            sum_exp += Math.exp(logits_slice[j] - max)
-
-                        log_sum_exp[i] = max + Math.log(sum_exp)
-                    }
-                else
-                    log_sum_exp[available_masks[0]] = 0
-
-                const active_for_len = active_by_len[len]
-                let best_prob = -Infinity
-                let best_word_idx, best_rel_pos, best_mask_idx
-
-                for (let m_idx = 0; m_idx < num_masks; m_idx++) {
-                    const rel_pos = available_masks[m_idx]
-
-                    for (let w_idx = 0; w_idx < active_for_len.length; w_idx++) {
-                        const target_token_id = active_for_len[w_idx][1][rel_pos]
-                        const prob = data[(seq_offset+rel_pos)*vocab_size + target_token_id] - log_sum_exp[rel_pos]
-
-                        if (prob > best_prob) {
-                            best_prob = prob
-                            best_word_idx = w_idx
-                            best_rel_pos = rel_pos
-                            best_mask_idx = m_idx
-                        }
-                    }
-                }
-
-                joint_log_probs[b] += best_prob / len**model_config.len_alpha
-
-                if (joint_log_probs[b] <= best_completed_prob) {
-                    left_masks[b] = 0
-                    active_rows--
-                    continue
-                }
-
-                best_words[b] = active_for_len[best_word_idx]
-                const best_token_id = best_words[b][1][best_rel_pos]
-
-                tokens.input_ids.data[seq_offset + available_masks[best_mask_idx]] = BigInt(best_token_id)
-                available_masks.splice(best_mask_idx, 1)
-                left_masks[b]--
-
-                if (!left_masks[b]) {
-                    active_rows--
-                    if (joint_log_probs[b] > best_completed_prob) {
-                        best_completed_prob = joint_log_probs[b]
-                        best_completed_word = best_words[b][0]
-                    }
-                }
-
-                active_by_len[len] = active_for_len.filter(c => c[1][best_rel_pos] == best_token_id)
-
-                if (initial_batch_size == 1 && active_by_len[len].length == 1)
-                    return best_words[b][0]
+function optimize_word_wrapper(payload) {
+    return new Promise((resolve, reject) => {
+        const message_handler = event => {
+            const {type, data, error} = event.data
+            if (type == 'COMPLETE') {
+                worker.removeEventListener('message', message_handler)
+                resolve(data)
+            } else if (type == 'ERROR') {
+                worker.removeEventListener('message', message_handler)
+                cancel = true
+                reject(error)
             }
-
-            if (!active_rows)
-                return best_completed_word
-
-            if (active_rows < batch_size) {
-                const new_input_data = new BigInt64Array(active_rows * seq_length)
-                const new_attention_data = new BigInt64Array(active_rows * seq_length)
-
-                let dest_b = 0
-                for (let b = 0; b < batch_size; b++)
-                    if (left_masks[b]) {
-                        new_input_data.set(tokens.input_ids.data.subarray(b * seq_length, (b + 1) * seq_length), dest_b * seq_length)
-                        new_attention_data.set(tokens.attention_mask.data.subarray(b * seq_length, (b + 1) * seq_length), dest_b * seq_length)
-                        joint_log_probs[dest_b++] = joint_log_probs[b]
-                    }
-
-                tokens.input_ids.dispose()
-                tokens.attention_mask.dispose()
-                tokens.input_ids = new Tensor('int64', new_input_data, [active_rows, seq_length])
-                tokens.attention_mask = new Tensor('int64', new_attention_data, [active_rows, seq_length])
-
-                lengths = lengths.filter((_, b) => left_masks[b])
-                batch_available_masks = batch_available_masks.filter((_, b) => left_masks[b])
-                best_words = best_words.filter((_, b) => left_masks[b])
-                left_masks = left_masks.filter(m => m)
-                joint_log_probs = joint_log_probs.subarray(0, active_rows)
-                batch_size = active_rows
-            }
-
-            logits.dispose()
         }
-    } catch (error) {
-        console.error(error)
-    } finally {
-        tokens.input_ids.dispose()
-        tokens.attention_mask.dispose()
-        logits?.dispose()
-    }
+        worker.addEventListener('message', message_handler)
+        worker.postMessage(payload)
+    })
 }
 
-async function optimize_phrase(words) {
+async function optimize_phrase(override_cache, words) {
     const out_words = words.map(x => x[1])
     const opt_words = words.filter(x => x[0])
-    const all_tokens = {}
-
-    for (const char of new Set(opt_words.map(x => x[0]))) {
-        if (cancel)
-            break
-        all_tokens[char] = {}
-        const char_words = [...proto_selects[char]].map(select => select.value)
-        const all_ids = tokenizer(char_words.map(word => ' ' + word.replaceAll(makaf, ' ')), {add_special_tokens: false, return_attention_mask: false, return_tensor: false}).input_ids
-        for (let i = 0; i < char_words.length; i++) {
-            const len = all_ids[i].length
-            if (!all_tokens[char][len])
-                all_tokens[char][len] = []
-            all_tokens[char][len].push([char_words[i], all_ids[i]])
-        }
-    }
 
     if (model_config.word_order == 'ltr')
         opt_words.reverse()
     else if (model_config.word_order == 'rare')
         opt_words.sort(([a], [b]) => proto_selects[a].length - proto_selects[b].length)
 
-    for (const [char, w, i] of opt_words)
+    for (const [char, w, i] of opt_words) {
         if (cancel)
             break
-        else if (Object.keys(all_tokens[char]).length)
-            out_words[i] = await optimize_word(out_words, i, all_tokens[char])
+        const candidates = [...proto_selects[char]].map(select => select.value)
+        if (candidates.length)
+            out_words[i] = await optimize_word_wrapper({model_config, override_cache, out_words, i, candidates})
+    }
     return out_words
 }
 
@@ -769,7 +581,7 @@ async function suggest_phrase(selects, indices, rewrite) {
     for (let i = 0; i <= adjustable.length; i++)
         if (adjustable[i])
             selects[i].classList.add('thinking')
-    ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
+    ;(await optimize_phrase(override_cache, selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
         if (adjustable[i]) {
             selects[i].classList.remove('thinking')
             if (word) {
@@ -792,32 +604,30 @@ async function suggest(rewrite, override_cache) {
     await update_main_thread()
 
     if (output.value.trim()) {
-        if (!tokenizer || !model || override_cache)
-            await load_model(model_config, override_cache)
-        if (tokenizer && model) {
-            const start_time = performance.now()
-            const [start, end, divs, indices] = get_selected(ae)
-            const selects = []
-            for (const div of divs) {
-                for (let i = 0; i < div.childElementCount; i++) {
-                    if (cancel)
-                        break
-                    const select = div.children[i]
-                    if (select.name in morse && select.length) {
-                        if (i >= start && i < end || ae == output && select.matches('.selected'))
-                            indices.push(selects.length)
-                        selects.push(select)
-                    } else
-                        await suggest_phrase(selects, indices, rewrite)
-                }
+        if (!worker)
+            worker = new Worker('worker.js')
+        const start_time = performance.now()
+        const [start, end, divs, indices] = get_selected(ae)
+        const selects = []
+        for (const div of divs) {
+            for (let i = 0; i < div.childElementCount; i++) {
                 if (cancel)
                     break
-                await suggest_phrase(selects, indices, rewrite)
+                const select = div.children[i]
+                if (select.name in morse && select.length) {
+                    if (i >= start && i < end || ae == output && select.matches('.selected'))
+                        indices.push(selects.length)
+                    selects.push(select)
+                } else
+                    await suggest_phrase(override_cache, selects, indices, rewrite)
             }
-            change_output_with_selection()
-            if (!cancel)
-                measure(rewrite ? 'rewrite' : 'suggest', start_time)
+            if (cancel)
+                break
+            await suggest_phrase(override_cache, selects, indices, rewrite)
         }
+        change_output_with_selection()
+        if (!cancel)
+            measure(rewrite ? 'rewrite' : 'suggest', start_time)
     }
     overlay.close()
     robot.classList.remove('thinking')

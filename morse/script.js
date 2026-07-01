@@ -567,6 +567,7 @@ async function load_model(config, override_cache) {
         }
     } catch (error) {
         console.error(error)
+        alert(error)
     }
 }
 
@@ -725,6 +726,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
         }
     } catch (error) {
         console.error(error)
+        alert(error)
     } finally {
         tokens.input_ids.dispose()
         tokens.attention_mask.dispose()

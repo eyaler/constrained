@@ -1,0 +1,24 @@
+:not(header) + h2, img {
+    margin-top: 10em;
+}
+
+img {
+    margin-bottom: 5em;
+}
+
+img + img {
+    margin-top: 15em;
+}
+
+@keyframes swivel {
+    100% { rotate: y .5turn }
+}
+
+img[style*=--order] {
+    animation: 10s calc(var(--order) * -3s) ease-in-out infinite alternate swivel;
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+    max-height: 200px;
+}
+

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-72 0 612 180">
+    <g fill="#64FF64">
+        <rect x="-72" width="36" height="180" />
+        <rect y="144" width="180" height="36" />
+        <rect width="36" height="180" />
+        <rect x="72" width="36" height="180" />
+        <rect x="144" width="36" height="180" />
+        <rect x="216" width="36" height="90" />
+        <rect x="288" y="144" width="180" height="36" />
+        <rect x="288" width="36" height="180" />
+        <rect x="360" width="36" height="180" />
+        <rect x="432" width="36" height="180" />
+        <rect x="504" width="36" height="180" />
+    </g>
+</svg>

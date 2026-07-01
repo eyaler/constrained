@@ -877,7 +877,7 @@ nav .trans {
     float: left;
 }
 
-.no_fullscreen .fullscreen_button{
+.no_fullscreen .fullscreen_button {
     visibility: hidden;
 }
 

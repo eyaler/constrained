@@ -191,12 +191,24 @@ let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
 let model, tokenizer, cancel
 
-function join_lines(words, sep='') {
-    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(words).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
+function to_middle(text) {
+    return text.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
+}
+
+function norm_chars(text) {
+    return [...to_middle(text.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => proto_selects[char]?.length)
+}
+
+function join_lines(word_func, sep='') {
+    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(word_func).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
 }
 
 function join_inputs() {
     return join_lines(word => word.firstChild.value.trim())
+}
+
+function join_inputs_norm() {
+    return join_lines(word => norm_chars(word.firstChild.value.trim()).join(''))
 }
 
 function make_hash() {
@@ -265,7 +277,7 @@ function measure(name, start_time) {
     console.log(`${name} took ${((performance.now()-start_time) / 1000).toLocaleString(undefined, {maximumFractionDigits: 1})}s.`)
 }
 
-function norm(text) {
+function norm_text(text) {
     text = text.replace(wrong_order_nikud_regex, '$2$1').replace(wrong_order_dots_regex, '$2$1')
     return text.trim().replace(whitespace_regex, ' ').replace(newline_regex, '\n').replaceAll('\u05f3', "'").replaceAll('\u05f4', '"').replaceAll('\u2011', '-')
 }
@@ -289,7 +301,7 @@ function partial_match(dict_word, word_parts) {
     return word_parts.every((cluster, i) => [...cluster].every(char => dict_word_parts[i].includes(char)))
 }
 
-function select_option(select, option) {
+function kbd_select_option(select, option) {
     if (legacy_select || !select.matches(':open')) {
         option.selected = true
         select.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {skip_push: true}}))
@@ -301,7 +313,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
     const start_time = performance.now()
     if (!main.querySelector('.word'))
         return
-    text = norm(text)
+    text = norm_text(text)
     const select = word.closest('select')
     if (select) {
         if (!alefbet_regex.test(text))
@@ -312,7 +324,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         for (let i = 1; i <= len; i++) {
             const option = select[(index + i) % len]
             if (option.value.startsWith(text)) {
-                select_option(select, option)
+                kbd_select_option(select, option)
                 return true
             }
         }
@@ -323,7 +335,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         for (let i = 1; i <= len; i++) {
             const option = select[(index + i) % len]
             if (partial_match(option.value, word_parts)) {
-                select_option(select, option)
+                kbd_select_option(select, option)
                 return true
             }
         }
@@ -381,10 +393,14 @@ function make_option(text, value) {
     return new Option(text, value != text ? value : undefined)
 }
 
-function find_add_select_option(select, word, prev_option) {
+function find_add_select_option(select, word_or_select, external) {
+    const prev_option = !external && word_or_select.selectedOptions?.[0]
+    const word = prev_option?.value || word_or_select
     const trailless = remove_trailing_makaf(word)
     let option = find_option(select, trailless)
     if (!option) {
+        if (external)
+            return true
         option = prev_option?.cloneNode(true) || make_option(word, trailless)
         select.add(option, 0)
         if (select.dataset.old_index)
@@ -395,6 +411,12 @@ function find_add_select_option(select, word, prev_option) {
             proto_selects[select.name].add(option.cloneNode(true), 0)
     }
     option.selected = true
+    if (!prev_option)
+        select.dispatchEvent(new Event('change', {bubbles: external}))
+}
+
+function select_word(select, word) {
+    return find_add_select_option(select, word, true)
 }
 
 function paste_output(text='', focus=true, push=true) {
@@ -402,17 +424,16 @@ function paste_output(text='', focus=true, push=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
                                                                 .map(div => [...div.children].map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
-    const norm_text = norm(text)
+    const norm = norm_text(text)
     const ae1 = document.activeElement
-    paste_input(norm_text.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
+    paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
                          .replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '')
                          .replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker)
                          .replace(non_punct_regex, '').replace(sep_regex, ' ')
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
-    const output_words = norm_text.replace(non_text_regex, '').split(split_output_regex).map(to_makaf)
+    const output_words = norm.replace(non_text_regex, '').split(split_output_regex).map(to_makaf)
     main.querySelectorAll('select').forEach((select, i) => {
         find_add_select_option(select, output_words[i])
-        select.dispatchEvent(new Event('change'))
         const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
         if (prev_select?.untouched && prev_select.name == select.name && prev_select.value == select.value)
             select.classList.add('untouched')
@@ -454,12 +475,12 @@ output.addEventListener('selectionchange', () => {
     let start_word, end_word
     if (end > start && text == output.dataset.prev_value) {
         text = text.slice(0, start) + '\x01' + text.slice(start, end) + '\x02' + text.slice(end)
-        let norm_text = norm(text).replace(non_text_regex, m => m.replace(/[^\x01\x02]/g, ''))
-        start = norm_text.indexOf('\x01')
-        norm_text = norm_text.slice(0, start) + norm_text.slice(start + 1)
-        end = norm_text.indexOf('\x02')
-        norm_text = norm_text.slice(0, end) + norm_text.slice(end + 1)
-        const parts = norm_text.split(partition_regex)
+        let norm = norm_text(text).replace(non_text_regex, m => m.replace(/[^\x01\x02]/g, ''))
+        start = norm.indexOf('\x01')
+        norm = norm.slice(0, start) + norm.slice(start + 1)
+        end = norm.indexOf('\x02')
+        norm = norm.slice(0, end) + norm.slice(end + 1)
+        const parts = norm.split(partition_regex)
         let pos = 0
         for (let i = 0; i < parts.length; i++) {
             const pos_end = pos + parts[i].length
@@ -492,8 +513,8 @@ function get_selected(ae) {
         if (main.contains(ae))
             if (ae.tagName == 'INPUT' && ae.selectionEnd > ae.selectionStart) {
                 divs = [ae.nextElementSibling]
-                start = ae.selectionStart
-                end = ae.selectionEnd
+                start = norm_chars(ae.value.slice(0, ae.selectionStart)).length
+                end = norm_chars(ae.value.slice(0, ae.selectionEnd)).length
                 all = false
             } else {
                 const select = ae.closest('select')
@@ -734,6 +755,10 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
     }
 }
 
+function get_words(char) {
+    return [...proto_selects[char]].map(select => select.value)
+}
+
 async function optimize_phrase(words) {
     const out_words = words.map(x => x[1])
     const opt_words = words.filter(x => x[0])
@@ -743,7 +768,7 @@ async function optimize_phrase(words) {
         if (cancel)
             break
         all_tokens[char] = {}
-        const char_words = [...proto_selects[char]].map(select => select.value)
+        const char_words = get_words(char)
         const all_ids = tokenizer(char_words.map(word => ' ' + word.replaceAll(makaf, ' ')), {add_special_tokens: false, return_attention_mask: false, return_tensor: false}).input_ids
         for (let i = 0; i < char_words.length; i++) {
             const len = all_ids[i].length
@@ -776,7 +801,6 @@ async function suggest_phrase(selects, indices, rewrite) {
             selects[i].classList.remove('thinking')
             if (word) {
                 find_add_select_option(selects[i], word)
-                selects[i].dispatchEvent(new Event('change'))
                 selects[i].classList.add('untouched')
             }
         }
@@ -849,7 +873,7 @@ if (!navigator.share) {
 }
 
 function transmit() {
-    alert([...join_inputs()].map(c => morse[c] || ' ').join(' '))
+    alert([...join_inputs_norm()].map(c => morse[c] || c).join(' ').replaceAll(' \n ', '\n'))
 }
 
 function remove_word(input) {
@@ -880,10 +904,6 @@ addEventListener('focus', () => {
         input.dispatchEvent(new FocusEvent('blur'))
 })
 
-function to_middle(text) {
-    return text.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
-}
-
 function add_word(line=main.lastChild, current, before) {
     const word = line.insertBefore(document.createElement('div'), before ? current : current?.nextElementSibling)
     word.className = 'word'
@@ -897,7 +917,7 @@ function add_word(line=main.lastChild, current, before) {
             return
         input.dataset.prev_value = input.value
         const prev_chars = [...select_container.children].map(select => select.name)
-        const chars = [...to_middle(input.value.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => proto_selects[char]?.length)
+        const chars = norm_chars(input.value)
         const [head, tail, delta] = diff(chars, prev_chars)
         for (let i = 0; i < delta; i++)
             select_container.children[head].remove()
@@ -932,7 +952,7 @@ function add_word(line=main.lastChild, current, before) {
                 } else if (!is_alt)
                     if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                         event.preventDefault()
-                        select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
+                        kbd_select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
                     } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                         event.preventDefault()
                         const all_selects = main.querySelectorAll('select')
@@ -945,13 +965,13 @@ function add_word(line=main.lastChild, current, before) {
                             for (let i = 1; i <= len; i++) {
                                 const option = select[(index + (event.key == '-' ? i : -i) + len) % len]
                                 if (middle_makaf_regex.test(option.value)) {
-                                    select_option(select, option)
+                                    kbd_select_option(select, option)
                                     break
                                 }
                             }
                         } else if (event.key == 'Backspace' && select.dataset.old_index) {
                             event.preventDefault()
-                            select_option(select, select[select.dataset.old_index])
+                            kbd_select_option(select, select[select.dataset.old_index])
                         } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                             add_word(line)
             })
@@ -959,8 +979,8 @@ function add_word(line=main.lastChild, current, before) {
             const prev_select = select_container.children[i]
             if (i >= head && i < tail)
                 select.classList.add('untouched')
-            else if (rebuild)
-                find_add_select_option(select, prev_select.value, prev_select.selectedOptions[0])
+            else if (rebuild && prev_select.length)
+                find_add_select_option(select, prev_select)
             if (i >= head && select_container.childElementCount < chars.length)
                 select_container.insertBefore(select, prev_select);
             else

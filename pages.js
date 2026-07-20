@@ -40,6 +40,7 @@ const pages = {
     "namretla": {title: "נְמֵרַת־לֹא", alt: "Namretla", kw: ["cipher", "hebrew cheatery", "poem"], hazard: "flashing"},
 
     "mirror/": {title: "אמביגרמות מראָה", alt: "Mirror ambigrams", kw: ["2d 3d", "combined forms", "palindrome", "visual"]},
+    "eyael": {title: "איעל", alt: "Eyael", kw: ["2d 3d", "visual"]},
     "wabbit/": {title: "נבלֶה בנראה", alt: "Visible recreation", kw: ["cipher", "combined forms", "hebrew cheatery", "palindrome", "poem", "self-referral", "sound", "translation", "visual"], by: "graceslick", hazard: "flashing"},
     "signonet": {title: "סגנונט", alt: "Signonet", kw: ["computational", "interactive", "tool"], with: "eranhadas"},
     "magicspell": {title: "לחשקסם", alt: "Magicspell", kw: ["2d 3d", "combined forms", "poem", "visual"]},
@@ -52,9 +53,9 @@ const pages = {
     "mynorca": {title: "תו בי תישאר", alt: "Automynorcagrams", kw: ["biblical", "record"]},
     "superanagrams": {title: "אנגרמות־על", alt: "Superanagrams", kw: ["biblical", "combinatorial", "computational", "hebrew cheatery", "new constraint"]},
     "acrostics": {title: "הטרלות עם אקרוסטיכונים", alt: "Trolling with acrostics", kw: ["2d 3d", "cipher", "discourse", "poem", "self-referral", "visual"]},
+
     "harh/": {title: "הַרְח", alt: "Harḥ", kw: ["poem"]},
     "pow": {title: "הובלה מיטבית", alt: "Optimal transport", kw: ["computational", "visual"]},
-
     "petri/": {title: "פואטיקת פטרי פטריוטית", alt: "Patriotic Petri Poetry", kw: ["computational", "generative", "live code", "poem", "visual"]},
     "otogram": {title: "אות־וֹגרמה", alt: "OT‑o‑gram: Letter-letter autogram", kw: ["combinatorial", "combined forms", "computational", "pangram", "record", "self-referral"]},
     "hayush": {title: "סדרות היוּש", alt: "Aronson sequences in Hebrew", kw: ["computational", "data available", "record", "self-referral"]},

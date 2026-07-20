@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="fonts/Alef-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="pages.js"></script>
+    <meta property="og:description" content="כתיבה אילוצית עברית">  <!-- og:description is required for WhatsApp to show og:image -->
+    <meta property="og:image" content="https://eyalgruss.com/constrained/media/og_image.jpg">
+    <style>
+        .wrapper {
+            aspect-ratio: 1;
+            margin-inline: auto;
+            margin-top: 6em;
+            width: fit-content;
+        }
+
+        @keyframes rot {
+            0%, 25% { rotate: 0deg }
+            75%, 100% { rotate: 90deg }
+        }
+
+        img {
+            animation: 15s ease-in-out infinite alternate rot;
+            display: block;
+            margin-inline: auto;
+            max-width: 90%;
+            transform-origin: 13% 43%;
+        }
+    </style>
+    <noscript><style>body {visibility: visible}</style></noscript>
+</head>
+<body onload="document.body.style.visibility = 'visible'">
+    <script>make_header()</script>
+    <div class="wrapper">
+        <img src="media/eyael.png" alt="ליעל \ לאיל">
+    </div>
+    <script>make_footer()</script>
+</body>
+</html>

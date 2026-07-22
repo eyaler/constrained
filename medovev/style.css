@@ -116,10 +116,10 @@
     margin-inline-start: auto;
 }
 
-#statuses output:empty {
-    display: none;
+#statuses output {
+    padding-inline: .3em;
 }
 
-#statuses output:not(:empty) {
-    padding-inline: .3em;
+#statuses output:empty {
+    display: none;
 }

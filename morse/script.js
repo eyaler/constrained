@@ -1186,7 +1186,7 @@ function build_selects(focus=false) {
 
         const add_bvkl = [...bet.slice(0, add_prep_b.checked) + vav.slice(0, add_prep_v.checked) + kaf.slice(0, add_prep_k.checked) + lamed.slice(0, add_prep_l.checked)]
         const add_bhkl = [...bet.slice(0, add_article_b.checked) + he.slice(0, add_article_h.checked) + kaf.slice(0, add_article_k.checked) + lamed.slice(0, add_article_l.checked)]
-        if (code.length > 1 && (add_bvkl.length
+        if (code.length > 1 && reverse_morse[code.slice(1)] && (add_bvkl.length
            || code[0] == dah && add_bhkl.length
            || code[0] == dit && add_prep_m.checked)) {
             const tail_char = reverse_morse[code.slice(1)]

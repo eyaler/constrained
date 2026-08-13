@@ -236,14 +236,15 @@ addEventListener('pagehide', () => update_output(null, false))
 
 main.addEventListener('change', event => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
 
-function change_output_with_selection() {
-    const dir = output.selectionDirection
+function change_output_and_selection() {
+    const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_text = output.value
+    const selected = main.querySelector('.selected')
     main.dispatchEvent(new Event('change'))
     const text = output.value
-    if (main.querySelector('.selected') && text != prev_text) {
-        const [head, tail] = diff(text, prev_text)
-        output.setSelectionRange(head, tail, dir)
+    if (selected && text != prev_text) {
+        const [head, tail, delta] = diff(text, prev_text)
+        output.setSelectionRange(Math.min(head, selectionStart), Math.max(tail, selectionEnd - delta), selectionDirection)
     }
 }
 
@@ -504,9 +505,8 @@ function update_index(select) {
 }
 
 function get_selected(ae) {
-    const indices = []
-    let start, end, all
     let divs = ae == output ? main.querySelectorAll('.word > div:has(.selected)') : []
+    let all, start, end
     if (!divs.length) {
         divs = main.querySelectorAll('.word > div')
         all = true
@@ -520,12 +520,13 @@ function get_selected(ae) {
                 const select = ae.closest('select')
                 if (select) {
                     divs = [select.parentElement]
-                    indices.push([...divs[0].children].indexOf(select))
+                    start = [...divs[0].children].indexOf(select)
+                    end = start + 1
                     all = false
                 }
             }
     }
-    return [start, end, divs, indices, all]
+    return [divs, all, start, end]
 }
 
 function diff(text, prev_text) {
@@ -546,17 +547,17 @@ function randomize() {
     const ae = document.activeElement
     if (ae == output || ae.tagName == 'INPUT' && main.contains(ae))
         ae.dispatchEvent(new Event('change'))
-    const [start, end, divs, indices, all] = get_selected(ae)
+    const [divs, all, start, end] = get_selected(ae)
     for (const div of divs)
         for (let i = 0; i < div.childElementCount; i++) {
             const select = div.children[i]
-            if (select.name in morse && select.length > 1 && (all || i >= start && i < end || ae == output && select.matches('.selected') || indices.includes(i))) {
+            if (select.name in morse && select.length > 1 && (all || i >= start && i < end || ae == output && select.matches('.selected'))) {
                 select.selectedIndex = Math.random() * select.length | 0
                 update_index(select)
                 select.classList.add('untouched')
             }
         }
-    change_output_with_selection()
+    change_output_and_selection()
     measure('randomize', start_time)
 }
 
@@ -791,9 +792,9 @@ async function optimize_phrase(words) {
     return out_words
 }
 
-async function suggest_phrase(selects, indices, rewrite) {
-    const adjustable = selects.map((select, i) => proto_selects[select.name].length > 1 && (!indices.length || indices.includes(i)))
-    for (let i = 0; i <= adjustable.length; i++)
+async function suggest_phrase(selects, indices, all, rewrite) {
+    const adjustable = selects.map((select, i) => proto_selects[select.name].length > 1 && (all || indices.includes(i)))
+    for (let i = 0; i < adjustable.length; i++)
         if (adjustable[i])
             selects[i].classList.add('thinking')
     ;(await optimize_phrase(selects.map((select, i) => [adjustable[i] ? select.name : null, rewrite || !adjustable[i] ? select.value : null, i]))).forEach((word, i) => {
@@ -822,8 +823,9 @@ async function suggest(rewrite, override_cache) {
             await load_model(model_config, override_cache)
         if (tokenizer && model) {
             const start_time = performance.now()
-            const [start, end, divs, indices] = get_selected(ae)
+            const [divs, all, start, end] = get_selected(ae)
             const selects = []
+            const indices = []
             for (const div of divs) {
                 for (let i = 0; i < div.childElementCount; i++) {
                     if (cancel)
@@ -834,18 +836,21 @@ async function suggest(rewrite, override_cache) {
                             indices.push(selects.length)
                         selects.push(select)
                     } else
-                        await suggest_phrase(selects, indices, rewrite)
+                        await suggest_phrase(selects, indices, all, rewrite)
                 }
                 if (cancel)
                     break
-                await suggest_phrase(selects, indices, rewrite)
+                await suggest_phrase(selects, indices, all, rewrite)
             }
-            change_output_with_selection()
+            change_output_and_selection()
             if (!cancel)
                 measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
     }
+    const {selectionStart, selectionEnd, selectionDirection} = output
     overlay.close()
+    if (ae == output)
+        output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     robot.classList.remove('thinking')
     cancel = false
 }

@@ -483,7 +483,7 @@ function export_all(lang, skip=true) {
 }
 
 
-function is_shortcut(event, shortcut) {
+function is_shortcut(event, shortcut, ignore_mod) {
     shortcut = shortcut.toLowerCase().split(/ ?[+-] ?(?!$)/)
     let shortcut_key = shortcut.pop()
     if (shortcut_key == 'space')
@@ -498,15 +498,15 @@ function is_shortcut(event, shortcut) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && event.shiftKey == shortcut.includes('shift') && (event.ctrlKey && !global_is_mac && !event.metaKey || event.metaKey && global_is_mac && !event.ctrlKey) == shortcut.includes('ctrl') && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt')
+    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey && !global_is_mac && !event.metaKey || event.metaKey && global_is_mac && !event.ctrlKey) == shortcut.includes('ctrl') && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt'))
 }
 
 
-function add_shortcut(elem, shortcut) {
+function add_shortcut(elem, shortcut, ignore_mod) {
     if (shortcut) {
         elem.ariaKeyShortcuts = shortcut.replace(/ ?[+-] ?(?!$)/g, '+').replace(/Ctrl/i, global_is_mac ? 'Meta' : 'Control').replace(/ $/, 'Space').replace(/\+$/, 'plus')
         addEventListener('keydown', event => {
-            if (is_shortcut(event, shortcut)) {
+            if (is_shortcut(event, shortcut, ignore_mod)) {
                 event.preventDefault()
                 elem.click()
             }

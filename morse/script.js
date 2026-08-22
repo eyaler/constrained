@@ -248,6 +248,11 @@ function change_output_and_selection() {
     }
 }
 
+checkboxes.addEventListener('keyup', event => {
+    if (event.key == 'Enter')
+        event.target.click()
+})
+
 checkboxes.addEventListener('change', event => {
     if (event.target == remember)
         if (remember.checked)
@@ -850,7 +855,7 @@ async function suggest(rewrite, override_cache) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     overlay.close()
     if (ae == output)
-        output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
+        output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Do this after dialog close due to avoid Chrome issue: https://issues.chromium.org/issues/549893462
     robot.classList.remove('thinking')
     cancel = false
 }

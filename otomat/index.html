@@ -32,7 +32,7 @@
         <div class="sliders">
             <label>
                 <span role="button" onclick="lang_slider.value = 0; reset = true">English</span>
-                <input type="range" id="lang_slider" max="1" value="1" autocomplete="off" oninput="hard_prev_time = performance.now()">
+                <input type="range" id="lang_slider" max="1" value="1" autocomplete="off" onkeydown="if (['Enter', ' '].includes(event.key)) event.preventDefault()" onkeyup="if (['Enter', ' '].includes(event.key)) {value = (max || 100) - value; reset = true}" oninput="hard_prev_time = performance.now()">
                 <span role="button" onclick="lang_slider.value = lang_slider.max || 100; reset = true">Hebrew</span>
             </label>
             <label for="size_slider">
@@ -55,11 +55,11 @@
                 </div>
                 <span class="checkboxes">
                     <label>
-                        <input id="glitch_checkbox" type="checkbox" autocomplete="off">
+                        <input id="glitch_checkbox" type="checkbox" autocomplete="off" onkeyup="if (event.key == 'Enter') click()">
                         <span>Glitch</span>
                     </label>
                     <label>
-                        <input id="restarts_checkbox" type="checkbox" autocomplete="off">
+                        <input id="restarts_checkbox" type="checkbox" autocomplete="off" onkeyup="if (event.key == 'Enter') click()">
                         <span>Restarts</span>
                     </label>
                 </span>

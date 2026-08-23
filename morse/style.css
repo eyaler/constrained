@@ -228,28 +228,28 @@ span.thinking {
     width: 9ch;
 }
 
-#about #quadrivium {
+#about #quad {
     border: none;
     margin-inline: auto;
 }
 
-#about #quadrivium th {
+#about #quad th {
     font-weight: normal;
     unicode-bidi: plaintext;
 }
 
-#about #quadrivium th:empty {
+#about #quad th:empty {
     border: none;
 }
 
-#about #quadrivium td {
+#about #quad td {
     width: 8.5em;
 }
 
-#about #quadrivium :is(td, p) {
+#about #quad :is(td, p) {
     text-align: center;
 }
 
-#about #quadrivium [rowspan] > div {
+#about #quad [rowspan] > div {
     writing-mode: sideways-lr;
 }

@@ -63,7 +63,7 @@ const pages = {
     "psuko/": {title: "הפסוקים הפופולריים בתנ\"ך", alt: "Most popular Bible verses", kw: ["biblical", "computational", "data available"]},
     "backscrabble/": {title: "שֶשבֶּץ נא", alt: "Backscrabble", kw: ["combinatorial", "computational", "new constraint"], with: "yaeltsabari"},
     "tarefet": {title: "טַרֶפֶת אותיות", alt: "Tarefet (anagram game)", kw: ["interactive"], with: "yaeltsabari"},
-    "soc": {title: "רצף של דאגה", alt: "Sequence of concern", kw: ["cipher", "poem"], skip: true},
+    "soc": {title: "רצף של דאגה", alt: "Sequence of concern", kw: ["cipher", "poem"]},
     "morse/": {title: "עַלִּיזָה בַּתָּא – שִׁירִים מִן הַשְּׁבִי", alt: "Alice in crypts – ballads midst captivity", kw: ["cipher", "computational", "generative", "interactive", "live code", "new constraint", "poem", "tool"], wip: true, skip: true},
     "nekuda": {title: "נקודה.", alt: "Nekuda. (dot)"},
     "hok/": {title: "שערי חוק", alt: "Shaare Hok"},
@@ -499,7 +499,7 @@ function is_shortcut(event, shortcut, ignore_mod) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey && !global_is_mac && !event.metaKey || event.metaKey && global_is_mac && !event.ctrlKey) == shortcut.includes('ctrl') && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt'))
+    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey != global_is_mac && event.metaKey == global_is_mac) == shortcut.includes('ctrl') && (event.altKey || event.getModifierState?.('AltGraph')) == shortcut.includes('alt'))
 }
 
 

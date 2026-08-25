@@ -234,12 +234,14 @@
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', event => {
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
-                if (event.ctrlKey && global_is_mac || event.metaKey || is_alt && !global_is_mac)
+                if ((global_is_mac ? event.ctrlKey : is_alt) || event.metaKey)
                     return
                 const is_mod = event.ctrlKey || is_alt
                 if (['Enter', 'ArrowDown', 'ArrowUp'].includes(event.key) && !is_mod
                     || (event.key == 'ArrowLeft' || event.key == ' ' && !is_mod && i < inputs.length - 1 && elem.value.includes(' ')) && elem.selectionStart == elem.value.length
                     || (event.key == 'ArrowRight' || event.key == 'Backspace' && i) && !elem.selectionEnd) {
+                    if (!is_mod)
+                        event.preventDefault()
                     let step = 1
                     if (['ArrowUp', 'ArrowRight', 'Backspace'].includes(event.key))
                         step = -1
@@ -249,8 +251,6 @@
                         line.selectionEnd = 0
                     else if (['ArrowRight', 'Backspace'].includes(event.key))
                         line.selectionStart = line.value.length
-                    if (!is_mod)
-                        event.preventDefault()
                 }
             })
             elem.addEventListener('input', async () => {

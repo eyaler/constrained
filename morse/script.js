@@ -189,7 +189,7 @@ const reverse_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
-let model, tokenizer, cancel
+let model, tokenizer, abort
 
 function to_middle(text) {
     return text.replace(/ך/g, 'כ').replace(/ם/g, 'מ').replace(/ן/g, 'נ').replace(/ף/g, 'פ').replace(/ץ/g, 'צ')
@@ -232,7 +232,7 @@ function update_output(text, push=true) {
     } catch {}
 }
 
-addEventListener('pagehide', () => update_output(null, false))
+addEventListener('pagehide', () => update_output(null, false))  // Note: does not save on page reload
 
 main.addEventListener('change', event => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
 
@@ -468,7 +468,7 @@ output.addEventListener('change', () => {
 })
 
 output.addEventListener('keydown', event => {
-    if ((event.key == 'Enter' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)
+    if ((event.key == 'Enter' && event.ctrlKey != is_mac && event.metaKey == is_mac
         || event.key == 'Tab' && event.shiftKey && !event.ctrlKey && !event.metaKey)
         && !event.altKey && !event.getModifierState?.('AltGraph'))
         output.dispatchEvent(new Event('change'))
@@ -582,11 +582,11 @@ async function load_model(config, override_cache) {
             await model?.dispose()
             tokenizer = model = null
         }
-        if (!tokenizer && !cancel) {
+        if (!tokenizer && !abort) {
             tokenizer = await AutoTokenizer.from_pretrained(config.id)
             tokenizer._tokenizer.added_tokens.find(t => t.content == tokenizer.mask_token).lstrip = config.mask_lstrip
         }
-        if (!model && !cancel)
+        if (!model && !abort)
             model = await AutoModel.from_pretrained(config.id, {device: config.device, dtype: config.dtype})
         if (tokenizer && model) {
             console.log(config)
@@ -634,7 +634,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
     let best_completed_word, logits
 
     try {
-        while (!cancel) {
+        while (!abort) {
             await update_main_thread()
             ;({logits} = await model(tokens))
             const data = logits.data
@@ -771,7 +771,7 @@ async function optimize_phrase(words) {
     const all_tokens = {}
 
     for (const char of new Set(opt_words.map(x => x[0]))) {
-        if (cancel)
+        if (abort)
             break
         all_tokens[char] = {}
         const char_words = get_words(char)
@@ -790,7 +790,7 @@ async function optimize_phrase(words) {
         opt_words.sort(([a], [b]) => proto_selects[a].length - proto_selects[b].length)
 
     for (const [char, w, i] of opt_words)
-        if (cancel)
+        if (abort)
             break
         else if (Object.keys(all_tokens[char]).length)
             out_words[i] = await optimize_word(out_words, i, all_tokens[char])
@@ -833,7 +833,7 @@ async function suggest(rewrite, override_cache) {
             const indices = []
             for (const div of divs) {
                 for (let i = 0; i < div.childElementCount; i++) {
-                    if (cancel)
+                    if (abort)
                         break
                     const select = div.children[i]
                     if (select.name in morse && select.length) {
@@ -843,12 +843,12 @@ async function suggest(rewrite, override_cache) {
                     } else
                         await suggest_phrase(selects, indices, all, rewrite)
                 }
-                if (cancel)
+                if (abort)
                     break
                 await suggest_phrase(selects, indices, all, rewrite)
             }
             change_output_and_selection()
-            if (!cancel)
+            if (!abort)
                 measure(rewrite ? 'rewrite' : 'suggest', start_time)
         }
     }
@@ -857,7 +857,7 @@ async function suggest(rewrite, override_cache) {
     if (ae == output)
         output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Do this after dialog close due to avoid Chrome issue: https://issues.chromium.org/issues/549893462
     robot.classList.remove('thinking')
-    cancel = false
+    abort = false
 }
 
 overlay.addEventListener('keydown', event => {  // For Safari: https://bugs.webkit.org/show_bug.cgi?id=284592
@@ -951,7 +951,7 @@ function add_word(line=main.lastChild, current, before) {
             })
 
             select.addEventListener('keydown', event => {
-                if (event.ctrlKey && is_mac || event.metaKey && !is_mac)
+                if (is_mac ? event.ctrlKey : event.metaKey)
                     return
                 const is_alt = event.altKey || event.getModifierState?.('AltGraph')
                 const line = word.parentElement
@@ -1002,7 +1002,7 @@ function add_word(line=main.lastChild, current, before) {
 
     input.addEventListener('keydown', event => {
         const is_alt = event.altKey || event.getModifierState?.('AltGraph')
-        if (event.ctrlKey && is_mac || !is_mac && (event.metaKey || is_alt))
+        if (is_mac ? event.ctrlKey : event.metaKey || is_alt)
             return
         const is_ctrl = event.ctrlKey || event.metaKey
         const is_mod = is_ctrl || is_alt
@@ -1029,6 +1029,8 @@ function add_word(line=main.lastChild, current, before) {
             || (event.key == 'ArrowLeft' && input.selectionStart == input.value.length
             || ['ArrowRight', 'Backspace'].includes(event.key) && !input.selectionEnd
             || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) && !event.metaKey) {
+            if (!is_mod)
+                event.preventDefault()
             let elem
             if (event.key == 'Delete' || event.key == 'Backspace' && !word.previousElementSibling && !line.previousElementSibling && (word.nextElementSibling || line.nextElementSibling) && !input.value.trim()) {
                 is_del = true
@@ -1100,8 +1102,6 @@ function add_word(line=main.lastChild, current, before) {
                 else if (['ArrowRight', 'Backspace'].includes(event.key))
                     document.activeElement.selectionStart = document.activeElement.value.length
             }
-            if (!is_mod)
-                event.preventDefault()
         }
     })
 
@@ -1132,7 +1132,7 @@ addEventListener('keydown', event => {
     if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && elem.selectionStart != elem.selectionEnd) {  // Remove selection
         const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
         elem.setSelectionRange(caret, caret)
-    } else if (event.key == ' ' && (event.ctrlKey && !is_mac || event.metaKey && is_mac)) {
+    } else if (event.key == ' ' && event.ctrlKey != is_mac && event.metaKey == is_mac) {
         event.preventDefault()
         let caret
         if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {

@@ -221,7 +221,7 @@
                 const url = gem.find(x => gem2.includes(x)).toString().replace(/(.)(.)$/, '$2$1')
                 const a = make_link(url + '.html', 'עמוד ' + url)
                 p.innerHTML = `השער נפתח ואת עוברת דרכו. עברי ל${a.outerHTML}.`
-                a.focus()
+                setTimeout(() => a.focus(), 2000)
             } else
                 requestAnimationFrame(tick)
         }

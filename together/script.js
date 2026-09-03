@@ -186,7 +186,7 @@ function change_word(event_or_word) {
     if (elem.dataset.prev_text)
       save_prev_texts[elem.id] = elem.dataset.prev_text
   })
-  me.innerHTML = [...word].map((c, i) => `<div id="${c}"${c in save_texts ? ` data-text="${save_texts[c]}"` : ''}${
+  me.innerHTML = Array.from(word, (c, i) => `<div id="${c}"${c in save_texts ? ` data-text="${save_texts[c]}"` : ''}${
     c in save_prev_texts ? ` data-prev_text="${save_prev_texts[c]}"` : ''}><div><div>${
     i == word.length - 1 ? c.replace('כ', 'ך').replace('מ', 'ם').replace('נ', 'ן').replace('פ', 'ף').replace('צ', 'ץ') : c}</div></div></div>`).join('')
 }

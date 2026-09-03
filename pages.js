@@ -177,7 +177,7 @@ const collator = Intl.Collator(document.documentElement.lang, {numeric: true})
 
 
 function reorder(list_of_strings, lang='', reverse_issues=default_reverse_issues_kw, labels=kw_labels) {
-    return [...new Set(list_of_strings)].map(String).sort((a, b) => {
+    return Array.from(new Set(list_of_strings), String).sort((a, b) => {
         const a_is_issue = /^\d+$/.test(a)
         const b_is_issue = /^\d+$/.test(b)
         if (!lang) {

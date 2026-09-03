@@ -256,7 +256,7 @@
             elem.addEventListener('input', async () => {
                 if (!wordlist)
                     wordlist = (await (await fetch('words.txt')).text()).split(/\r?\n/)
-                const lines = [...inputs].map(e => e.value)
+                const lines = Array.from(inputs, e => e.value)
                 const a = lines.slice(0, 4).join(' ')
                 const b = lines.slice(4).join(' ')
                 words = (a + ' ' + b).replace(/[\s\p{Pd}]+/gu, ' ').replace(/[\p{M}\p{P}]/gu, '').split(' ')
@@ -270,7 +270,7 @@
 
         function bio(s) {
             const abc = 'אבגדהוזחטיכלמנסעפצקרשת'
-            const comp = Object.fromEntries([...abc].map((c, i) => [c, abc[abc.length - 1 - i]]))
+            const comp = Object.fromEntries(Array.from(abc, (c, i) => [c, abc[abc.length - 1 - i]]))
             const n = s.length
             for (let i = 0; i < n / 2 | 0; i++)
                 if (s[i] != comp[s[n - 1 - i]])

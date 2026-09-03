@@ -8,9 +8,8 @@ const rare_count = 700
 const medium_count = 2000
 const limit = 0
 
-const possessive_suffixes = ['הּ', 'הָ', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
-const prepositions1 = new Set(['אַחֲרַיִךְ', 'אִתָּהּ', 'אִתְּךָ', 'אִתָּם', 'אִתָּן', 'בְּגִינָהּ', 'בִּגְלָלָהּ', 'בִּגְלָלְךָ', 'בָּהּ', 'בְּךָ', 'בִּשְׁבִילָהּ', 'בִּשְׁבִילְךָ', 'הִנָּהּ', 'הִנְּךָ', 'כְּלַפַּיִךְ', 'לְגַבַּיִךְ', 'לָהּ', 'לְךָ', 'לְמַעֲנָהּ', 'לְמַעַנְךָ', 'לִקְרָאתָהּ', 'לִקְרָאתְךָ', 'לִקְרָאתָם', 'לִקְרָאתָן', 'מִמְּךָ', 'עָלַיִךְ', 'עִמָּדָהּ', 'עִמָּדְךָ', 'עִמָּהּ', 'עִמְּךָ'])
-const prepositions2 = new Set(['בִּלְעָדַיִךְ', 'בַּעֲדָהּ', 'בַּעַדְךָ', 'דַּעְתָּהּ', 'דַּעְתְּךָ', 'יָדָהּ', 'יָדַיִךְ', 'יָדְךָ', 'לְבַדָּהּ', 'לְבַדְּךָ', 'סְבִיבָהּ', 'סְבִיבְךָ', 'עַצְמָהּ', 'עַצְמְךָ', 'פִּיהָ', 'פִּיךָ', 'פָּנַיִךְ', 'צִדָּהּ', 'צִדְּךָ', 'שְׁמָהּ', 'שִׁמְךָ', 'תַּחְתַּיִךְ', 'תַּחְתָּם' ,'תַּחְתָּן'])
+const possessive_suffixes = ['הּ', 'הָ', 'יו', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
+const prepositions = new Set('אַחֲרָיו,אַחֲרַיִךְ,אִתָּהּ,אִתְּךָ,אִתָּם,אִתָּן,בְּגִינָהּ,בִּגְלָלָהּ,בִּגְלָלְךָ,בָּהּ,בְּיָדָהּ,בְּיָדָיו,בְּיָדַיִךְ,בְּיָדְךָ,בְּךָ,בִּלְעָדָיו,בִּלְעָדַיִךְ,בְּמַהֲלָכָהּ,בַּעֲדָהּ,בַּעַדְךָ,בְּפָנָיו,בְּפָנַיִךְ,בְּצִדָּהּ,בְּצִדְּךָ,בִּשְׁבִילָהּ,בִּשְׁבִילְךָ,בִּשְׁמָהּ,בְּשִׁמְךָ,דַּרְכָּהּ,דַּרְכְּךָ,הִנָּהּ,הִנְּךָ,כְּלַפָּיו,כְּלַפַּיִךְ,לְאַחֲרָיו,לְאַחֲרַיִךְ,לְגַבָּיו,לְגַבַּיִךְ,לָהּ,לְיָדָהּ,לְיָדָיו,לְיָדַיִךְ,לְיָדְךָ,לְךָ,לְמַעֲנָהּ,לְמַעַנְךָ,לְפִיהָ,לְפִיו,לְפִיךָ,לְפָנָיו,לְפָנַיִךְ,לְצִדָּהּ,לְצִדְּךָ,לִקְרָאתָהּ,לִקְרָאתְךָ,לִקְרָאתָם,לִקְרָאתָן,לִשְׁמָהּ,לְשִׁמְךָ,מִבְּחִינָתָהּ,מִבְּחִינָתְךָ,מִבְּחִינָתָם,מִבְּחִינָתָן,מִבִּלְעָדָיו,מִבִּלְעָדַיִךְ,מִבַּעֲדָהּ,מִבַּעַדְךָ,מִטַּעְמָהּ,מִטַּעֲמָהּ,מִטַּעְמְךָ,מִטַּעַמְךָ,מִיָּדָהּ,מִיָּדָיו,מִיָּדַיִךְ,מִיָּדְךָ,מִלְּבַדָּהּ,מִלְּבַדְּךָ,מִלְּפָנָיו,מִלְּפָנַיִךְ,מִמְּךָ,מִסְּבִיבָהּ,מִסְּבִיבְךָ,מִפִּיהָ,מִפִּיו,מִפִּיךָ,מִפָּנָיו,מִפָּנַיִךְ,מִצִּדָּהּ,מִצִּדְּךָ,מִתַּחְתָּיו,מִתַּחְתַּיִךְ,מִתַּחְתָּם,מִתַּחְתָּן,סְבִיבָהּ,עַל גַּבָּיו,עַל גַּבַּיִךְ,עַל יָדָהּ,עַל יָדָיו,עַל יָדַיִךְ,עַל יָדְךָ,עַל פִּיהָ,עַל פִּיו,עַל פִּיךָ,עַל פָּנָיו,עַל שְׁמָהּ,עַל שִׁמְךָ,עָלָיו,עָלַיִךְ,עִמָּדָהּ,עִמָּדְךָ,עִמָּהּ,עִמְּךָ,תַּחְתָּיו,תַּחְתַּיִךְ,תַּחְתָּם,תַּחְתָּן'.split(','))
 
 const model_config = {
     "id": "eyaler/HalleluBERT_large-ONNX",
@@ -234,14 +233,14 @@ function update_output(text, push=true) {
     try {
         if (typeof text == 'string')
             output.dataset.prev_value = output.value = text
-        else if (!push)
-            history.replaceState(history.state, '', '#' + make_hash())
-        if (push) {
+        if (typeof text != 'string' || push) {
             const hash = make_hash()
-            if (hash != last_hash) {
-                last_hash = hash
-                history.pushState(history.state, '', '#' + hash)
-            }
+            if (hash != last_hash)
+                if (push) {
+                    last_hash = hash
+                    history.pushState(history.state, '', '#' + hash)
+                } else
+                    history.replaceState(history.state, '', '#' + hash)
         }
         document.querySelector('nav-wrapper').shadowRoot.querySelector('.trans').hash = location.hash
     } catch {}
@@ -438,6 +437,10 @@ function find_add_select_option(select, word_or_select, external) {
         select.dispatchEvent(new Event('change', {bubbles: external}))
 }
 
+function get_words_for_touched() {
+    return [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
+}
+
 function select_word(select, word) {
     return find_add_select_option(select, word, true)
 }
@@ -445,31 +448,36 @@ function select_word(select, word) {
 function paste_output(text='', focus=true, push=true) {
     const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
-    const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
-                                                                .map(div => Array.from(div.children, select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
+    const prev_words = get_words_for_touched().map(div => [...div.children].filter(select => select.length > 1)
+                                                                           .map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
+    const ae = document.activeElement
+
     const norm = norm_text(text)
-    const ae1 = document.activeElement
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
                          .replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '')
                          .replace(morse_regex, m => rev_morse[m] && !dont_show.includes(rev_morse[m]) ? rev_morse[m] : joker)
                          .replace(non_punct_regex, '').replace(sep_regex, ' ')
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
+
     const output_words = norm.replace(non_text_regex, '').split(split_output_regex).map(to_makaf)
+    const words_for_touched = get_words_for_touched()
     main.querySelectorAll('select').forEach((select, i) => {
         find_add_select_option(select, output_words[i])
-        const prev_select = prev_words[[...main.querySelectorAll('.word > div')].indexOf(select.parentElement)]?.[[...select.parentElement.children].indexOf(select)]
-        if (prev_select?.untouched && prev_select.name == select.name && prev_select.value == select.value)
-            select.classList.add('untouched')
+        if (select.length > 1) {
+            const parent = select.parentElement
+            const prev_select = prev_words[words_for_touched.indexOf(parent)]?.[[...parent.children].filter(s => s.length > 1).indexOf(select)]
+            if (prev_select?.untouched && prev_select.name == select.name && prev_select.value == select.value)
+                select.classList.add('untouched')  // Note this is a simplistic implementation NOT covering all output edits
+        }
     })
+
     update_output(text, push)
-    const ae2 = document.activeElement
-    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    const ae3 = document.activeElement
-    if (focus || ae2 != ae1) {
+    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steals the focus
+    if (focus) {
         const first_word = main.querySelector('.word')
         ;(first_word.firstChild.value.trim() ? add_word() : first_word).firstChild.focus()
-    } else if (ae3 != ae2)  // In Safari and iOS selection steals the focus
-        ae2.focus()
+    } else if (document.activeElement != ae && ae.isConnected)
+        ae.focus()
     measure('paste_output+paste_input', start_time)
 }
 
@@ -1187,21 +1195,13 @@ function build_selects(focus=false) {
     const start_time = performance.now()
     ready = false
     rebuild = true
-    const ae = document.activeElement
-    const {selectionStart, selectionEnd, selectionDirection} = ae
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
-    prepositions2.forEach(word => {
-        if (!word_types[word])
-            word_types[word] = 1
-    })
-
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
 
     function filter_possessive(words) {
         return words.filter(word => word_types[word] != 1 || nonfinal_space_makaf_regex.test(word)
-                            || prepositions1.has(word) || prepositions2.has(word)
-                            || !possessive_suffixes.some(suffix => word.endsWith(suffix)))
+                            || prepositions.has(word) || !possessive_suffixes.some(suffix => word.endsWith(suffix)))
     }
 
     let min_count = Infinity
@@ -1294,12 +1294,24 @@ function build_selects(focus=false) {
             select.style.backgroundColor = medium_color
     })
 
+    let ae = document.activeElement
+    const value = ae.value
+    const {selectionStart, selectionEnd, selectionDirection} = ae
+    const is_main = main.contains(ae)
+    const index = is_main ? [...main.querySelectorAll(ae.tagName)].indexOf(ae) : null
     ready = true
-    paste_hash(false, focus)
-    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
-        ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    rebuild = false
     measure('build_selects', start_time)
+    paste_hash(false, focus)
+    if (!focus && (ae == output || is_main)) {
+        if (is_main)
+            ae = main.querySelectorAll(ae.tagName)[index]
+        if (ae.value != value)
+            ae.value = value
+        ae.focus()
+        ae.setSelectionRange?.(selectionStart, selectionEnd, selectionDirection)
+    }
+    rebuild = false
+    measure('build_selects+paste_hash', start_time)
 }
 
 const global_start_time = performance.now()

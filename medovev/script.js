@@ -38,7 +38,7 @@ function check_outer(text) {
 }
 
 const abc = 'abcdefghijklm' + 'אבגדהוזחטיכ  למנסעפצקרשת' + 'nopqrstuvwxyz'
-const comp = Object.fromEntries([...abc].map((c, i) => [c, abc[abc.length - 1 - i]]))
+const comp = Object.fromEntries(Array.from(abc, (c, i) => [c, abc[abc.length - 1 - i]]))
 
 function check_bio(text) {
     const n = text.length

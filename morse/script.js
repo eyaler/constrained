@@ -84,15 +84,29 @@ const hirik_regex = RegExp(hirik, 'g')
 const a_vowel_regex = RegExp(`[${a_vowel}]`, 'g')
 const nikud_regex = RegExp(`[${good_nikud}]`)
 const allowed_nikud_regex = RegExp(`[${allowed_nikud}]`, 'g')
-const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${good_nikud}${shva}][${dots}]*){2}`)
-const wrong_order_nikud_regex = RegExp(`([${good_nikud}])([${dots}]*)`, 'g')
+
+const bad_nikud_regex = RegExp(`[${bad_nikud}]|([${dots}]*[${good_nikud}${shva}]){2}`)
+const wrong_order_nikud_regex = RegExp(`([${good_nikud}])([${dots}]+)`, 'g')
 const wrong_order_dots_regex = RegExp(`([${shindots}])(${dagesh})`, 'g')
 
 const conj_mwe_regex = RegExp(`^${vav}${shva}(\\p{L}\\p{M}*){2} \\p{L}`, 'u')
 const skip_article_regex = RegExp(`${space_makaf_class}|^[החע]` + kamats)
 const hataf_patah_regex = RegExp('^[אהחע]' + hataf_patah)
 const initial_shva_regex = RegExp(`^.[${dots}]?${shva}`)
-const shva_na_regex = RegExp(`(?:^|${space_makaf_class})(?:${ylmnr_shva}|ת${dagesh}?${shva}[דטצ])|([א-יל-עצ-רת])${dagesh}?${shva}\\1|([כפ]${dagesh})${shva}\\2|([כפ])${shva}\\3(?!${dagesh})|ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1|ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2|${shva}${alefbet_class}[${dots}]?${shva}ךָ|${shva}${ylmnr_shva}${alefbet_class}(?!$[{dots}]*(${shva}|${space_makaf_class}|$))| ${vav}${shva}(\\p{L}\\p{M}*){2}`, 'u')
+const initial_dagesh_regex = RegExp(`(?<=^.)${dagesh}`)
+
+const shva_na_patterns = [
+    `(?:^|${space_makaf_class})(?:${ylmnr_shva}|ת${dagesh}?${shva}[דטצ])`,
+    `([א-יל-עצ-רת])${dagesh}?${shva}\\1`,
+    `([כפ]${dagesh})${shva}\\2`,
+    `([כפ])${shva}\\3(?!${dagesh})`,
+    `ש${dagesh}?\u05c1${dagesh}?${shva}ש${dagesh}?\u05c1`,
+    `ש${dagesh}?\u05c2${dagesh}?${shva}ש${dagesh}?\u05c2`,
+    `${shva}${alefbet_class}[${dots}]?${shva}ךָ`,
+    `${shva}${ylmnr_shva}${alefbet_class}(?!$[{dots}]*(${shva}|${space_makaf_class}|$))`,
+    ` ${vav}${shva}(\\p{L}\\p{M}*){2}`,
+]
+const shva_na_regex = RegExp(shva_na_patterns.join('|'), 'u')
 
 const morse_regex = RegExp(`[${dit_dah}]+`, 'g')
 const non_morse_regex = RegExp(`[^${dit_dah}]`)
@@ -171,10 +185,11 @@ const morse = {
     '8': '---··',
     '9': '----·',
     '0': '-----',
+    'þ': '·--··',
     '?': '··--··',
 }
 
-const dont_show = 'äöšü'
+const dont_show = 'äöšüþ'
 
 const is_ios = navigator.platform.startsWith('iP')
 const is_mac = navigator.platform.startsWith('Mac') || is_ios
@@ -185,7 +200,7 @@ if (is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
-const reverse_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v]) => [v, k]))
+const rev_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v]) => [v, k]))
 const proto_selects = {}
 let morse_words_types
 let last_hash, legacy_select, ready, rebuild, recent_input
@@ -196,11 +211,11 @@ function to_middle(text) {
 }
 
 function norm_chars(text) {
-    return [...to_middle(text.toLowerCase())].map(char => reverse_morse[morse[char]] || char).filter(char => proto_selects[char]?.length)
+    return Array.from(to_middle(text.toLowerCase()), char => rev_morse[morse[char]] || char).filter(char => proto_selects[char]?.length)
 }
 
 function join_lines(word_func, sep='') {
-    return [...main.querySelectorAll('.line')].map(line => [...line.children].map(word_func).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
+    return Array.from(main.querySelectorAll('.line'), line => Array.from(line.children, word_func).filter(Boolean).join(sep + ' ')).filter(Boolean).join('\n')
 }
 
 function join_inputs() {
@@ -234,7 +249,7 @@ function update_output(text, push=true) {
 
 addEventListener('pagehide', () => update_output(null, false))  // Note: does not save on page reload
 
-main.addEventListener('change', event => update_output(join_lines(word => [...word.lastChild.children].map(select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
+main.addEventListener('change', event => update_output(join_lines(word => Array.from(word.lastChild.children, select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
 
 function change_output_and_selection() {
     const {selectionStart, selectionEnd, selectionDirection} = output
@@ -319,7 +334,9 @@ function paste_input(text='', focus=true, push=true, word=main) {
     const start_time = performance.now()
     if (!main.querySelector('.word'))
         return
+    const has_whitespace = /\s/.test(text)
     text = norm_text(text)
+
     const select = word.closest('select')
     if (select) {
         if (!alefbet_regex.test(text))
@@ -348,7 +365,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         return
     }
 
-    if (word.tagName == 'INPUT' && !/\s/.test(text))
+    if (word.tagName == 'INPUT' && !has_whitespace)
         return
     while (!word.classList.contains('word'))
         word = word.querySelector('.word') || word.parentElement
@@ -381,7 +398,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
 addEventListener('paste', event => {
     /* Augment regular paste with:
        1. On select element - Search for value with partial diacritics matching fallback (doesn't work for open legacy select elements in Chrome)
-       2. On input element when multiple words in clipboard - Replace element and everything afterwards with pasted words
+       2. On input element when clipboard text contains whitespace (e.g. multiple words) - Replace element and everything afterwards with pasted words
        3. Otherwise when not on output and input is empty - Paste as input
     */
     const ae = document.activeElement
@@ -429,12 +446,12 @@ function paste_output(text='', focus=true, push=true) {
     const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
-                                                                .map(div => [...div.children].map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
+                                                                .map(div => Array.from(div.children, select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
     const norm = norm_text(text)
     const ae1 = document.activeElement
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
                          .replace(morse_regex, '').replace(hirik_regex, dit).replace(a_vowel_regex, dah).replace(non_code_regex, '')
-                         .replace(morse_regex, m => reverse_morse[m] && !dont_show.includes(reverse_morse[m]) ? reverse_morse[m] : joker)
+                         .replace(morse_regex, m => rev_morse[m] && !dont_show.includes(rev_morse[m]) ? rev_morse[m] : joker)
                          .replace(non_punct_regex, '').replace(sep_regex, ' ')
                          .replace(final_regex, m => String.fromCharCode(m.charCodeAt() - 1)), false, false)
     const output_words = norm.replace(non_text_regex, '').split(split_output_regex).map(to_makaf)
@@ -762,7 +779,7 @@ async function optimize_word(phrase_words, index, candidates_by_len) {
 }
 
 function get_words(char) {
-    return [...proto_selects[char]].map(select => select.value)
+    return Array.from(proto_selects[char], select => select.value)
 }
 
 async function optimize_phrase(words) {
@@ -883,7 +900,7 @@ if (!navigator.share) {
 }
 
 function transmit() {
-    alert([...join_inputs_norm()].map(c => morse[c] || c).join(' ').replaceAll(' \n ', '\n'))
+    alert(Array.from(join_inputs_norm(), c => morse[c] || c).join(' ').replaceAll(' \n ', '\n'))
 }
 
 function remove_word(input) {
@@ -926,7 +943,7 @@ function add_word(line=main.lastChild, current, before) {
         if (!rebuild && input.value == (input.dataset.prev_value ?? ''))
             return
         input.dataset.prev_value = input.value
-        const prev_chars = [...select_container.children].map(select => select.name)
+        const prev_chars = Array.from(select_container.children, select => select.name)
         const chars = norm_chars(input.value)
         const [head, tail, delta] = diff(chars, prev_chars)
         for (let i = 0; i < delta; i++)
@@ -962,7 +979,7 @@ function add_word(line=main.lastChild, current, before) {
                 } else if (!is_alt)
                     if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                         event.preventDefault()
-                        kbd_select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1)) % select.length])
+                        kbd_select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length])
                     } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                         event.preventDefault()
                         const all_selects = main.querySelectorAll('select')
@@ -1116,9 +1133,12 @@ function add_line(current) {
     return line
 }
 
-function save_words(morse_words) {
+function save_words() {
+    if (!ready)
+        return
+    const words = Object.entries(proto_selects).filter(([k, v]) => k in morse).flatMap(([_, v]) => Array.from(v.options, opt => opt.textContent)).sort((a, b) => a.replace(/['"]/g, '').localeCompare(b.replace(/['"]/g, ''), 'he') || a.localeCompare(b, 'he')).join('\n')
     const save = document.createElement('a')
-    save.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(Object.values(morse_words).map(words => words.filter(Boolean).join('\n')).filter(Boolean).join('\n'))
+    save.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(words)
     save.download = 'morse.txt'
     save.style.display = 'none'
     document.body.appendChild(save).click()
@@ -1146,7 +1166,7 @@ addEventListener('keydown', event => {
     }
 })
 
-function paste_hash(cached, focus=false) {
+function paste_hash(cached=true, focus=false) {
     last_hash = decodeURIComponent(location.hash.slice(1))
     if (ready)
         if (/^\t./.test(last_hash))
@@ -1188,7 +1208,7 @@ function build_selects(focus=false) {
     let max_count = 0
     let total_count = 0
 
-    Object.entries(reverse_morse).forEach(([code, char]) => {
+    Object.entries(rev_morse).forEach(([code, char]) => {
         if (!morse_words[char])
             morse_words[char] = []
         if (!allow_possessive.checked)
@@ -1196,8 +1216,11 @@ function build_selects(focus=false) {
 
         const add_bvkl = [...bet.slice(0, add_prep_b.checked) + vav.slice(0, add_prep_v.checked) + kaf.slice(0, add_prep_k.checked) + lamed.slice(0, add_prep_l.checked)]
         const add_bhkl = [...bet.slice(0, add_article_b.checked) + he.slice(0, add_article_h.checked) + kaf.slice(0, add_article_k.checked) + lamed.slice(0, add_article_l.checked)]
-        const tail_char = reverse_morse[code.slice(1)]
-        if (code.length > 1 && tail_char && (add_bvkl.length
+        const tail = code.slice(1)
+        const tail_char = rev_morse[tail]
+        if (tail && (!tail_char || !(tail_char in morse_words_types)))
+            console.warn(`Tail ${tail} missing for: ${char}`)
+        else if (code.length > 1 && (add_bvkl.length
            || code[0] == dah && add_bhkl.length
            || code[0] == dit && add_prep_m.checked)) {
             let words = Object.keys(morse_words_types[tail_char]).filter(word => !conj_mwe_regex.test(word))
@@ -1216,8 +1239,8 @@ function build_selects(focus=false) {
                     })))
                 else {
                     add_bvkl.forEach(prefix => morse_words[char] = morse_words[char].concat(words.filter(word => (prefix == vav && word[0] == yod || word_types[word]) && initial_shva_regex.test(word))
-                                                                       .map(word => add_dagesh(prefix, true) + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace('(?<=^.)' + dagesh, '')))))
-                    if (add_prep_m)
+                                                                       .map(word => add_dagesh(prefix, true) + hirik + (word[0] == yod ? word.replace(shva, '') : word.replace(initial_dagesh_regex, '')))))
+                    if (add_prep_m.checked)
                         morse_words[char] = morse_words[char].concat(words.filter(word => word_types[word] && !'אהחער'.includes(word[0])).map(word => mem + hirik + add_dagesh(word)))
                 }
                 morse_words[char] = [...new Set(morse_words[char])]
@@ -1272,11 +1295,11 @@ function build_selects(focus=false) {
     })
 
     ready = true
-    measure('build_selects', start_time)
     paste_hash(false, focus)
     if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
         ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     rebuild = false
+    measure('build_selects', start_time)
 }
 
 const global_start_time = performance.now()
@@ -1287,5 +1310,4 @@ fetch('morse.json').then(response => response.json()).then(json => {
         checkboxes.querySelectorAll('input').forEach(input => input.checked = localStorage['morse_' + input.id] == 'true')
     build_selects(true)
     measure('Startup', global_start_time)
-    //save_words(morse_words)
 })

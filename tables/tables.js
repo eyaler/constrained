@@ -26,7 +26,7 @@ class Table {
                 if (this.table.querySelector('.sort'))
                     this.sort_table(sort_index, sort_order)
                 this.table.style.visibility = 'visible'
-                if (!id && [...this.table.querySelectorAll('[id]')].map(e => e.id).includes(location.hash.slice(1).toLowerCase()))
+                if (!id && Array.from(this.table.querySelectorAll('[id]'), e => e.id).includes(location.hash.slice(1).toLowerCase()))
                     id = location.hash.slice(1).toLowerCase()
                 if (id) {
                     const tr = document.getElementById(id)  // Do not use querySelector() as id may not be a valid CSS identifier
@@ -79,7 +79,7 @@ class Table {
 
     restore_state() {  // Requires id's for table rows (can be set in table config). Only last sort column order is restored
         let state = {}
-        if ([...this.table.querySelectorAll('[id]')].map(e => e.id).includes(history.state?.id)) {
+        if (Array.from(this.table.querySelectorAll('[id]'), e => e.id).includes(history.state?.id)) {
             state = {...history.state}
             const new_state = {...state}
             delete new_state.id

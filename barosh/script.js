@@ -15,7 +15,7 @@ class Pasuk {
             .then(json => {
                 this.json = json
                 elem.style.fontSize = `calc(${parseFloat(getComputedStyle(elem).fontSize) * 100 / get_width(json.text + '\u2002'.repeat(json.max_spaces + 1), elem, 'px')}vw - .7px)`
-                elem.firstChild.innerHTML = [...json.text].map(c => `<span>${c}</span>`).join('<button aria-label="קרע"></button>')
+                elem.firstChild.innerHTML = Array.from(json.text, c => `<span>${c}</span>`).join('<button aria-label="קרע"></button>')
                 elem.querySelectorAll('button').forEach((e, i) => {e.classList.add('no_active'); e.onclick = () => this.resplit(i); e.onanimationstart = () => e.previousSibling.classList.add('before'); e.addEventListener('animationcancel', () => e.previousSibling.classList.remove('before')); e.onanimationend = () => {e.previousSibling.classList.remove('before'); e.click()}})  // Chrome does not support onanimationcancel. See: https://issues.chromium.org/issues/41404325
                 this.restart(true)
                 addEventListener('keydown', e => {if (is_shortcut(e, 'Backspace')) this.restart()})

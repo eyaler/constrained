@@ -446,7 +446,7 @@ function paste_output(text='', focus=true, push=true) {
     const start_time = performance.now()
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = [...main.querySelectorAll('.word > div')].filter(div => [...div.children].some(select => select.length > 1))
-                                                                .map(div => [...div.children].map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
+                                                                .map(div => Array.from(div.children, select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
     const norm = norm_text(text)
     const ae1 = document.activeElement
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)

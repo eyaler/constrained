@@ -201,7 +201,7 @@ if (is_ios)
 if (is_mac)
     [...buttons.children].forEach(button => {
         button.title = button.title.replace(/Alt|Ctrl(?=(\+Shift)?\+Space)/g, 'Opt').replaceAll('Ctrl', 'Cmd')
-        button.ariaKeyShortcuts = button.ariaKeyShortcuts.replaceAll(/Control(?=(\+Shift)?\+Space)/g, 'Alt').replace('Control', 'Meta')
+        button.ariaKeyShortcuts = button.ariaKeyShortcuts?.replaceAll(/Control(?=(\+Shift)?\+Space)/g, 'Alt').replace('Control', 'Meta')
     })
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))

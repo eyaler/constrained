@@ -450,7 +450,7 @@ function paste_output(text='', focus=true, push=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = get_words_for_touched().map(div => [...div.children].filter(select => select.length > 1)
                                                                            .map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
-    const ae1 = document.activeElement
+    const ae = document.activeElement
 
     const norm = norm_text(text)
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
@@ -472,14 +472,12 @@ function paste_output(text='', focus=true, push=true) {
     })
 
     update_output(text, push)
-    const ae2 = document.activeElement
-    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
-    const ae3 = document.activeElement
-    if (focus || ae2 != ae1) {
+    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steals the focus
+    if (focus || !ae.isConnected) {
         const first_word = main.querySelector('.word')
         ;(first_word.firstChild.value.trim() ? add_word() : first_word).firstChild.focus()
-    } else if (ae3 != ae2)  // In Safari and iOS selection steals the focus
-        ae2.focus()
+    } else if (document.activeElement != ae)
+        ae.focus()
     measure('paste_output+paste_input', start_time)
 }
 
@@ -1300,7 +1298,7 @@ function build_selects(focus=false) {
     ready = true
     measure('build_selects', start_time)
     paste_hash(false, focus)
-    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
+    if (!focus && ae.isConnected && ae.tagName == 'INPUT' && main.contains(ae))
         ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     rebuild = false
     measure('build_selects+paste_hash', start_time)

@@ -200,7 +200,7 @@ function get_all_keywords(lang='', reverse_issues=default_reverse_issues_kw, pag
     const entropy = Object.fromEntries(Object.entries(freq).map(([kw, f]) => [kw, -f * Math.log2(f)]))
     const maxent = Math.log2(len)
     const info = Object.fromEntries(Object.entries(entropy).map(([kw, e]) => [kw, e / maxent]))
-    return [ordered, Object.fromEntries(ordered.map(kw => [kw, {count: counts[kw], info: info[kw]}]))]  // Note that object keys parsing as integers will appear first an ascending order. See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
+    return [ordered, Object.fromEntries(ordered.map(kw => [kw, {count: counts[kw], info: info[kw]}]))]  // Note that object keys parsing as integers will appear first in ascending order. See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
 }
 
 

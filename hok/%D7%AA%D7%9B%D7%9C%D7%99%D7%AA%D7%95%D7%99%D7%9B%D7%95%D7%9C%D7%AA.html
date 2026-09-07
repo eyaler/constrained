@@ -233,7 +233,7 @@
 
         inputs.forEach((elem, i) => {
             elem.addEventListener('keydown', event => {
-                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
+                const is_alt = event.getModifierState?.('AltGraph') || event.altKey
                 if ((global_is_mac ? event.ctrlKey : is_alt) || event.metaKey)
                     return
                 const is_mod = event.ctrlKey || is_alt

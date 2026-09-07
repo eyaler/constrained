@@ -9,7 +9,7 @@ const medium_count = 2000
 const limit = 0
 
 const possessive_suffixes = ['הּ', 'הָ', 'יו', 'יִךְ', 'ךָ', 'תָם', 'תָן', 'תָּם', 'תָּן']
-const prepositions = new Set('אַחֲרָיו,אַחֲרַיִךְ,אִתָּהּ,אִתְּךָ,אִתָּם,אִתָּן,בְּגִינָהּ,בִּגְלָלָהּ,בִּגְלָלְךָ,בָּהּ,בְּיָדָהּ,בְּיָדָיו,בְּיָדַיִךְ,בְּיָדְךָ,בְּךָ,בִּלְעָדָיו,בִּלְעָדַיִךְ,בְּמַהֲלָכָהּ,בַּעֲדָהּ,בַּעַדְךָ,בְּפָנָיו,בְּפָנַיִךְ,בְּצִדָּהּ,בְּצִדְּךָ,בִּשְׁבִילָהּ,בִּשְׁבִילְךָ,בִּשְׁמָהּ,בְּשִׁמְךָ,דַּרְכָּהּ,דַּרְכְּךָ,הִנָּהּ,הִנְּךָ,כְּלַפָּיו,כְּלַפַּיִךְ,לְאַחֲרָיו,לְאַחֲרַיִךְ,לְגַבָּיו,לְגַבַּיִךְ,לָהּ,לְיָדָהּ,לְיָדָיו,לְיָדַיִךְ,לְיָדְךָ,לְךָ,לְמַעֲנָהּ,לְמַעַנְךָ,לְפִיהָ,לְפִיו,לְפִיךָ,לְפָנָיו,לְפָנַיִךְ,לְצִדָּהּ,לְצִדְּךָ,לִקְרָאתָהּ,לִקְרָאתְךָ,לִקְרָאתָם,לִקְרָאתָן,לִשְׁמָהּ,לְשִׁמְךָ,מִבְּחִינָתָהּ,מִבְּחִינָתְךָ,מִבְּחִינָתָם,מִבְּחִינָתָן,מִבִּלְעָדָיו,מִבִּלְעָדַיִךְ,מִבַּעֲדָהּ,מִבַּעַדְךָ,מִטַּעְמָהּ,מִטַּעֲמָהּ,מִטַּעְמְךָ,מִטַּעַמְךָ,מִיָּדָהּ,מִיָּדָיו,מִיָּדַיִךְ,מִיָּדְךָ,מִלְּבַדָּהּ,מִלְּבַדְּךָ,מִלְּפָנָיו,מִלְּפָנַיִךְ,מִמְּךָ,מִסְּבִיבָהּ,מִסְּבִיבְךָ,מִפִּיהָ,מִפִּיו,מִפִּיךָ,מִפָּנָיו,מִפָּנַיִךְ,מִצִּדָּהּ,מִצִּדְּךָ,מִתַּחְתָּיו,מִתַּחְתַּיִךְ,מִתַּחְתָּם,מִתַּחְתָּן,סְבִיבָהּ,עַל גַּבָּיו,עַל גַּבַּיִךְ,עַל יָדָהּ,עַל יָדָיו,עַל יָדַיִךְ,עַל יָדְךָ,עַל פִּיהָ,עַל פִּיו,עַל פִּיךָ,עַל פָּנָיו,עַל שְׁמָהּ,עַל שִׁמְךָ,עָלָיו,עָלַיִךְ,עִמָּדָהּ,עִמָּדְךָ,עִמָּהּ,עִמְּךָ,תַּחְתָּיו,תַּחְתַּיִךְ,תַּחְתָּם,תַּחְתָּן'.split(','))
+const prepositions = new Set('אַחֲרָיו,אַחֲרַיִךְ,אִתָּהּ,אִתְּךָ,אִתָּם,אִתָּן,בְּגִינָהּ,בִּגְלָלָהּ,בִּגְלָלְךָ,בָּהּ,בְּיָדָהּ,בְּיָדָיו,בְּיָדַיִךְ,בְּיָדְךָ,בְּךָ,בִּלְעָדָיו,בִּלְעָדַיִךְ,בְּמַהֲלָכָהּ,בַּעֲדָהּ,בַּעַדְךָ,בְּעַצְמָהּ,בְּעַצְמְךָ,בְּפָנָיו,בְּפָנַיִךְ,בְּצִדָּהּ,בְּצִדְּךָ,בִּשְׁבִילָהּ,בִּשְׁבִילְךָ,בִּשְׁמָהּ,בְּשִׁמְךָ,דַּרְכָּהּ,דַּרְכְּךָ,הִנָּהּ,הִנְּךָ,כְּלַפָּיו,כְּלַפַּיִךְ,לְאַחֲרָיו,לְאַחֲרַיִךְ,לְגַבָּיו,לְגַבַּיִךְ,לָהּ,לְיָדָהּ,לְיָדָיו,לְיָדַיִךְ,לְיָדְךָ,לְךָ,לְמַעֲנָהּ,לְמַעַנְךָ,לְעַצְמָהּ,לְעַצְמְךָ,לְפִיהָ,לְפִיו,לְפִיךָ,לְפָנָיו,לְפָנַיִךְ,לְצִדָּהּ,לְצִדְּךָ,לִקְרָאתָהּ,לִקְרָאתְךָ,לִקְרָאתָם,לִקְרָאתָן,לִשְׁמָהּ,לְשִׁמְךָ,מִבְּחִינָתָהּ,מִבְּחִינָתְךָ,מִבְּחִינָתָם,מִבְּחִינָתָן,מִבִּלְעָדָיו,מִבִּלְעָדַיִךְ,מִבַּעֲדָהּ,מִבַּעַדְךָ,מִטַּעְמָהּ,מִטַּעֲמָהּ,מִטַּעְמְךָ,מִטַּעַמְךָ,מִיָּדָהּ,מִיָּדָיו,מִיָּדַיִךְ,מִיָּדְךָ,מִלְּבַדָּהּ,מִלְּבַדְּךָ,מִלְּפָנָיו,מִלְּפָנַיִךְ,מִמְּךָ,מִסְּבִיבָהּ,מִסְּבִיבְךָ,מִפִּיהָ,מִפִּיו,מִפִּיךָ,מִפָּנָיו,מִפָּנַיִךְ,מִצִּדָּהּ,מִצִּדְּךָ,מִתַּחְתָּיו,מִתַּחְתַּיִךְ,מִתַּחְתָּם,מִתַּחְתָּן,סְבִיבָהּ,סְבִיבְךָ,עַל גַּבָּיו,עַל גַּבַּיִךְ,עַל יָדָהּ,עַל יָדָיו,עַל יָדַיִךְ,עַל יָדְךָ,עַל פִּיהָ,עַל פִּיו,עַל פִּיךָ,עַל פָּנָיו,עַל שְׁמָהּ,עַל שִׁמְךָ,עָלָיו,עָלַיִךְ,עִמָּדָהּ,עִמָּדְךָ,עִמָּהּ,עִמְּךָ,עַצְמָהּ,עַצְמְךָ,תַּחְתָּיו,תַּחְתַּיִךְ,תַּחְתָּם,תַּחְתָּן'.split(','))
 
 const model_config = {
     "id": "eyaler/HalleluBERT_large-ONNX",
@@ -233,22 +233,22 @@ function update_output(text, push=true) {
     try {
         if (typeof text == 'string')
             output.dataset.prev_value = output.value = text
-        if (typeof text != 'string' || push) {
+        else if (!push)
+            history.replaceState(history.state, '', '#' + make_hash())
+        if (push) {
             const hash = make_hash()
-            if (hash != last_hash)
-                if (push) {
-                    last_hash = hash
-                    history.pushState(history.state, '', '#' + hash)
-                } else
-                    history.replaceState(history.state, '', '#' + hash)
+            if (hash != last_hash) {
+                last_hash = hash
+                history.pushState(history.state, '', '#' + hash)
+            }
         }
         document.querySelector('nav-wrapper').shadowRoot.querySelector('.trans').hash = location.hash
     } catch {}
 }
 
-addEventListener('pagehide', () => update_output(null, false))  // Note: does not save on page reload
-
 main.addEventListener('change', event => update_output(join_lines(word => Array.from(word.lastChild.children, select => select.value).join(' '), '\t').replace(fix_space_regex, '').replaceAll('\t', default_sep), !event.detail?.skip_push))
+
+addEventListener('pagehide', () => update_output(null, false))
 
 function change_output_and_selection() {
     const {selectionStart, selectionEnd, selectionDirection} = output
@@ -450,7 +450,7 @@ function paste_output(text='', focus=true, push=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = get_words_for_touched().map(div => [...div.children].filter(select => select.length > 1)
                                                                            .map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
-    const ae = document.activeElement
+    const ae1 = document.activeElement
 
     const norm = norm_text(text)
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
@@ -472,12 +472,14 @@ function paste_output(text='', focus=true, push=true) {
     })
 
     update_output(text, push)
-    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steals the focus
-    if (focus) {
+    const ae2 = document.activeElement
+    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
+    const ae3 = document.activeElement
+    if (focus || ae2 != ae1) {
         const first_word = main.querySelector('.word')
         ;(first_word.firstChild.value.trim() ? add_word() : first_word).firstChild.focus()
-    } else if (document.activeElement != ae && ae.isConnected)
-        ae.focus()
+    } else if (ae3 != ae2)  // In Safari and iOS selection steals the focus
+        ae2.focus()
     measure('paste_output+paste_input', start_time)
 }
 
@@ -978,7 +980,7 @@ function add_word(line=main.lastChild, current, before) {
             select.addEventListener('keydown', event => {
                 if (is_mac ? event.ctrlKey : event.metaKey)
                     return
-                const is_alt = event.altKey || event.getModifierState?.('AltGraph')
+                const is_alt = event.getModifierState?.('AltGraph') || event.altKey
                 const line = word.parentElement
                 if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
                     select.classList.remove('untouched')
@@ -1026,7 +1028,7 @@ function add_word(line=main.lastChild, current, before) {
     })
 
     input.addEventListener('keydown', event => {
-        const is_alt = event.altKey || event.getModifierState?.('AltGraph')
+        const is_alt = event.getModifierState?.('AltGraph') || event.altKey
         if (is_mac ? event.ctrlKey : event.metaKey || is_alt)
             return
         const is_ctrl = event.ctrlKey || event.metaKey
@@ -1053,11 +1055,11 @@ function add_word(line=main.lastChild, current, before) {
         else if ((event.key == ' ' || event.key == 'Enter' && line_had_text || ['ArrowDown', 'ArrowUp'].includes(event.key) && !event.shiftKey) && !is_mod
             || (event.key == 'ArrowLeft' && input.selectionStart == input.value.length
             || ['ArrowRight', 'Backspace'].includes(event.key) && !input.selectionEnd
-            || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling)) && !event.metaKey) {
+            || event.key == 'Delete' && input.selectionStart == input.value.length && (word.nextElementSibling || line.nextElementSibling) && !event.shiftKey) && !event.metaKey) {
             if (!is_mod)
                 event.preventDefault()
             let elem
-            if (event.key == 'Delete' || event.key == 'Backspace' && !word.previousElementSibling && !line.previousElementSibling && (word.nextElementSibling || line.nextElementSibling) && !input.value.trim()) {
+            if (event.key == 'Delete' && !event.shiftKey || event.key == 'Backspace' && !word.previousElementSibling && !line.previousElementSibling && (word.nextElementSibling || line.nextElementSibling) && !input.value.trim()) {
                 is_del = true
                 const next_word = word.nextElementSibling
                 elem = next_word || line.nextElementSibling.firstChild
@@ -1154,13 +1156,12 @@ function save_words() {
 }
 
 addEventListener('keydown', event => {
-    if (event.altKey || event.getModifierState?.('AltGraph'))
-        return
+    const is_alt = event.getModifierState?.('AltGraph') || event.altKey
     const elem = event.target
-    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && elem.selectionStart != elem.selectionEnd) {  // Remove selection
+    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !is_alt && elem.selectionStart != elem.selectionEnd) {  // Remove selection
         const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
         elem.setSelectionRange(caret, caret)
-    } else if (event.key == ' ' && event.ctrlKey != is_mac && event.metaKey == is_mac) {
+    } else if ((event.key == ' ' || event.code == 'Space') && event.ctrlKey != is_mac && !event.metaKey && is_alt == is_mac) {
         event.preventDefault()
         let caret
         if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {
@@ -1195,6 +1196,8 @@ function build_selects(focus=false) {
     const start_time = performance.now()
     ready = false
     rebuild = true
+    const ae = document.activeElement
+    const {selectionStart, selectionEnd, selectionDirection} = ae
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
@@ -1294,22 +1297,11 @@ function build_selects(focus=false) {
             select.style.backgroundColor = medium_color
     })
 
-    let ae = document.activeElement
-    const value = ae.value
-    const {selectionStart, selectionEnd, selectionDirection} = ae
-    const is_main = main.contains(ae)
-    const index = is_main ? [...main.querySelectorAll(ae.tagName)].indexOf(ae) : null
     ready = true
     measure('build_selects', start_time)
     paste_hash(false, focus)
-    if (!focus && (ae == output || is_main)) {
-        if (is_main)
-            ae = main.querySelectorAll(ae.tagName)[index]
-        if (ae.value != value)
-            ae.value = value
-        ae.focus()
-        ae.setSelectionRange?.(selectionStart, selectionEnd, selectionDirection)
-    }
+    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
+        ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     rebuild = false
     measure('build_selects+paste_hash', start_time)
 }

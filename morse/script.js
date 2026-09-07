@@ -198,6 +198,12 @@ const is_mobile = navigator.userAgent.includes('Android') || is_ios
 if (is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
 
+if (is_mac)
+    [...buttons.children].forEach(button => {
+        button.title = button.title.replace(/Alt|Ctrl(?=(\+Shift)?\+Space)/g, 'Opt').replaceAll('Ctrl', 'Cmd')
+        button.ariaKeyShortcuts = button.ariaKeyShortcuts.replaceAll(/Control(?=(\+Shift)?\+Space)/g, 'Alt').replace('Control', 'Meta')
+    })
+
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
 const rev_morse = Object.fromEntries(Object.entries(morse).sort().map(([k, v]) => [v, k]))
 const proto_selects = {}
@@ -1298,7 +1304,7 @@ function build_selects(focus=false) {
     ready = true
     measure('build_selects', start_time)
     paste_hash(false, focus)
-    if (!focus && ae.isConnected && ae.tagName == 'INPUT' && main.contains(ae))
+    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
         ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
     rebuild = false
     measure('build_selects+paste_hash', start_time)

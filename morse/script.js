@@ -460,6 +460,7 @@ function paste_output(text='', focus=true, push=true) {
     const prev_words = get_words_for_touched().map(div => [...div.children].filter(select => select.length > 1)
                                                                            .map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
     let ae = document.activeElement
+    const word_index = [...main.querySelectorAll('.word')].indexOf(ae.closest('.word'))
 
     const norm = norm_text(text)
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
@@ -482,9 +483,11 @@ function paste_output(text='', focus=true, push=true) {
 
     update_output(text, push)
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steal the focus
-    if (focus) {
-        ae = main.querySelector('input')
-        if (ae.value.trim())
+
+    if (focus || !ae.isConnected) {
+        const words = main.querySelectorAll('.word')
+        ae = words[focus ? 0 : Math.min(word_index, words.length - 1)].firstChild
+        if (focus && ae.value.trim())
             ae = add_word().firstChild
     }
     if (focus || document.activeElement != ae)

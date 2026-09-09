@@ -256,7 +256,7 @@ main.addEventListener('change', event => update_output(join_lines(word => Array.
 
 addEventListener('pagehide', () => update_output(null, false))
 
-function change_output_and_selection() {
+function change_output_and_selection(ae) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_text = output.value
     const selected = main.querySelector('.selected')
@@ -265,6 +265,8 @@ function change_output_and_selection() {
     if (selected && text != prev_text) {
         const [head, tail, delta] = diff(text, prev_text)
         output.setSelectionRange(Math.min(head, selectionStart), Math.max(tail, selectionEnd - delta), selectionDirection)
+        if (ae && document.activeElement != ae)  // Safari and iOS selection steal the focus
+            ae.focus()
     }
 }
 
@@ -350,7 +352,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
         const len = select.length
         const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
         for (let i = 1; i <= len; i++) {
-            const option = select[(index + i) % len]
+            const option = select.options[(index + i) % len]
             if (option.value.startsWith(text)) {
                 kbd_select_option(select, option)
                 return true
@@ -361,7 +363,7 @@ function paste_input(text='', focus=true, push=true, word=main) {
             return
         const word_parts = get_word_parts(text)
         for (let i = 1; i <= len; i++) {
-            const option = select[(index + i) % len]
+            const option = select.options[(index + i) % len]
             if (partial_match(option.value, word_parts)) {
                 kbd_select_option(select, option)
                 return true
@@ -456,7 +458,7 @@ function paste_output(text='', focus=true, push=true) {
     const {selectionStart, selectionEnd, selectionDirection} = output
     const prev_words = get_words_for_touched().map(div => [...div.children].filter(select => select.length > 1)
                                                                            .map(select => ({name: select.name, value: select.value, untouched: select.classList.contains('untouched')})))
-    const ae = document.activeElement
+    let ae = document.activeElement
 
     const norm = norm_text(text)
     paste_input(norm.replace(hebrew_block_quotes_regex, m => nikud_regex.test(m) && !bad_nikud_regex.test(m) ? m : joker)
@@ -478,11 +480,13 @@ function paste_output(text='', focus=true, push=true) {
     })
 
     update_output(text, push)
-    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steals the focus
-    if (focus || !ae.isConnected) {
-        const first_word = main.querySelector('.word')
-        ;(first_word.firstChild.value.trim() ? add_word() : first_word).firstChild.focus()
-    } else if (document.activeElement != ae)
+    output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steal the focus
+    if (focus) {
+        ae = main.querySelector('input')
+        if (!ae.value.trim())
+            ae = add_word().firstChild
+    }
+    if (focus || document.activeElement != ae)
         ae.focus()
     measure('paste_output+paste_input', start_time)
 }
@@ -587,13 +591,14 @@ function randomize() {
     for (const div of divs)
         for (let i = 0; i < div.childElementCount; i++) {
             const select = div.children[i]
-            if (select.name in morse && select.length > 1 && (all || i >= start && i < end || ae == output && select.matches('.selected'))) {
-                select.selectedIndex = Math.random() * select.length | 0
+            const len = select.length
+            if (select.name in morse && len > 1 && (all || i >= start && i < end || ae == output && select.matches('.selected'))) {
+                select.selectedIndex = Math.random() * len | 0
                 update_index(select)
                 select.classList.add('untouched')
             }
         }
-    change_output_and_selection()
+    change_output_and_selection(ae)
     measure('randomize', start_time)
 }
 
@@ -974,7 +979,7 @@ function add_word(line=main.lastChild, current, before) {
                 select.classList.remove('untouched')
                 update_index(select)
                 if (select.name != joker) {
-                    const options = [...proto_selects[select.name]]
+                    const options = [...proto_selects[select.name].options]
                     const option = options[select.selectedIndex]
                     options.forEach(opt => opt.defaultSelected = false)
                     option.defaultSelected = true
@@ -986,6 +991,7 @@ function add_word(line=main.lastChild, current, before) {
                     return
                 const is_alt = event.getModifierState?.('AltGraph') || event.altKey
                 const line = word.parentElement
+                const len = select.length
                 if (['Enter', ' '].includes(event.key) && !is_alt || ['ArrowUp', 'ArrowDown'].includes(event.key) && is_alt) {
                     select.classList.remove('untouched')
                     if (event.key == 'Enter')  // For Firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=1912527
@@ -993,7 +999,7 @@ function add_word(line=main.lastChild, current, before) {
                 } else if (!is_alt)
                     if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                         event.preventDefault()
-                        kbd_select_option(select, select[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1) + select.length) % select.length])
+                        kbd_select_option(select, select.options[((legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0) + (event.key == 'ArrowDown' ? 1 : -1) + len) % len])
                     } else if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
                         event.preventDefault()
                         const all_selects = main.querySelectorAll('select')
@@ -1001,10 +1007,9 @@ function add_word(line=main.lastChild, current, before) {
                     } else if (!event.ctrlKey && !event.metaKey)
                         if (event.key == '-' || event.code == 'Minus' && event.shiftKey) {
                             event.preventDefault()
-                            const len = select.length
                             const index = legacy_select ? select.selectedIndex : select.querySelector('option:focus-visible')?.index ?? select.selectedIndex ?? 0
                             for (let i = 1; i <= len; i++) {
-                                const option = select[(index + (event.key == '-' ? i : -i) + len) % len]
+                                const option = select.options[(index + (event.key == '-' ? i : -i) + len) % len]
                                 if (middle_makaf_regex.test(option.value)) {
                                     kbd_select_option(select, option)
                                     break
@@ -1012,7 +1017,7 @@ function add_word(line=main.lastChild, current, before) {
                             }
                         } else if (event.key == 'Backspace' && select.dataset.old_index) {
                             event.preventDefault()
-                            kbd_select_option(select, select[select.dataset.old_index])
+                            kbd_select_option(select, select.options[select.dataset.old_index])
                         } else if (event.key == 'Tab' && !event.shiftKey && !select.nextElementSibling && !word.nextElementSibling && !line.nextElementSibling)
                             add_word(line)
             })
@@ -1020,14 +1025,18 @@ function add_word(line=main.lastChild, current, before) {
             const prev_select = select_container.children[i]
             if (i >= head && i < tail)
                 select.classList.add('untouched')
-            else if (rebuild && prev_select.length)
+            else if (rebuild && prev_select.length) {
                 find_add_select_option(select, prev_select)
-            if (i >= head && select_container.childElementCount < chars.length)
-                select_container.insertBefore(select, prev_select);
-            else
+                select.classList.toggle('untouched', prev_select.classList.contains('untouched'))
+            } if (i >= head && select_container.childElementCount < chars.length)
+                select_container.insertBefore(select, prev_select)
+            else {
+                const focused = prev_select == document.activeElement
                 prev_select.replaceWith(select)
-
-            legacy_select = getComputedStyle(select).appearance != 'base-select'
+                if (focused)
+                    select.focus()
+            }
+            legacy_select ??= getComputedStyle(select).appearance != 'base-select'
         })
     })
 
@@ -1200,8 +1209,6 @@ function build_selects(focus=false) {
     const start_time = performance.now()
     ready = false
     rebuild = true
-    const ae = document.activeElement
-    const {selectionStart, selectionEnd, selectionDirection} = ae
 
     const word_types = Object.assign({}, ...Object.values(morse_words_types))
     const morse_words = Object.fromEntries(Object.entries(morse_words_types).map(([k, v]) => [k, Object.keys(v)]))
@@ -1291,23 +1298,31 @@ function build_selects(focus=false) {
 
     Object.entries(proto_selects).forEach(([char, select]) => {
         select.name = char
+        const len = select.length
         if (char == joker)
             select.style.backgroundColor = error_color
-        else if (select.length == 1)
+        else if (len == 1)
             select.style.backgroundColor = single_color
-        else if (select.length <= rare_count && max_count > rare_count)
+        else if (len <= rare_count && max_count > rare_count)
             select.style.backgroundColor = rare_color
-        else if (select.length <= medium_count && min_count <= rare_count && max_count > medium_count)
+        else if (len <= medium_count && min_count <= rare_count && max_count > medium_count)
             select.style.backgroundColor = medium_color
     })
 
     ready = true
-    measure('build_selects', start_time)
-    paste_hash(false, focus)
-    if (!focus && ae.tagName == 'INPUT' && main.contains(ae))
-        ae.setSelectionRange(selectionStart, selectionEnd, selectionDirection)
+    measure('build_selects (proto)', start_time)
+    if (focus)
+        paste_hash(false, true)
+    else if (document.activeElement == output)
+        paste_output(output.value, false)
+    else {
+        const start_time2 = performance.now()
+        main.querySelectorAll('input').forEach(input => input.dispatchEvent(new Event('change')))
+        main.dispatchEvent(new Event('change'))
+        measure('build_selects (replace)', start_time2)
+    }
     rebuild = false
-    measure('build_selects+paste_hash', start_time)
+    measure(`build_selects+update`, start_time)
 }
 
 const global_start_time = performance.now()

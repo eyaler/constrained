@@ -499,7 +499,7 @@ function is_shortcut(event, shortcut, ignore_mod) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey != global_is_mac && event.metaKey == global_is_mac) == (shortcut.includes('ctrl') || shortcut.includes('cmd') || shortcut.includes('command')) && (event.getModifierState?.('AltGraph') || event.altKey) == (shortcut.includes('alt') || shortcut.includes('opt')  || shortcut.includes('option')))
+    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey != global_is_mac && event.metaKey == global_is_mac) == (shortcut.includes('ctrl') || shortcut.includes('cmd') || shortcut.includes('command')) && (event.getModifierState?.('AltGraph') || event.altKey) == (shortcut.includes('alt') || shortcut.includes('opt') || shortcut.includes('option')))
 }
 
 

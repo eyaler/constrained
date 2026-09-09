@@ -416,7 +416,7 @@ addEventListener('paste', event => {
 })
 
 function find_option(select, value) {
-    return [...select].find(opt => opt.value == value)
+    return [...select.options].find(opt => opt.value == value)
 }
 
 function make_option(text, value) {
@@ -483,7 +483,7 @@ function paste_output(text='', focus=true, push=true) {
     output.setSelectionRange(selectionStart, selectionEnd, selectionDirection)  // Note that in Safari and iOS selection steal the focus
     if (focus) {
         ae = main.querySelector('input')
-        if (!ae.value.trim())
+        if (ae.value.trim())
             ae = add_word().firstChild
     }
     if (focus || document.activeElement != ae)
@@ -1028,10 +1028,11 @@ function add_word(line=main.lastChild, current, before) {
             else if (rebuild && prev_select.length) {
                 find_add_select_option(select, prev_select)
                 select.classList.toggle('untouched', prev_select.classList.contains('untouched'))
-            } if (i >= head && select_container.childElementCount < chars.length)
+            }
+            if (i >= head && select_container.childElementCount < chars.length)
                 select_container.insertBefore(select, prev_select)
             else {
-                const focused = prev_select == document.activeElement
+                const focused = document.activeElement == prev_select
                 prev_select.replaceWith(select)
                 if (focused)
                     select.focus()
@@ -1189,10 +1190,11 @@ addEventListener('keydown', event => {
 })
 
 function paste_hash(cached=true, focus=false) {
-    last_hash = decodeURIComponent(location.hash.slice(1))
+    last_hash = location.hash.slice(1)
+    const decoded = decodeURIComponent(last_hash)
     if (ready)
-        if (/^\t./.test(last_hash))
-            paste_output(last_hash.slice(1), focus, false)
+        if (/^\t./.test(decoded))
+            paste_output(decoded.slice(1), focus, false)
         else if (cached) {
             const ae = document.activeElement
             paste_input('', ae == document.body || main.contains(ae), false)

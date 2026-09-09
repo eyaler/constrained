@@ -239,14 +239,15 @@ function update_output(text, push=true) {
     try {
         if (typeof text == 'string')
             output.dataset.prev_value = output.value = text
-        else if (!push)
-            history.replaceState(history.state, '', '#' + make_hash())
-        if (push) {
+        if (typeof text != 'string' || push) {
             const hash = make_hash()
-            if (hash != last_hash) {
-                last_hash = hash
-                history.pushState(history.state, '', '#' + hash)
-            }
+            if (push) {
+                if (hash != last_hash) {
+                    last_hash = hash
+                    history.pushState(history.state, '', '#' + hash)
+                }
+            } else
+                history.replaceState(history.state, '', '#' + hash)
         }
         document.querySelector('nav-wrapper').shadowRoot.querySelector('.trans').hash = location.hash
     } catch {}

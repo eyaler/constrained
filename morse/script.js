@@ -292,8 +292,8 @@ checkboxes.addEventListener('change', event => {
 addEventListener('copy', event => {
     /* Augment regular copy with:
        1. On select element - Copy selected value (doesn't work for open legacy select elements in Chrome)
-       2. On output when no selection - Copy all output
-       3. Otherwise when no selection - Copy all input
+       2. On output without selection - Copy all output
+       3. Otherwise without selection - Copy all input
     */
     const ae = document.activeElement
     if ((event.target.selectionStart == event.target.selectionEnd || ae.closest('select')) && ([output, document.body].includes(ae) || main.contains(ae))) {

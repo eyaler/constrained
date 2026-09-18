@@ -114,7 +114,7 @@ function copy(remove) {
     navigator.clipboard.writeText(text)
 }
 
-editing.addEventListener('copy', event => {  // When no selection - Copy all
+editing.addEventListener('copy', event => {  // Without selection - Copy all
     if (editing.selectionStart == editing.selectionEnd) {
         event.preventDefault()
         copy()

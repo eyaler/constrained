@@ -16,21 +16,29 @@
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
     <p>
-        השוואה של מספר התווים (יוניקוד) במשפטים מקבילים בשפות שונות יחסית לעברית לפי שני מאגרים רב־לשוניים מקבילים של תמלילי הרצאות TED.
+        השוואה של מספר התווים (יוניקוד) בטקסטים מקבילים בשפות שונות יחסית לעברית, לפי שני מאגרים של תמלילי הרצאות TED ותרגומים רב־לשוניים.
         נוסף לכך, אנו מחשבים את ה־perplexity החד־תווי, משמע אקספוננט האנטרופיה של התפלגות התווים,
         שמודד את המספר האפקטיבי של סימנים שונים המשמשים במערכת הכתב של השפה.
         ה־inefficiency הוא מכפלת מספר התווים היחסי ב־perplexity היחסי.
-        ככלל, העברית והערבית אינן מנוקדות, ובשום מקרה לא הוסרו סימני ניקוד או פיסוק.
-        לצורך חישוב המדדים האחרונים, אותיות רישיות הומרו לקטנות,
+    </p>
+    <p>
+        ככלל, העברית והערבית אינן מנוקדות, ובשום מקרה לא הוסרו סימני ניקוד, פיסוק או ריווח פנימי.
+        לצורך חישוב המדדים האחרונים, אותיות רישיות הומרו לקטנות (אף שהן עשויות לשאת מידע סמנטי),
         הצורות הסופיות המובחנות בעברית וביוונית אוחדו עם מקבילותיהן,
         וכל הספרות העשרוניות כמו גם הפסיק הערבי הומרו לצורה לטינית.
     </p>
     <p>
         יוצא שהעברית היא הקצרה בספירת התווים מבין השפות עם מערכות כתב אלף־ביתיות ועיצוריות (אבג'ד), וקצרות ממנה כאן סינית ויפנית המשתמשות בכתב לוגוגרפי, קוריאנית בכתב האנגול הברתי, ואמהרית בכתב געז שהוא אבוגידה.
-        בהשוואה לאנגלית, משפט עברי מקביל יהיה קצר ברבע.
+        בהשוואה לאנגלית, טקסט מקביל בעברית יהיה קצר ברבע.
         כאשר לוקחים בחשבון את המספר האפקטיבי של הסימנים, נראה שעברית היא היעילה אורתוגרפית מבין מערכות הכתב של השפות במאגרים.
         את התוצאות להלן ניתן לשחזר באמצעות הקוד ב<a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">גוגל קולאב</a>
         (<a id="data" href>קובץ JSON להורדה</a>).
+    </p>
+    <p>
+        הטיות אפשריות:
+        שפת המקור של רובם ככולם של הטקסטים היא אנגלית.
+        טקסט בשפה נתונה נוטה להיות מעט ארוך יותר כשהוא תרגום מאשר כשהוא נכתב במקור באותה שפה.
+        מאידך, TED מנחה להגביל את מספר התווים בכתוביות - הנחיה הנוגעת בעיקר לתרגומים, שכן התמליל כבול לנאמר.
     </p>
 
     <div class="table" dir="ltr">
@@ -40,7 +48,7 @@
                 <td rowspan="2"></td>
                 <td colspan="2"></td>
                 <th colspan="5" scope="colgroup">TED 2020</th>
-                <th colspan="4" scope="colgroup">TED Parallel (349,049 sentences)</th>
+                <th colspan="4" scope="colgroup">TED Parallel (349,049 captions)</th>
             </tr>
             <tr class="sort">
             </tr>
@@ -50,28 +58,36 @@
 
     <div dir="ltr">
         <p>
-            A comparison of the number of Unicode characters in parallel sentences in different languages relative to Hebrew according to two parallel multilingual datasets of TED lecture transcripts.
+            A comparison of the number of Unicode characters in parallel texts in various languages relative to Hebrew, according to two datasets of TED talk transcripts and multilingual translations.
             In addition, we compute the unigram character perplexity, i.e. the exponential of the entropy of the character distribution,
             which measures the effective number of different symbols used in the writing system of the language.
             The inefficiency is the product of the relative number of characters times the relative perplexity.
-            The Hebrew and Arabic texts are mostly diacriticless, and in no case have diacritics or punctuation been removed.
-            For calculating the latter indices, uppercase letters were lowercased,
-            The distinct final letter forms Hebrew and Greek were unified with their equivalents,
+        </p>
+        <p>
+            The Hebrew and Arabic texts are mostly diacriticless, and in no case have diacritics, punctuation or inner whitespace been removed.
+            For calculating the latter indices, uppercase letters were lowercased (even though they may carry semantic information),
+            the distinct final letter forms of Hebrew and Greek were unified with their equivalents,
             and all decimal digits as well as the Arabic comma were converted to Latin form.
         </p>
         <p>
             Hebrew emerges as the shortest in character count among the languages employing alphabetic and abjad writing systems,
             the only shorter being Chinese and Japanese which use logographic scripts, Korean in the syllabic Hangul script, and Amharic in the Ge'ez script, which is an abugida.
-            Relative to English, a corresponding Hebrew sentence will be a quarter shorter.
+            Relative to English, a corresponding Hebrew text will be a quarter shorter.
             When taking into account the effective number of symbols, Hebrew appears to be the most orthographically efficient of the language writing systems in the datasets.
             The results below can be reproduced using the code in <a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">Google Colab</a>
             (<a id="data_trans" href>JSON file for download</a>).
+        </p>
+        <p>
+            Potential biases:
+            The source language of nearly all texts is English.
+            Text in a given language tends to be slightly longer when it is a translation than when written originally in that language.
+            On the other hand, TED calls for limiting the number of characters in subtitles - an instruction that mainly affects translations, since the transcript is bound to what was said.
         </p>
     </div>
 
     <div class="refs">
         <blockquote>Ajinkya Kulkarni, <a href="https://hal.science/hal-04702210">TED parallel corpus</a> (<a href="https://github.com/ajinkyakulkarni14/How-I-Extracted-TED-talks-for-parallel-Corpus-">code</a>, <a href="https://github.com/ajinkyakulkarni14/TED-Multilingual-Parallel-Corpus">data</a>) (2015).</blockquote>
-        <blockquote>Nils Reimers and Iryna Gurevych, <a href="https://arxiv.org/abs/2004.09813">Making monolingual sentence embeddings multilingual using knowledge distillation</a>, (<a href="https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/datasets/parallel-sentences-source-files.zip">code+data</a> [1.1GB], <a href="https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/datasets/parallel-sentences.tsv.gz">data</a> [550MB]) Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (2020).</blockquote>
+        <blockquote>Nils Reimers and Iryna Gurevych, <a href="https://arxiv.org/abs/2004.09813">Making monolingual sentence embeddings multilingual using knowledge distillation</a> (aka TED 2020, <a href="https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/datasets/parallel-sentences-source-files.zip">code+data</a> [1.1GB], <a href="https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/datasets/parallel-sentences.tsv.gz">data</a> [550MB]), Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (2020).</blockquote>
     </div>
     <script>
         make_footer()

@@ -21,7 +21,7 @@
         }
 
         a:focus-visible {
-            outline: transparent;
+            outline-style: none;  /* To be removed once focus({focusVisible: false}) is widely supported */
         }
 
         button, p, span {
@@ -231,7 +231,7 @@
                     a = createA(`${location.pathname}?${lang}${index}`, 'לאתגר הבא')
                     if (!document.querySelector('nav-wrapper'))
                         a.elt.rel = 'noreferrer'
-                    a.elt.focus()
+                    a.elt.focus({focusVisible: false})
                 }
                 a.position(0, height * .8)
                 a.center('horizontal')

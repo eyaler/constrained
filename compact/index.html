@@ -16,21 +16,26 @@
 <body onload="document.body.style.visibility = 'visible'">
     <script>make_header()</script>
     <p>
-        השוואה של מספר התווים (יוניקוד) בטקסטים מקבילים בשפות שונות יחסית לעברית, לפי שני מאגרים של תמלילי הרצאות TED ותרגומים רב־לשוניים.
+        השוואה של מספר תווי היוניקוד בטקסטים מקבילים בשפות שונות יחסית לעברית, לפי שני מאגרים של תמלילי הרצאות TED ותרגומים רב־לשוניים.
         נוסף לכך, אנו מחשבים את ה־perplexity החד־תווי, משמע אקספוננט האנטרופיה של התפלגות התווים,
         שמודד את המספר האפקטיבי של סימנים שונים המשמשים במערכת הכתב של השפה.
         ה־inefficiency הוא מכפלת מספר התווים היחסי ב־perplexity היחסי.
     </p>
     <p>
         ככלל, העברית והערבית אינן מנוקדות, ובשום מקרה לא הוסרו סימני ניקוד, פיסוק או ריווח פנימי.
-        לצורך חישוב המדדים האחרונים, אותיות רישיות הומרו לקטנות (אף שהן עשויות לשאת מידע סמנטי),
-        הצורות הסופיות המובחנות בעברית וביוונית אוחדו עם מקבילותיהן,
+        לצורך חישוב המדדים האפקטיביים, אותיות רישיות הומרו לקטנות (אף שהן עשויות לשאת מידע סמנטי),
+        הצורות הסופיות המובחנות בעברית וביוונית אוחדו עם מקבילותיהן האמצעיות,
         וכל הספרות העשרוניות כמו גם הפסיק הערבי הומרו לצורה לטינית.
     </p>
     <p>
-        יוצא שהעברית היא הקצרה בספירת התווים מבין השפות עם מערכות כתב אלף־ביתיות ועיצוריות (אבג'ד), וקצרות ממנה כאן סינית ויפנית המשתמשות בכתב לוגוגרפי, קוריאנית בכתב האנגול הברתי, ואמהרית בכתב געז שהוא אבוגידה.
+        יוצא שהעברית היא הקצרה כאן בספירת התווים מבין השפות עם מערכות כתב אלף־ביתיות ועיצוריות (אבג'ד),
+        וקצרות ממנה רק סינית בכתב לוגוגרפי,
+        יפנית המשלבת כתב הברות עם כתב לוגוגרפי,
+        קוריאנית בכתב האנגול שאותיותיו מקובצות לבלוקים של הברות,
+        ואמהרית בכתב געז שהוא אבוגידה
+         - כאשר בכולן היחידות מקודדות כתווי יוניקוד יחידים.
         בהשוואה לאנגלית, טקסט מקביל בעברית יהיה קצר ברבע.
-        כאשר לוקחים בחשבון את המספר האפקטיבי של הסימנים, נראה שעברית היא היעילה אורתוגרפית מבין מערכות הכתב של השפות במאגרים.
+        כאשר לוקחים בחשבון את המספר האפקטיבי של הסימנים, נראה שעברית היא היעילה אורתוגרפית מבין מערכות הכתב של השפות במאגרים (אף אם שומרים את הסופיות).
         את התוצאות להלן ניתן לשחזר באמצעות הקוד ב<a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">גוגל קולאב</a>
         (<a id="data" href>קובץ JSON להורדה</a>).
     </p>
@@ -65,15 +70,19 @@
         </p>
         <p>
             The Hebrew and Arabic texts are mostly diacriticless, and in no case have diacritics, punctuation or inner whitespace been removed.
-            For calculating the latter indices, uppercase letters were lowercased (even though they may carry semantic information),
-            the distinct final letter forms of Hebrew and Greek were unified with their equivalents,
+            For calculating the effective indices, uppercase letters were lowercased (even though they may carry semantic information),
+            the distinct final letter forms of Hebrew and Greek were unified with their equivalent middle forms,
             and all decimal digits as well as the Arabic comma were converted to Latin form.
         </p>
         <p>
-            Hebrew emerges as the shortest in character count among the languages employing alphabetic and abjad writing systems,
-            the only shorter being Chinese and Japanese which use logographic scripts, Korean in the syllabic Hangul script, and Amharic in the Ge'ez script, which is an abugida.
+            Hebrew emerges here as the shortest in character count among the languages employing alphabetic and abjad writing systems,
+            the only shorter being Chinese with its logographic script,
+            Japanese which combines syllabic and logographic scripts,
+            Korean in the Hangul script whose letters are grouped into syllable blocks,
+            and Amharic in the Ge'ez script which is an abugida
+             - in all of which the units are encoded as single Unicode characters.
             Relative to English, a corresponding Hebrew text will be a quarter shorter.
-            When taking into account the effective number of symbols, Hebrew appears to be the most orthographically efficient of the language writing systems in the datasets.
+            When taking into account the effective number of symbols, Hebrew appears to be the most orthographically efficient of the language writing systems in the datasets (even if we keep the final forms).
             The results below can be reproduced using the code in <a href="https://colab.research.google.com/github/eyaler/constrained/blob/main/compact/ted_multilingual_counter.ipynb">Google Colab</a>
             (<a id="data_trans" href>JSON file for download</a>).
         </p>

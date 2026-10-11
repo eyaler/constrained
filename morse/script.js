@@ -190,18 +190,13 @@ const morse = {
 
 const dont_show = 'äöšüþ'
 
-const is_ios = navigator.platform.startsWith('iP')
-const is_mac = navigator.platform.startsWith('Mac') || is_ios
-const is_firefox_android = navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')
-const is_mobile = navigator.userAgent.includes('Android') || is_ios
-
-if (is_ios)
+const is_android = navigator.userAgent.includes('Android')
+if (global_is_ios)
     document.querySelector('meta[name=viewport]').content += ', maximum-scale=1'
-
-if (is_mac)
+if (global_is_mac)
     [...buttons.children].forEach(button => {
-        button.title = button.title.replace(/Alt|Ctrl(?=(\+Shift)?\+Space)/g, 'Opt').replaceAll('Ctrl', 'Cmd')
-        button.ariaKeyShortcuts = button.ariaKeyShortcuts?.replaceAll(/Control(?=(\+Shift)?\+Space)/g, 'Alt').replace('Control', 'Meta')
+        button.title = button.title.replace(/Ctrl(?=(\+Shift)?\+Space)/g, 'Alt').replace(/\[[^\]]*\]/g, label_shortcut)
+        button.ariaKeyShortcuts = button.ariaKeyShortcuts?.replace(/Control(?=(\+Shift)?\+Space)/g, 'Alt').replaceAll('Control', 'Meta')
     })
 
 Object.entries(morse).filter(([k, v]) => non_morse_regex.test(v)).forEach(([k, v]) => alert(`Bad ${k}: ${v}`))
@@ -507,7 +502,7 @@ output.addEventListener('change', () => {
 })
 
 output.addEventListener('keydown', event => {
-    if ((event.key == 'Enter' && event.ctrlKey != is_mac && event.metaKey == is_mac
+    if ((event.key == 'Enter' && event.ctrlKey != global_is_mac && event.metaKey == global_is_mac
         || event.key == 'Tab' && event.shiftKey && !event.ctrlKey && !event.metaKey)
         && !event.altKey && !event.getModifierState?.('AltGraph'))
         output.dispatchEvent(new Event('change'))
@@ -611,7 +606,7 @@ function update_main_thread() {
 }
 
 async function load_model(config, override_cache) {
-    config.device = !is_mobile && (await navigator.gpu?.requestAdapter())?.features.has('shader-f16') ? 'webgpu' : 'wasm'
+    config.device = !is_android && !global_is_ios && (await navigator.gpu?.requestAdapter())?.features.has('shader-f16') ? 'webgpu' : 'wasm'
     config.dtype = config.device == 'wasm' ? 'int8' : 'fp16'
 
     try {
@@ -977,7 +972,7 @@ function add_word(line=main.lastChild, current, before) {
                 return
             const select = proto_selects[char].cloneNode(true)
 
-            select.addEventListener(is_firefox_android ? 'blur' : 'click', () => select.classList.remove('untouched'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
+            select.addEventListener(navigator.userAgent.includes('Firefox') && is_android ? 'blur' : 'click', () => select.classList.remove('untouched'), {once: true})  // Avoid Firefox Android issue: https://bugzilla.mozilla.org/show_bug.cgi?id=2031292
 
             select.addEventListener('change', () => {
                 select.classList.remove('untouched')
@@ -991,7 +986,7 @@ function add_word(line=main.lastChild, current, before) {
             })
 
             select.addEventListener('keydown', event => {
-                if (is_mac ? event.ctrlKey : event.metaKey)
+                if (global_is_mac ? event.ctrlKey : event.metaKey)
                     return
                 const is_alt = event.getModifierState?.('AltGraph') || event.altKey
                 const line = word.parentElement
@@ -1047,7 +1042,7 @@ function add_word(line=main.lastChild, current, before) {
 
     input.addEventListener('keydown', event => {
         const is_alt = event.getModifierState?.('AltGraph') || event.altKey
-        if (is_mac ? event.ctrlKey : event.metaKey || is_alt)
+        if (global_is_mac ? event.ctrlKey : event.metaKey || is_alt)
             return
         const is_ctrl = event.ctrlKey || event.metaKey
         const is_mod = is_ctrl || is_alt
@@ -1176,10 +1171,7 @@ function save_words() {
 addEventListener('keydown', event => {
     const is_alt = event.getModifierState?.('AltGraph') || event.altKey
     const elem = event.target
-    if (event.key == 'Escape' && !event.shiftKey && !event.ctrlKey && !event.metaKey && !is_alt && elem.selectionStart != elem.selectionEnd) {  // Remove selection
-        const caret = elem.selectionDirection == 'forward' ? elem.selectionEnd : elem.selectionStart
-        elem.setSelectionRange(caret, caret)
-    } else if ((event.key == ' ' || event.code == 'Space') && event.ctrlKey != is_mac && !event.metaKey && is_alt == is_mac) {
+    if ((event.key == ' ' || event.code == 'Space') && event.ctrlKey != global_is_mac && !event.metaKey && is_alt == global_is_mac) {
         event.preventDefault()
         let caret
         if (elem.tagName == 'INPUT' && elem.selectionStart == elem.selectionEnd && elem.value.trim() && main.contains(elem)) {

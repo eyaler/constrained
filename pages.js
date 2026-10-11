@@ -164,8 +164,11 @@ const default_show_author = true
 
 let author_pages_folder = ''
 author_pages_folder = author_pages_folder.replace(/^[./]+|[./]+$/g, '')
-const global_is_mac = navigator.platform.startsWith('Mac') || navigator.platform.startsWith('iP')
-
+const global_is_ios = navigator.platform.startsWith('iP')
+const global_is_mac = navigator.platform.startsWith('Mac') || global_is_ios
+const shift_regex = RegExp('(⇧ ?)?Shift|⇧', 'ig')
+const ctrl_regex = RegExp('Ctrl|(⌘ ?)?(Cmd|Command)|⌘', 'ig')
+const alt_regex = RegExp('Alt|(⌥ ?)?Opt(ion)?|⌥', 'ig')
 
 function get_lang() {
     const lang = location.search.slice(1).split('&')[0]
@@ -485,7 +488,7 @@ function export_all(lang, skip=true) {
 
 
 function is_shortcut(event, shortcut, ignore_mod) {
-    shortcut = shortcut.toLowerCase().split(/ ?[+-] ?(?!$)/)
+    shortcut = shortcut.toLowerCase().replace(/[⇧⌘⌥] ?(?=[sco])/g, '').split(/ ?[+-] ?(?!$)/)
     let shortcut_key = shortcut.pop()
     if (shortcut_key == 'space')
         shortcut_key = ' '
@@ -499,15 +502,16 @@ function is_shortcut(event, shortcut, ignore_mod) {
         || event.code == 'Digit' + shortcut_key  // For AZERTY keyboard
         || !event_key.match(/^[a-z]$/) && event.code == 'Key' + shortcut_key.toUpperCase())  // For Hebrew keyboard
         event_key = shortcut_key
-    return event_key == shortcut_key && (ignore_mod || event.shiftKey == shortcut.includes('shift') && (event.ctrlKey != global_is_mac && event.metaKey == global_is_mac) == (shortcut.includes('ctrl') || shortcut.includes('cmd') || shortcut.includes('command')) && (event.getModifierState?.('AltGraph') || event.altKey) == (shortcut.includes('alt') || shortcut.includes('opt') || shortcut.includes('option')))
+    return event_key == shortcut_key && (ignore_mod || event.shiftKey == (shortcut.includes('shift') || shortcut.includes('⇧')) && (event.ctrlKey != global_is_mac && event.metaKey == global_is_mac) == (shortcut.includes('ctrl') || shortcut.includes('cmd') || shortcut.includes('command') || shortcut.includes('⌘')) && (event.getModifierState?.('AltGraph') || event.altKey) == (shortcut.includes('alt') || shortcut.includes('opt') || shortcut.includes('option') || shortcut.includes('⌥')))
 }
 
 
 function add_shortcut(elem, shortcut, ignore_mod) {
     if (shortcut) {
         elem.ariaKeyShortcuts = shortcut.replace(/ ?[+-] ?(?!$)/g, '+')
-                                        .replace(/Ctrl|Cmd|Command/ig, global_is_mac ? 'Meta' : 'Control')
-                                        .replace(/Opt(ion)?/ig, 'Alt').replace(/ $/, 'Space').replace(/\+$/, 'plus')
+                                        .replace(shift_regex, 'Shift')
+                                        .replace(ctrl_regex, global_is_mac ? 'Meta' : 'Control')
+                                        .replace(alt_regex, 'Alt').replace(/ $/, 'Space').replace(/\+$/, 'plus')
         addEventListener('keydown', event => {
             if (is_shortcut(event, shortcut, ignore_mod)) {
                 event.preventDefault()
@@ -518,11 +522,17 @@ function add_shortcut(elem, shortcut, ignore_mod) {
 }
 
 
+function label_shortcut(shortcut) {
+    return shortcut.replace(shift_regex, global_is_mac ? '⇧ Shift' : 'Shift')
+                   .replace(ctrl_regex, global_is_mac ? '⌘ Cmd' : 'Ctrl')
+                   .replace(alt_regex, global_is_mac ? '⌥ Opt' : 'Alt')
+}
+
+
 function add_nav_element(nav, url, label, cls, delta=0, key) {
     let title
     if (key)
-        title = `[${key.replace(/Ctrl|Cmd|Command/ig, global_is_mac ? 'Cmd' : 'Ctrl')
-                       .replace(/Alt|Opt(ion)?/ig, global_is_mac ? 'Opt' : 'Alt')}]`
+        title = `[${label_shortcut(key)}]`
     const elem = nav.appendChild(make_link(url, label, ['nowrap', cls], title))
     if (delta != null)
         elem.style.marginInlineEnd = 1.5 + Math.max(delta, 0) + 'em'
@@ -859,7 +869,7 @@ function show_hide_cursor(event_or_elem) {
 
 
 function remove_diacritics(s) {
-    return s.replace(/[\u034f\u0591-\u05bd\u05bf-\u05c9\u200c\u200d]/g, '')
+    return s.replace(/[\u200c\u200d]*[\u034f\u0591-\u05bd\u05bf-\u05c9][\u200c\u200d]*/g, '')
 }
 
 

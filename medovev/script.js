@@ -129,6 +129,9 @@ function share(remove) {
     navigator.share?.({url, text, title: document.title}).catch(() => {}) || navigator.clipboard.writeText(url)
 }
 
+if (global_is_mac)
+    [...buttons.children].forEach(button => button.title = label_shortcut(button.title))
+
 if (!navigator.share) {
     share_button.classList.add('unsupported')
     share_button.textContent = 'העתק קישור לשיתוף'

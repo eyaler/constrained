@@ -28,7 +28,7 @@ const pages = {
     "panpan": {title: "פנגרמות מושלמות על פנגרמות מושלמות", alt: "Perfect pangrams on perfect pangrams", kw: ["combined forms", "hebrew cheatery", "pangram", "self-referral"]},
     "undercover": {title: "פנגרמה מושלמת מסתערבת", alt: "Undercover perfect pangram", kw: ["discourse", "hebrew cheatery", "pangram"]},
     "pangrams": {title: "פנגרמות מושלמות מינימליות", alt: "Minimal perfect pangrams", kw: ["combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "record"]},
-    "twss": {title: "פנגרמה מושלמת שהיא אמרה", alt: "A perfect pangram that she said", kw: ["combined forms", "hebrew cheatery", "pangram"]},
+    "twss": {title: "פנגרמה מושלמת שהיא אמרה", alt: "A perfect pangram that she said", kw: ["combined forms", "hebrew cheatery", "pangram", "translation"]},
     "epipangram": {title: "אפיפנגרמה מושלמת מקסימלית", alt: "Maximal perfect epipangram", kw: ["combined forms", "hebrew cheatery", "pangram", "poem"]},
     "pan2d": {title: "פנגרמה מושלמת דו־ממדית", alt: "2D perfect pangram", kw: ["2d 3d", "cipher", "combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "visual"]},
     "pan3d/": {title: "פנגרמה מושלמת תלת־ממדית", alt: "3D perfect pangram", kw: ["2d 3d", "combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "self-referral", "visual"]},

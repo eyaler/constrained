@@ -31,7 +31,7 @@ const pages = {
     "twss": {title: "פנגרמה מושלמת שהיא אמרה", alt: "A perfect pangram that she said", kw: ["combined forms", "hebrew cheatery", "pangram", "translation"]},
     "epipangram": {title: "אפיפנגרמה מושלמת מקסימלית", alt: "Maximal perfect epipangram", kw: ["combined forms", "hebrew cheatery", "pangram", "poem"]},
     "pan2d": {title: "פנגרמה מושלמת דו־ממדית", alt: "2D perfect pangram", kw: ["2d 3d", "cipher", "combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "visual"]},
-    "pan3d/": {title: "פנגרמה מושלמת תלת־ממדית", alt: "3D perfect pangram", kw: ["2d 3d", "combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "self-referral", "visual"]},
+    "pan3d/": {title: "פנגרמה מושלמת תלת־ממדית", alt: "3D perfect pangram", kw: ["2d 3d", "combinatorial", "combined forms", "computational", "hebrew cheatery", "new constraint", "pangram", "poem", "record", "self-referral", "tool", "visual"]},
     "snark/": {title: "כרחש אבמ\"ח וכרחש אדו\"ש", alt: "ABMḤ snark and ADWŠ snark", kw: ["2d 3d", "combinatorial", "computational", "interactive", "new constraint", "pangram", "sound", "visual"]},
     "wordle": {title: "תחפצו ניעקד אסכלה משרבט", alt: "Words for Wordle", kw: ["combinatorial", "computational", "pangram"]},
     "eyal": {title: "אֱיָליטרציה", alt: "Eyalliteration", kw: ["2d 3d", "combined forms", "discourse", "poem", "self-referral", "visual"]},
